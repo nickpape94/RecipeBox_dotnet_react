@@ -45,7 +45,6 @@ namespace RecipeBox.API
             services.AddAutoMapper(typeof(RecipeRepository).Assembly);
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
-            services.AddScoped<IPostRepository, PostRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters

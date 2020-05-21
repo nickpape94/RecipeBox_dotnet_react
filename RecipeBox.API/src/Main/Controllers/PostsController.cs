@@ -12,16 +12,17 @@ using RecipeBox.API.src.Main.Models;
 namespace RecipeBox.API.src.Main.Controllers
 {
     [Authorize]
-    [Route("api/users/{userId}/[controller]")]
+    [Route("api/[controller]")]
+    // [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private readonly IPostRepository _repo;
+        
         private readonly IMapper _mapper;
-        private readonly IRecipeRepository _userRepo;
-        public PostsController(IPostRepository repo, IRecipeRepository userRepo, IMapper mapper)
+        private readonly IRecipeRepository _repo;
+        public PostsController(IRecipeRepository repo, IMapper mapper)
         {
-            _userRepo = userRepo;
+        
             _mapper = mapper;
             _repo = repo;
             
@@ -33,9 +34,7 @@ namespace RecipeBox.API.src.Main.Controllers
         {
             var posts = await _repo.GetPosts();
 
-            var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
-
-            return Ok(postsFromRepo);
+            return Ok(posts);
         }
 
         [AllowAnonymous]
@@ -50,20 +49,22 @@ namespace RecipeBox.API.src.Main.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePost(int userId, [FromBody]PostForCreationDto postForCreationDto)
+        public async Task<IActionResult> CreatePost(int userId, PostForCreationDto postForCreationDto)
         {
             // Validate id of logged in user == userId
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
+            postForCreationDto.UserId = userId;
+
             // Get user with this id from the repo       
-            var userFromRepo = await _userRepo.GetUser(userId);
+            var userFromRepo = await _repo.GetUser(userId);
 
             // Get post data from the client
             var post = _mapper.Map<Post>(postForCreationDto);
-            
-            userFromRepo.Posts.Add(post);
 
-            var postToReturn = _mapper.Map<PostForCreationDto>(post);
+            userFromRepo.Posts.Add(post);
+            
+            var postToReturn = _mapper.Map<PostsForDetailedDto>(post);
 
             if (await _repo.SaveAll())
             {

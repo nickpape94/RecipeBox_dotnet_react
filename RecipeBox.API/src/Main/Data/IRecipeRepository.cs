@@ -11,5 +11,7 @@ namespace RecipeBox.API.src.Main.Data
         Task<bool> SaveAll();
         Task<IEnumerable<User>> GetUsers();
         Task<User> GetUser(int id);
+        Task<Post> GetPost(int id);
+        Task<IEnumerable<Post>> GetPosts();
     }
 }

@@ -15,7 +15,7 @@ namespace RecipeBox.API.src.Main.Dtos
         public string Feeds { get; set; }
         public string Cuisine { get; set; }
         public DateTime Created { get; set; }
-        public User User { get; set; }
+        
         public int UserId { get; set; }
     }
 }

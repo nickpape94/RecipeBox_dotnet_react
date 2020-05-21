@@ -24,16 +24,30 @@ namespace RecipeBox.API.src.Main.Data
             _context.Remove(entity);
         }
 
+        public async Task<Post> GetPost(int id)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(x => x.Id == id);
+
+            return post;
+        }
+
+        public async Task<IEnumerable<Post>> GetPosts()
+        {
+            var posts = await _context.Posts.ToListAsync();
+
+            return posts;
+        }
+
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(p => p.UserPhotos).FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).FirstOrDefaultAsync(x => x.Id == id);
 
             return user;
         }
 
         public async Task<IEnumerable<User>> GetUsers()
         {
-            var users = await _context.Users.Include(p => p.UserPhotos).ToListAsync();
+            var users = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).ToListAsync();
 
             return users;
         }
@@ -42,5 +56,7 @@ namespace RecipeBox.API.src.Main.Data
         {
             return await _context.SaveChangesAsync() > 0;
         }
+
+        
     }
 }

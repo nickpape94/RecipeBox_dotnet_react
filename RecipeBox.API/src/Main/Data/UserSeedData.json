@@ -10,7 +10,18 @@
 				"isMain": true
 			}
 		],
-		"Posts": []
+		"Posts": [
+			{
+				"nameOfDish": "Pizza",
+				"cuisine": "Italian",
+				"description": "yum",
+				"ingredients": "dough, basil",
+				"method": "cook",
+				"prepTime": "15 min",
+				"cookingTime": "5 min",
+				"feeds": "3"
+			}
+		]
 	},
 	{
 		"Username": "Debra",
@@ -23,7 +34,18 @@
 				"isMain": true
 			}
 		],
-		"Posts": []
+		"Posts": [
+			{
+				"nameOfDish": "Cannoli",
+				"cuisine": "Italian",
+				"description": "yum",
+				"ingredients": "dough, basil",
+				"method": "cook",
+				"prepTime": "15 min",
+				"cookingTime": "5 min",
+				"feeds": "3"
+			}
+		]
 	},
 	{
 		"Username": "Mable",
@@ -36,7 +58,18 @@
 				"isMain": true
 			}
 		],
-		"Posts": []
+		"Posts": [
+			{
+				"nameOfDish": "Spag bol",
+				"cuisine": "Italian",
+				"description": "yum",
+				"ingredients": "dough, basil",
+				"method": "cook",
+				"prepTime": "15 min",
+				"cookingTime": "5 min",
+				"feeds": "3"
+			}
+		]
 	},
 	{
 		"Username": "Trisha",
@@ -49,7 +82,18 @@
 				"isMain": true
 			}
 		],
-		"Posts": []
+		"Posts": [
+			{
+				"nameOfDish": "Buffalo mozzerel",
+				"cuisine": "Italian",
+				"description": "yum",
+				"ingredients": "dough, basil",
+				"method": "cook",
+				"prepTime": "15 min",
+				"cookingTime": "5 min",
+				"feeds": "3"
+			}
+		]
 	},
 	{
 		"Username": "Robert",
@@ -62,6 +106,17 @@
 				"isMain": true
 			}
 		],
-		"Posts": []
+		"Posts": [
+			{
+				"nameOfDish": "Risotto",
+				"cuisine": "Italian",
+				"description": "yum",
+				"ingredients": "dough, basil",
+				"method": "cook",
+				"prepTime": "15 min",
+				"cookingTime": "5 min",
+				"feeds": "3"
+			}
+		]
 	}
 ]

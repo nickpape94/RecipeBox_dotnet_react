@@ -5,7 +5,6 @@ namespace RecipeBox.API.src.Main.Dtos
 {
     public class PostForCreationDto
     {
-        public int Id { get; set; }
         public string NameOfDish { get; set; }
         public string Description { get; set; }
         public string Ingredients { get; set; }
@@ -15,7 +14,13 @@ namespace RecipeBox.API.src.Main.Dtos
         public string Feeds { get; set; }
         public string Cuisine { get; set; }
         public DateTime Created { get; set; }
+
         public User User { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
+        
+        public PostForCreationDto()
+        {
+            Created = DateTime.Now;
+        }
     }
 }
