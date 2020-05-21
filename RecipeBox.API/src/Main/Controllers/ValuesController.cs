@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RecipeBox.API.Data;
+using RecipeBox.API.src.Main.Data;
 
-namespace RecipeBox.API.Controllers
+namespace RecipeBox.API.src.Main.Controllers
 {
 
     [Authorize]

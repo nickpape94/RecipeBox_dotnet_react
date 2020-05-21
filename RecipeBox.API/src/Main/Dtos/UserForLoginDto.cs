@@ -1,4 +1,4 @@
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.src.Main.Dtos
 {
     public class UserForLoginDto
     {

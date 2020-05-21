@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.src.Main.Dtos
 {
     public class UserForRegisterDto
     {

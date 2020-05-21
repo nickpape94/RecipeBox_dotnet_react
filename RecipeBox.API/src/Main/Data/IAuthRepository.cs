@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using RecipeBox.API.Models;
+using RecipeBox.API.src.Main.Models;
 
-namespace RecipeBox.API.Data
+namespace RecipeBox.API.src.Main.Data
 {
     public interface IAuthRepository
     {

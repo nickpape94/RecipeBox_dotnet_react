@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
-using RecipeBox.API.Models;
+using RecipeBox.API.src.Main.Data;
+using RecipeBox.API.src.Main.Dtos;
+using RecipeBox.API.src.Main.Models;
 
-namespace RecipeBox.API.Controllers
+namespace RecipeBox.API.src.Main.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

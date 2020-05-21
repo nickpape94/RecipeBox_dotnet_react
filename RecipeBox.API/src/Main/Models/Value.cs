@@ -1,4 +1,4 @@
-namespace RecipeBox.API.Models
+namespace RecipeBox.API.src.Main.Models
 {
     public class Value
     {

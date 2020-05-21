@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using RecipeBox.API.Models;
+using RecipeBox.API.src.Main.Models;
 
-namespace RecipeBox.API.Data
+namespace RecipeBox.API.src.Main.Data
 {
     public class AuthRepository : IAuthRepository
     {
