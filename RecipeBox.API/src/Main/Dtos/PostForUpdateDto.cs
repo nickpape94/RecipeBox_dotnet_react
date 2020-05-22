@@ -1,10 +1,9 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using RecipeBox.API.src.Main.Models;
 
 namespace RecipeBox.API.src.Main.Dtos
 {
-    public class PostForCreationDto
+    public class PostForUpdateDto
     {
         [Required]
         public string NameOfDish { get; set; }
@@ -28,14 +27,8 @@ namespace RecipeBox.API.src.Main.Dtos
         
         public string Cuisine { get; set; }
         
-        public DateTime Created { get; set; }
-
-        public User User { get; set; }
-        public int? UserId { get; set; }
+        // public User User { get; set; }
+        // public int? UserId { get; set; }
         
-        public PostForCreationDto()
-        {
-            Created = DateTime.Now;
-        }
     }
 }

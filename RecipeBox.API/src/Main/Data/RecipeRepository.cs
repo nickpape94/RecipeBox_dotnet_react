@@ -24,6 +24,11 @@ namespace RecipeBox.API.src.Main.Data
             _context.Remove(entity);
         }
 
+        public void Update<T>(T entity) where T : class
+        {
+            _context.Update(entity);
+        }
+
         public async Task<Post> GetPost(int id)
         {
             var post = await _context.Posts.FirstOrDefaultAsync(x => x.Id == id);
@@ -57,6 +62,5 @@ namespace RecipeBox.API.src.Main.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        
     }
 }
