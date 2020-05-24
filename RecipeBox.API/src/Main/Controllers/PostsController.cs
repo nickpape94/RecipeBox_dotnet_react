@@ -69,7 +69,7 @@ namespace RecipeBox.API.src.Main.Controllers
 
             if (await _repo.SaveAll())
             {
-                return CreatedAtRoute("GetPost", new {userId = userId, id = post.Id}, postToReturn);
+                return CreatedAtRoute("GetPost", new {userId = userId, id = post.PostId}, postToReturn);
             }
 
             throw new Exception("Creating the post failed on save");
@@ -94,7 +94,7 @@ namespace RecipeBox.API.src.Main.Controllers
             var postToReturn = _mapper.Map<PostsForDetailedDto>(postToUpdate);
 
             if ( await _repo.SaveAll())
-                return CreatedAtRoute("GetPost", new {userId = userId, id = postFromRepo.Id}, postToReturn);
+                return CreatedAtRoute("GetPost", new {userId = userId, id = postFromRepo.PostId}, postToReturn);
 
             throw new Exception($"Updating post {postId} failed on save");
         }

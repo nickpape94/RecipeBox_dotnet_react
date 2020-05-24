@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RecipeBox.API.Migrations
 {
-    public partial class UpdatedModels : Migration
+    public partial class CommentsSection : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,7 +11,7 @@ namespace RecipeBox.API.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Username = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<byte[]>(nullable: true),
@@ -21,7 +21,7 @@ namespace RecipeBox.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -38,54 +38,33 @@ namespace RecipeBox.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    CommentId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Text = table.Column<string>(nullable: true),
-                    Created = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.CommentId);
-                    table.ForeignKey(
-                        name: "FK_Comments_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PostPhotos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    PostPhotoId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Url = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     DateAdded = table.Column<DateTime>(nullable: false),
                     IsMain = table.Column<bool>(nullable: false),
-                    UserId = table.Column<int>(nullable: true)
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostPhotos", x => x.Id);
+                    table.PrimaryKey("PK_PostPhotos", x => x.PostPhotoId);
                     table.ForeignKey(
                         name: "FK_PostPhotos_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    PostId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     NameOfDish = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
@@ -96,24 +75,24 @@ namespace RecipeBox.API.Migrations
                     Feeds = table.Column<string>(nullable: true),
                     Cuisine = table.Column<string>(nullable: true),
                     Created = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: true)
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.PrimaryKey("PK_Posts", x => x.PostId);
                     table.ForeignKey(
                         name: "FK_Posts_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "UserPhotos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    UserPhotoId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Url = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
@@ -123,14 +102,48 @@ namespace RecipeBox.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserPhotos", x => x.Id);
+                    table.PrimaryKey("PK_UserPhotos", x => x.UserPhotoId);
                     table.ForeignKey(
                         name: "FK_UserPhotos_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    CommentId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Text = table.Column<string>(nullable: true),
+                    Created = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<int>(nullable: true),
+                    CommenterId = table.Column<int>(nullable: false),
+                    PostId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.CommentId);
+                    table.ForeignKey(
+                        name: "FK_Comments_Posts_CommenterId",
+                        column: x => x.CommenterId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_CommenterId",
+                table: "Comments",
+                column: "CommenterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
@@ -162,13 +175,13 @@ namespace RecipeBox.API.Migrations
                 name: "PostPhotos");
 
             migrationBuilder.DropTable(
-                name: "Posts");
-
-            migrationBuilder.DropTable(
                 name: "UserPhotos");
 
             migrationBuilder.DropTable(
                 name: "Values");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Users");

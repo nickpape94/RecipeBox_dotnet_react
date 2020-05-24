@@ -31,21 +31,21 @@ namespace RecipeBox.API.src.Main.Data
 
         public async Task<Post> GetPost(int id)
         {
-            var post = await _context.Posts.FirstOrDefaultAsync(x => x.Id == id);
+            var post = await _context.Posts.Include(c => c.Comments).FirstOrDefaultAsync(x => x.PostId == id);
 
             return post;
         }
 
         public async Task<IEnumerable<Post>> GetPosts()
         {
-            var posts = await _context.Posts.ToListAsync();
+            var posts = await _context.Posts.Include(c => c.Comments).ToListAsync();
 
             return posts;
         }
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).FirstOrDefaultAsync(x => x.UserId == id);
 
             return user;
         }

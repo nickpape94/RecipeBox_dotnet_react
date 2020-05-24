@@ -9,8 +9,8 @@ using RecipeBox.API.src.Main.Data;
 namespace RecipeBox.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200521161527_UpdatedModels")]
-    partial class UpdatedModels
+    [Migration("20200524150903_CommentsSection")]
+    partial class CommentsSection
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,8 +24,14 @@ namespace RecipeBox.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CommenterId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
@@ -35,6 +41,8 @@ namespace RecipeBox.API.Migrations
 
                     b.HasKey("CommentId");
 
+                    b.HasIndex("CommenterId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
@@ -42,7 +50,7 @@ namespace RecipeBox.API.Migrations
 
             modelBuilder.Entity("RecipeBox.API.src.Main.Models.Post", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -73,10 +81,10 @@ namespace RecipeBox.API.Migrations
                     b.Property<string>("PrepTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("PostId");
 
                     b.HasIndex("UserId");
 
@@ -85,61 +93,7 @@ namespace RecipeBox.API.Migrations
 
             modelBuilder.Entity("RecipeBox.API.src.Main.Models.PostPhoto", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PostPhotos");
-                });
-
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastActive")
-                        .HasColumnType("TEXT");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("BLOB");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("BLOB");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.UserPhoto", b =>
-                {
-                    b.Property<int>("Id")
+                    b.Property<int>("PostPhotoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -158,7 +112,61 @@ namespace RecipeBox.API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("PostPhotoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostPhotos");
+                });
+
+            modelBuilder.Entity("RecipeBox.API.src.Main.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastActive")
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("BLOB");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("RecipeBox.API.src.Main.Models.UserPhoto", b =>
+                {
+                    b.Property<int>("UserPhotoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserPhotoId");
 
                     b.HasIndex("UserId");
 
@@ -181,6 +189,12 @@ namespace RecipeBox.API.Migrations
 
             modelBuilder.Entity("RecipeBox.API.src.Main.Models.Comment", b =>
                 {
+                    b.HasOne("RecipeBox.API.src.Main.Models.Post", "Commenter")
+                        .WithMany("Comments")
+                        .HasForeignKey("CommenterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RecipeBox.API.src.Main.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -190,14 +204,18 @@ namespace RecipeBox.API.Migrations
                 {
                     b.HasOne("RecipeBox.API.src.Main.Models.User", "User")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RecipeBox.API.src.Main.Models.PostPhoto", b =>
                 {
                     b.HasOne("RecipeBox.API.src.Main.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RecipeBox.API.src.Main.Models.UserPhoto", b =>

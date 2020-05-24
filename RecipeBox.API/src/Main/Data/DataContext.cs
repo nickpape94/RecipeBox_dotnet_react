@@ -16,8 +16,18 @@ namespace RecipeBox.API.src.Main.Data
 
         // protected override void OnModelCreating(ModelBuilder builder)
         // {
-        //     builder.Entity<Post>()
-        //         .
+        //     // builder.Entity<Comment>()
+        //     //     .HasKey(k => new {k.UserId, k.PostId});
+
+        //     builder.Entity<Comment>()
+        //         .HasOne(c => c.Post)
+        //         .WithMany(b => b.Comments)
+        //         .HasForeignKey(b => b.PostId);
+            
+        //     builder.Entity<Comment>()
+        //         .HasOne(c => c.User)
+        //         .WithOne(b => b.Posts)
+        //         .HasForeignKey(b => b.UserId);
         // }
         
     }

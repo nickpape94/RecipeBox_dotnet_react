@@ -4,7 +4,7 @@ namespace RecipeBox.API.src.Main.Models
 {
     public class UserPhoto
     {
-        public int Id { get; set; }
+        public int UserPhotoId { get; set; }
         public string Url { get; set; }
         public string Description { get; set; }
         public DateTime DateAdded { get; set; }
