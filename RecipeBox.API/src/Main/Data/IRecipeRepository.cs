@@ -13,6 +13,7 @@ namespace RecipeBox.API.src.Main.Data
         Task<IEnumerable<User>> GetUsers();
         Task<User> GetUser(int id);
         Task<Post> GetPost(int id);
+        Task<Comment> GetComment(int commentId);
         Task<IEnumerable<Post>> GetPosts();
     }
 }

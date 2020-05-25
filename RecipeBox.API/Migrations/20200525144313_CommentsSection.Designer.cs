@@ -9,7 +9,7 @@ using RecipeBox.API.src.Main.Data;
 namespace RecipeBox.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200524154923_CommentsSection")]
+    [Migration("20200525144313_CommentsSection")]
     partial class CommentsSection
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,14 +36,11 @@ namespace RecipeBox.API.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("CommentId");
 
                     b.HasIndex("CommenterId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PostId");
 
                     b.ToTable("Comments");
                 });
@@ -189,15 +186,17 @@ namespace RecipeBox.API.Migrations
 
             modelBuilder.Entity("RecipeBox.API.src.Main.Models.Comment", b =>
                 {
-                    b.HasOne("RecipeBox.API.src.Main.Models.Post", "Commenter")
-                        .WithMany("Comments")
+                    b.HasOne("RecipeBox.API.src.Main.Models.User", "Commenter")
+                        .WithMany()
                         .HasForeignKey("CommenterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RecipeBox.API.src.Main.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                    b.HasOne("RecipeBox.API.src.Main.Models.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RecipeBox.API.src.Main.Models.Post", b =>

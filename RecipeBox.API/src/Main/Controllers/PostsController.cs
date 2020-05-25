@@ -35,9 +35,9 @@ namespace RecipeBox.API.src.Main.Controllers
         {
             var posts = await _repo.GetPosts();
 
-            // var postFromRepo = _mapper.Map<PostsForListDto>(posts);
+            var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
 
-            return Ok(posts);
+            return Ok(postsFromRepo);
         }
 
         // Get post by id
@@ -47,9 +47,9 @@ namespace RecipeBox.API.src.Main.Controllers
         {
             var post = await _repo.GetPost(id);
 
-            var postsFromRepo = _mapper.Map<PostsForDetailedDto>(post);
+            var postFromRepo = _mapper.Map<PostsForDetailedDto>(post);
 
-            return Ok(postsFromRepo);
+            return Ok(postFromRepo);
         }
 
         // Create a post
@@ -120,6 +120,7 @@ namespace RecipeBox.API.src.Main.Controllers
         }
 
         // "api/users/{userId}/[controller]/{postId}/comments"
+        
         // Add comment to post
         [HttpPost("{postId}/comments")]
         public async Task<IActionResult> AddComment(int userId, int postId,  CommentForCreationDto commentForCreationDto)
@@ -133,22 +134,73 @@ namespace RecipeBox.API.src.Main.Controllers
             // Get post from repo
             var postFromRepo = await _repo.GetPost(postId);
 
-            // Get comment
+            // Map comment into CommentForCreationDto
             var comment = _mapper.Map<Comment>(commentForCreationDto);
         
+            // Add comment into comments
             postFromRepo.Comments.Add(comment);
             
+            _mapper.Map<PostsForDetailedDto>(postFromRepo);
 
             if (await _repo.SaveAll())
             {
-                return Ok();
+                 return CreatedAtRoute("GetPost", new {userId = userId, id = comment.CommentId}, postFromRepo);
             }
 
             throw new Exception("Creating the comment failed on save");
         }
+        
         // Update comment
-        // Delete comment from post
+        [HttpPut("{postId}/comments/{commentId}")]
+        public async Task<IActionResult> UpdateComment(int postId, int commentId, int userId, CommentForUpdateDto commentForUpdateDto)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
+            var commentFromRepo = await _repo.GetComment(commentId);
+            var postFromRepo = await _repo.GetPost(postId);
+
+            if (commentFromRepo.CommenterId != userId) return Unauthorized();
+
+            // commentFromRepo.Text = commentForUpdateDto.Text;
+
+            // _repo.Update(commentFromRepo);
+            
+            var commentToUpdate = _mapper.Map(commentForUpdateDto, commentFromRepo);
+            var commentToReturn = _mapper.Map<Comment>(commentToUpdate);
+            // var commentToReturn = _mapper.Map<CommentsForReturnedDto>(commentToUpdate);
+
+            if (await _repo.SaveAll())
+            {
+                return CreatedAtRoute("GetPost", new {userId = userId, id = postFromRepo.PostId} , postFromRepo);
+
+            }
+                
+            throw new Exception("Updating the comment failed on save");
+        }
+        
+        // Delete comment from post
+        [HttpDelete("{postId}/comments/{commentId}")]
+        public async Task<IActionResult> DeleteComment(int commentId, int userId)
+        {
+            // Validate id of logged in user == userId
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            // Get comment from repo
+            var comment = await _repo.GetComment(commentId);
+
+            // Confirm user made the comment
+            if (comment.CommenterId != userId) return Unauthorized();
+
+            // Delete from repo
+            _repo.Delete(comment);
+
+            if (await _repo.SaveAll())
+            {
+                return Ok("Comment was successfully deleted");  
+            }
+
+            throw new Exception("Deleting the comment failed on save");
+        }
     
     }
 }

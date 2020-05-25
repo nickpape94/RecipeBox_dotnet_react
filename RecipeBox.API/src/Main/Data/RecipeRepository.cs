@@ -62,5 +62,11 @@ namespace RecipeBox.API.src.Main.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<Comment> GetComment(int commentId)
+        {
+            var comment = await _context.Comments.FirstOrDefaultAsync(c => c.CommentId == commentId);
+
+            return comment; 
+        }
     }
 }

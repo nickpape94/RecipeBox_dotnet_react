@@ -8,9 +8,9 @@ namespace RecipeBox.API.src.Main.Models
         public int CommentId { get; set; }
         public string Text { get; set; }
         public DateTime Created { get; set; }
-        public User User { get; set; }
+        public User Commenter { get; set; }
         public int CommenterId { get; set; }
-        public Post Commenter { get; set; }
+        public Post Post { get; set; }
         public int PostId { get; set; }
         
         

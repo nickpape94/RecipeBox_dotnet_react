@@ -119,7 +119,6 @@ namespace RecipeBox.API.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Text = table.Column<string>(nullable: true),
                     Created = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: true),
                     CommenterId = table.Column<int>(nullable: false),
                     PostId = table.Column<int>(nullable: false)
                 },
@@ -127,17 +126,17 @@ namespace RecipeBox.API.Migrations
                 {
                     table.PrimaryKey("PK_Comments", x => x.CommentId);
                     table.ForeignKey(
-                        name: "FK_Comments_Posts_CommenterId",
+                        name: "FK_Comments_Users_CommenterId",
                         column: x => x.CommenterId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_Posts_PostId",
+                        column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "PostId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Comments_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -146,9 +145,9 @@ namespace RecipeBox.API.Migrations
                 column: "CommenterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_UserId",
+                name: "IX_Comments_PostId",
                 table: "Comments",
-                column: "UserId");
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostPhotos_UserId",
