@@ -35,6 +35,8 @@ namespace RecipeBox.API.src.Main.Controllers
         {
             var posts = await _repo.GetPosts();
 
+            // var postFromRepo = _mapper.Map<PostsForListDto>(posts);
+
             return Ok(posts);
         }
 
@@ -82,8 +84,7 @@ namespace RecipeBox.API.src.Main.Controllers
             // Validate id of logged in user == userId
             if ( userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-            // Get both the user and post from repo
-            var userFromRepo = await _repo.GetUser(userId);
+            // Get post from repo
             var postFromRepo = await _repo.GetPost(postId);
 
             // Check post was made by the user
@@ -105,8 +106,7 @@ namespace RecipeBox.API.src.Main.Controllers
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-            // Get post and user from the repo
-            var userFromRepo = await _repo.GetUser(userId);
+            // Get post from the repo
             var postFromRepo = await _repo.GetPost(postId);
 
             if (postFromRepo.UserId != userId) return Unauthorized();
@@ -118,6 +118,7 @@ namespace RecipeBox.API.src.Main.Controllers
 
             throw new Exception($"Deleting post {postId} failed on save");
         }
-        
+
+    
     }
 }

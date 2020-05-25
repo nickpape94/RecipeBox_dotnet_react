@@ -9,7 +9,7 @@ using RecipeBox.API.src.Main.Data;
 namespace RecipeBox.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200524150903_CommentsSection")]
+    [Migration("20200524154923_CommentsSection")]
     partial class CommentsSection
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
