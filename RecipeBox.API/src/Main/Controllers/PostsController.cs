@@ -12,8 +12,8 @@ using RecipeBox.API.src.Main.Models;
 namespace RecipeBox.API.src.Main.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
-    // [Route("api/users/{userId}/[controller]")]
+    // [Route("api/[controller]")]
+    [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
     {
@@ -30,7 +30,7 @@ namespace RecipeBox.API.src.Main.Controllers
 
         // Get all posts
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("~/api/posts")]
         public async Task<IActionResult> GetPosts()
         {
             var posts = await _repo.GetPosts();
@@ -42,7 +42,7 @@ namespace RecipeBox.API.src.Main.Controllers
 
         // Get post by id
         [AllowAnonymous]
-        [HttpGet("{id}", Name = "GetPost")]
+        [HttpGet("~/api/posts/{id}", Name = "GetPost")]
         public async Task<IActionResult> GetPost(int id)
         {
             var post = await _repo.GetPost(id);
@@ -53,7 +53,7 @@ namespace RecipeBox.API.src.Main.Controllers
         }
 
         // Create a post
-        [HttpPost("~/api/users/{userId}/posts")]
+        [HttpPost]
         public async Task<IActionResult> CreatePost(int userId, PostForCreationDto postForCreationDto)
         {
             // Validate id of logged in user == userId
@@ -78,7 +78,7 @@ namespace RecipeBox.API.src.Main.Controllers
         }
 
         // Update a post
-        [HttpPut("~/api/users/{userId}/posts/{postId}")]
+        [HttpPut("{postId}")]
         public async Task<IActionResult> UpdatePost(int userId, int postId, PostForUpdateDto postForUpdateDto)
         {
             // Validate id of logged in user == userId
@@ -101,7 +101,7 @@ namespace RecipeBox.API.src.Main.Controllers
         }
 
         // Delete a post
-        [HttpDelete("~/api/users/{userId}/posts/{postId}")]
+        [HttpDelete("{postId}")]
         public async Task<IActionResult> DeletePost(int userId, int postId)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
@@ -118,6 +118,36 @@ namespace RecipeBox.API.src.Main.Controllers
 
             throw new Exception($"Deleting post {postId} failed on save");
         }
+
+        // "api/users/{userId}/[controller]/{postId}/comments"
+        // Add comment to post
+        [HttpPost("{postId}/comments")]
+        public async Task<IActionResult> AddComment(int userId, int postId,  CommentForCreationDto commentForCreationDto)
+        {
+            // Validate id of logged in user == userId
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            // Assign commenter id to the comment creator
+            commentForCreationDto.CommenterId = userId;
+
+            // Get post from repo
+            var postFromRepo = await _repo.GetPost(postId);
+
+            // Get comment
+            var comment = _mapper.Map<Comment>(commentForCreationDto);
+        
+            postFromRepo.Comments.Add(comment);
+            
+
+            if (await _repo.SaveAll())
+            {
+                return Ok();
+            }
+
+            throw new Exception("Creating the comment failed on save");
+        }
+        // Update comment
+        // Delete comment from post
 
     
     }

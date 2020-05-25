@@ -23,6 +23,7 @@ namespace RecipeBox.API.src.Main.Helpers
             CreateMap<Post, PostForUpdateDto>();
             CreateMap<PostForUpdateDto, Post>();
             // CreateMap<CommentsForReturnedDto, Comment>();
+            CreateMap<CommentForCreationDto, Comment>();
             CreateMap<Comment, CommentsForReturnedDto>();
         
         }
