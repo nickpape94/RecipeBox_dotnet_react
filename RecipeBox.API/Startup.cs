@@ -18,8 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using RecipeBox.API.src.Main.Data;
-using RecipeBox.API.src.Main.Helpers;
+using RecipeBox.API.Data;
+using RecipeBox.API.Helpers;
 
 namespace RecipeBox.API
 {

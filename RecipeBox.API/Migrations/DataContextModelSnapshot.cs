@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RecipeBox.API.src.Main.Data;
+using RecipeBox.API.Data;
 
 namespace RecipeBox.API.Migrations
 {
@@ -16,7 +16,7 @@ namespace RecipeBox.API.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.0.1");
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.Comment", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.Comment", b =>
                 {
                     b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
@@ -43,7 +43,7 @@ namespace RecipeBox.API.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.Post", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.Post", b =>
                 {
                     b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
@@ -86,7 +86,7 @@ namespace RecipeBox.API.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.PostPhoto", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.PostPhoto", b =>
                 {
                     b.Property<int>("PostPhotoId")
                         .ValueGeneratedOnAdd()
@@ -114,7 +114,7 @@ namespace RecipeBox.API.Migrations
                     b.ToTable("PostPhotos");
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.User", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -140,7 +140,7 @@ namespace RecipeBox.API.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.UserPhoto", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.UserPhoto", b =>
                 {
                     b.Property<int>("UserPhotoId")
                         .ValueGeneratedOnAdd()
@@ -168,7 +168,7 @@ namespace RecipeBox.API.Migrations
                     b.ToTable("UserPhotos");
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.Value", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.Value", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -182,42 +182,42 @@ namespace RecipeBox.API.Migrations
                     b.ToTable("Values");
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.Comment", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.Comment", b =>
                 {
-                    b.HasOne("RecipeBox.API.src.Main.Models.User", "Commenter")
+                    b.HasOne("RecipeBox.API.Models.User", "Commenter")
                         .WithMany()
                         .HasForeignKey("CommenterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RecipeBox.API.src.Main.Models.Post", "Post")
+                    b.HasOne("RecipeBox.API.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.Post", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.Post", b =>
                 {
-                    b.HasOne("RecipeBox.API.src.Main.Models.User", "User")
+                    b.HasOne("RecipeBox.API.Models.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.PostPhoto", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.PostPhoto", b =>
                 {
-                    b.HasOne("RecipeBox.API.src.Main.Models.User", "User")
+                    b.HasOne("RecipeBox.API.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RecipeBox.API.src.Main.Models.UserPhoto", b =>
+            modelBuilder.Entity("RecipeBox.API.Models.UserPhoto", b =>
                 {
-                    b.HasOne("RecipeBox.API.src.Main.Models.User", "User")
+                    b.HasOne("RecipeBox.API.Models.User", "User")
                         .WithMany("UserPhotos")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
