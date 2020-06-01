@@ -19,7 +19,7 @@ namespace RecipeBox.API.Helpers
             CreateMap<Post, PostsForDetailedDto>();
             CreateMap<Post, PostsForListDto>();
             CreateMap<PostForCreationDto, Post>();
-            CreateMap<Post, PostForCreationDto>();
+            // CreateMap<Post, PostForCreationDto>();
             CreateMap<Post, PostForUpdateDto>();
             CreateMap<PostForUpdateDto, Post>();
             // CreateMap<CommentsForReturnedDto, Comment>();
