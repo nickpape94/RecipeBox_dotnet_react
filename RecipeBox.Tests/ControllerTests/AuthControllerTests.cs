@@ -43,7 +43,7 @@ namespace RecipeBox.Tests
             }).Result as StatusCodeResult;
 
             // Assert
-            Assert.IsType<StatusCodeResult>(result);
+            var okResult = Assert.IsType<StatusCodeResult>(result);
             Assert.Equal(new StatusCodeResult(201).StatusCode, result.StatusCode);
         }
 

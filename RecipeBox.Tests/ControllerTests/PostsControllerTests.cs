@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -99,41 +100,67 @@ namespace RecipeBox.Tests
             Assert.IsType<UnauthorizedResult>(result);
         }
         
-        // [Fact]
-        // public void CreatePost_AuthorizedUser_CreatesAndReturnsNewPost()
-        // {
-        //     // Arrange
-        //     int userId = 2;
-        //     var postForCreation = new PostForCreationDto()
-        //     {
-        //         NameOfDish = "Katsu curry",
-        //         Description = "chicken and rice",
-        //         Ingredients = "chicken, rice",
-        //         Method = "fry chicken, boil rice",
-        //         PrepTime = "20 min",
-        //         CookingTime = "20 min",
-        //         Feeds = "3",
-        //         Cuisine = "Japanese",
-        //         UserId = userId
-        //     };
+        [Fact]
+        public void UpdatePost_UnauthorizedUserClaims_ReturnsUnauthorized()
+        {
+            // Arrange
+            int userId = 1;
+            int postId = 1;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
-        //     _repoMock.Setup(repo => repo.SaveAll()).ReturnsAsync(true);
+            var postForUpdate = new PostForUpdateDto()
+            {
+                NameOfDish = "Katsu curry",
+                Description = "chicken and rice",
+                Ingredients = "chicken, rice",
+                Method = "fry chicken, boil rice",
+                PrepTime = "20 min",
+                CookingTime = "20 min",
+                Feeds = "3",
+                Cuisine = "Japanese"
+            };
+            
+            // Act
+            var result = _postsController.UpdatePost(userId, postId, postForUpdate).Result;
 
-             
-        //     var user = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
-        //     // _repo.Setup(repo => repo.GetUser(userId))
-        //     //     .ReturnsAsync(Task.FromResult<User>(user.Posts.Add(postForCreation)));
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+        }
 
-        //     // _repo.Setup(repo => repo.Add(user.Posts.Add(postForCreation)))
-        //     //     .Returns(Task.FromResult<User>)
-        //     //     .Verifiable();
+        [Fact]
+        public async void UpdatePost_SaveFails_ThrowsException()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 2;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
-        //     // Act
-        //     var result = _postsController.CreatePost(userId, postForCreation).Result;
+            var postForUpdate = new PostForUpdateDto()
+            {
+                NameOfDish = "Katsu curry",
+                Description = "chicken and rice",
+                Ingredients = "chicken, rice",
+                Method = "fry chicken, boil rice",
+                PrepTime = "20 min",
+                CookingTime = "20 min",
+                Feeds = "3",
+                Cuisine = "Japanese"
+            };
+            
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
 
-        //     // Assert
-        //     Assert.IsType<PostsForDetailedDto>(result);
-        // }
+            // Act
+            Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.UpdatePost(userId, postId, postForUpdate));
+
+            // Assert
+            Assert.Equal(ex.Message, $"Updating post {postId} failed on save");
+        }
+
+        [Fact]
+        public void CreatePost_UnauthorizedUser_ReturnsUnauthorized()
+        {
+
+        }
 
         private ICollection<Post> GetFakePostList()
         {
@@ -178,6 +205,7 @@ namespace RecipeBox.Tests
                 {
                     UserId = 1,
                     Username = "mike",
+                    Posts = GetFakePostList()
                 },
                 new User()
                 {
