@@ -124,7 +124,7 @@ namespace RecipeBox.Tests
             Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.CreatePost(userId, postForCreation));
 
             // Assert
-            Assert.Equal(ex.Message, "Creating the post failed on save");
+            Assert.Equal("Creating the post failed on save", ex.Message);
         }
         
         [Fact]
@@ -189,35 +189,115 @@ namespace RecipeBox.Tests
             Assert.IsType<UnauthorizedResult>(result);
         }
 
-        // [Fact]
-        // public async void UpdatePost_SaveFails_ThrowsException()
-        // {
-        //     // Arrange
-        //     int userId = 2;
-        //     int postId = 2;
-        //     var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+        [Fact]
+        public async void UpdatePost_SaveFails_ThrowsException()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 2;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
-        //     var postForUpdate = new PostForUpdateDto()
-        //     {
-        //         NameOfDish = "Katsu curry",
-        //         Description = "chicken and rice",
-        //         Ingredients = "chicken, rice",
-        //         Method = "fry chicken, boil rice",
-        //         PrepTime = "20 min",
-        //         CookingTime = "20 min",
-        //         Feeds = "3",
-        //         Cuisine = "Japanese"
-        //     };
+            var postForUpdate = new PostForUpdateDto()
+            {
+                NameOfDish = "Katsu curry",
+                Description = "chicken and rice",
+                Ingredients = "chicken, rice",
+                Method = "fry chicken, boil rice",
+                PrepTime = "20 min",
+                CookingTime = "20 min",
+                Feeds = "3",
+                Cuisine = "Japanese"
+            };
             
-        //     _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.Update(postFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
 
-        //     // Act
-        //     Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.UpdatePost(userId, postId, postForUpdate));
+            // Act
+            Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.UpdatePost(userId, postId, postForUpdate));
 
-        //     // Assert
-        //     Assert.Equal(ex.Message, $"Updating post {postId} failed on save");
-        // }
+            // Assert
+            Assert.Equal(ex.Message, $"Updating post {postId} failed on save");
+        }
 
+        [Fact]
+        public void UpdatePost_Success_ReturnsUpdatedPost()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 2;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+            var postForUpdate = new PostForUpdateDto()
+            {
+                NameOfDish = "Katsu curry",
+                Description = "chicken and rice",
+                Ingredients = "chicken, rice",
+                Method = "fry chicken, boil rice",
+                PrepTime = "20 min",
+                CookingTime = "20 min",
+                Feeds = "3",
+                Cuisine = "Japanese"
+            };
+            
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.Update(postForUpdate));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result =  _postsController.UpdatePost(userId, postId, postForUpdate).Result as CreatedAtRouteResult;
+            // Assert
+            var okResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var updatedPost = Assert.IsType<PostsForDetailedDto>(result.Value);
+            Assert.Equal(postFromRepo.NameOfDish, updatedPost.NameOfDish);
+            Assert.Equal(postFromRepo.Cuisine, updatedPost.Cuisine);
+            Assert.Equal(postFromRepo.Description, updatedPost.Description);
+        }
+
+        [Fact]
+        public void DeletingPost_Unauthorized_ReturnsUnauthorized()
+        {
+            // Arrange
+            int userId = 1;
+            int postId = 2;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+            
+            _repoMock.Setup(p => p.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(p => p.Delete(postFromRepo));
+            _repoMock.Setup(s => s.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.DeletePost(userId, postId).Result as UnauthorizedResult;
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+            
+            // Assert.Equal(new OkObjectResult(okResult).StatusCode, result.StatusCode);
+
+        }
+        
+        [Fact]
+        public async void DeletingPost_FailsOnSave_ReturnsException()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 2;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+            
+            _repoMock.Setup(p => p.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(p => p.Delete(postFromRepo));
+            _repoMock.Setup(s => s.SaveAll()).ReturnsAsync(false);
+
+            // Act
+            // var result = _postsController.DeletePost(userId, postId).Result as Exception;
+            Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.DeletePost(userId, postId));
+            
+            // Assert
+            Assert.Equal(ex.Message, $"Deleting post {postId} failed on save");
+
+
+        }
+        
         [Fact]
         public void DeletingPost_Successfull_Returns201()
         {
@@ -238,7 +318,6 @@ namespace RecipeBox.Tests
             
             Assert.Equal(new OkObjectResult(okResult).StatusCode, result.StatusCode);
 
-            // Todo; Make sure to include the status code comment!
         }
 
         private ICollection<Post> GetFakePostList()
