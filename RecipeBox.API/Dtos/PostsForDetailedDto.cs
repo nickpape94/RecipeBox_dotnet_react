@@ -17,7 +17,7 @@ namespace RecipeBox.API.Dtos
         public string Cuisine { get; set; }
         public ICollection<CommentsForReturnedDto> Comments { get; set; }
         public DateTime Created { get; set; }
-        
+        public string User { get; set; }
         public int UserId { get; set; }
     }
 }

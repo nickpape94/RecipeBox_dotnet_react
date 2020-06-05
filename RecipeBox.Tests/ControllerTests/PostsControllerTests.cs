@@ -91,13 +91,73 @@ namespace RecipeBox.Tests
                 Feeds = "3",
                 Cuisine = "Japanese"
             };
-
             
             // Act
-            var result = _postsController.CreatePost(userId, postForCreation).Result;
+            var result = _postsController.CreatePost(userId, postForCreation)
+                .Result;
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
+        }
+        
+        [Fact]
+        public async void CreatePost_FailsOnSave_ReturnsException()
+        {
+            // Arrange
+            int userId = 2;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var postForCreation = new PostForCreationDto
+            {
+                NameOfDish = "Katsu curry",
+                Description = "chicken and rice",
+                Ingredients = "chicken, rice",
+                Method = "fry chicken, boil rice",
+                PrepTime = "20 min",
+                CookingTime = "20 min",
+                Feeds = "3",
+                Cuisine = "Japanese"
+            };
+
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+            
+            Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.CreatePost(userId, postForCreation));
+
+            // Assert
+            Assert.Equal(ex.Message, "Creating the post failed on save");
+        }
+        
+        [Fact]
+        public void CreatePost_UserAuthorized_ReturnsPost()
+        {
+            // Arrange
+            int userId = 2;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+
+            var postForCreation = new PostForCreationDto
+            {
+                NameOfDish = "Katsu curry",
+                Description = "chicken and rice",
+                Ingredients = "chicken, rice",
+                Method = "fry chicken, boil rice",
+                PrepTime = "20 min",
+                CookingTime = "20 min",
+                Feeds = "3",
+                Cuisine = "Japanese",
+                UserId = userId
+            };
+
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+            
+            //Act
+            var result = _postsController.CreatePost(userId, postForCreation)
+                .Result;
+
+            // Assert
+            var okResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var returnValue = Assert.IsType<PostsForDetailedDto>(okResult.Value);
+            
         }
         
         [Fact]
@@ -119,6 +179,8 @@ namespace RecipeBox.Tests
                 Feeds = "3",
                 Cuisine = "Japanese"
             };
+
+            // _repoMock.Setup(r => r.GetPost(2)).R
             
             // Act
             var result = _postsController.UpdatePost(userId, postId, postForUpdate).Result;
@@ -127,39 +189,56 @@ namespace RecipeBox.Tests
             Assert.IsType<UnauthorizedResult>(result);
         }
 
+        // [Fact]
+        // public async void UpdatePost_SaveFails_ThrowsException()
+        // {
+        //     // Arrange
+        //     int userId = 2;
+        //     int postId = 2;
+        //     var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+        //     var postForUpdate = new PostForUpdateDto()
+        //     {
+        //         NameOfDish = "Katsu curry",
+        //         Description = "chicken and rice",
+        //         Ingredients = "chicken, rice",
+        //         Method = "fry chicken, boil rice",
+        //         PrepTime = "20 min",
+        //         CookingTime = "20 min",
+        //         Feeds = "3",
+        //         Cuisine = "Japanese"
+        //     };
+            
+        //     _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+
+        //     // Act
+        //     Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.UpdatePost(userId, postId, postForUpdate));
+
+        //     // Assert
+        //     Assert.Equal(ex.Message, $"Updating post {postId} failed on save");
+        // }
+
         [Fact]
-        public async void UpdatePost_SaveFails_ThrowsException()
+        public void DeletingPost_Successfull_Returns201()
         {
             // Arrange
             int userId = 2;
             int postId = 2;
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
-
-            var postForUpdate = new PostForUpdateDto()
-            {
-                NameOfDish = "Katsu curry",
-                Description = "chicken and rice",
-                Ingredients = "chicken, rice",
-                Method = "fry chicken, boil rice",
-                PrepTime = "20 min",
-                CookingTime = "20 min",
-                Feeds = "3",
-                Cuisine = "Japanese"
-            };
             
-            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+            _repoMock.Setup(p => p.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(p => p.Delete(postFromRepo));
+            _repoMock.Setup(s => s.SaveAll()).ReturnsAsync(true);
 
             // Act
-            Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.UpdatePost(userId, postId, postForUpdate));
+            var result = _postsController.DeletePost(userId, postId).Result as OkObjectResult;
 
             // Assert
-            Assert.Equal(ex.Message, $"Updating post {postId} failed on save");
-        }
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            
+            Assert.Equal(new OkObjectResult(okResult).StatusCode, result.StatusCode);
 
-        [Fact]
-        public void CreatePost_UnauthorizedUser_ReturnsUnauthorized()
-        {
-
+            // Todo; Make sure to include the status code comment!
         }
 
         private ICollection<Post> GetFakePostList()
@@ -177,7 +256,7 @@ namespace RecipeBox.Tests
                     CookingTime = "15 min",
                     Feeds = "3-4",
                     Cuisine = "Italian",
-                    UserId = 1
+                    UserId = 2,
                     
                 },
                 new Post()
@@ -191,7 +270,7 @@ namespace RecipeBox.Tests
                     CookingTime = "25 min",
                     Feeds = "3-4",
                     Cuisine = "Italian",
-                    UserId = 2
+                    UserId = 2,
 
                 }
             };
@@ -199,18 +278,22 @@ namespace RecipeBox.Tests
         
         private ICollection<User> GetFakeUserList()
         {
+
             return new List<User>()
             {
+                
                 new User()
                 {
                     UserId = 1,
                     Username = "mike",
-                    Posts = GetFakePostList()
+                    
                 },
                 new User()
                 {
                     UserId = 2,
                     Username = "josh",
+                    Posts = GetFakePostList()
+                    
                 }
             };
         }

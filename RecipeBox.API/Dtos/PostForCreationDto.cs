@@ -6,6 +6,7 @@ namespace RecipeBox.API.Dtos
 {
     public class PostForCreationDto
     {
+        // public int PostId { get; set; }
         
         [Required]
         public string NameOfDish { get; set; }

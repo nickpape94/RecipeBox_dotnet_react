@@ -67,10 +67,9 @@ namespace RecipeBox.API.Controllers
 
             userFromRepo.Posts.Add(post);
             
-            var postToReturn = _mapper.Map<PostsForDetailedDto>(post);
-
             if (await _repo.SaveAll())
             {
+                var postToReturn = _mapper.Map<PostsForDetailedDto>(post);
                 return CreatedAtRoute("GetPost", new {userId = userId, id = post.PostId}, postToReturn);
             }
 
@@ -109,18 +108,21 @@ namespace RecipeBox.API.Controllers
             // Get post from the repo
             var postFromRepo = await _repo.GetPost(postId);
 
-            if (postFromRepo.UserId != userId) return Unauthorized();
+            if (postFromRepo.UserId == userId)
+            {
+                _repo.Delete(postFromRepo);
 
-            _repo.Delete(postFromRepo);
+                if (await _repo.SaveAll())
+                    return Ok("Successfully deleted post");
 
-            if ( await _repo.SaveAll())
-                return StatusCode(201, "Successfully deleted post");
+                throw new Exception($"Deleting post {postId} failed on save");
+            }
 
-            throw new Exception($"Deleting post {postId} failed on save");
+            return Unauthorized();
         }
 
         // "api/users/{userId}/[controller]/{postId}/comments"
-        
+
         // Add comment to post
         [HttpPost("{postId}/comments")]
         public async Task<IActionResult> AddComment(int userId, int postId,  CommentForCreationDto commentForCreationDto)
