@@ -121,6 +121,7 @@ namespace RecipeBox.Tests
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
             
+            // Act
             Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.CreatePost(userId, postForCreation));
 
             // Assert
@@ -320,6 +321,113 @@ namespace RecipeBox.Tests
 
         }
 
+        [Fact]
+        public void AddComment_Unauthorized_ReturnsUnauth()
+        {
+            // Arrange
+            int userId = 1;
+            int postId = 2;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+            var commentForCreation = new CommentForCreationDto
+            {
+                Text = "Test comment2"
+            };
+            commentForCreation.CommenterId = userId;
+
+        
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.Add(commentForCreation));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.AddComment(userId, postId, commentForCreation).Result;
+
+            // Assert
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
+            // var returnPost = Assert.IsType<PostsForDetailedDto>(okResult.Value);
+            
+
+        }
+
+        [Fact]
+        public async void AddComment_FailsOnSave_ThrowsException()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 2;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+            var commentForCreation = new CommentForCreationDto
+            {
+                Text = "Test comment"
+            };
+            commentForCreation.CommenterId = userId;
+
+        
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.Add(commentForCreation));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+
+            // Act
+            Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.AddComment(userId, postId, commentForCreation));
+
+            // Assert
+            Assert.Equal($"Creating the comment failed on save", ex.Message);
+            
+            
+            
+        }
+
+        [Fact]
+        public void AddComment_CommentAddedSuccessfully_ReturnsPostWithComment()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 2;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var commentForCreation = new CommentForCreationDto
+            {
+                Text = "Test comment"
+            };
+            commentForCreation.CommenterId = userId;
+
+        
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.Add(commentForCreation));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.AddComment(userId, postId, commentForCreation).Result;
+
+            // Assert
+            var okResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var returnPost = Assert.IsType<PostsForDetailedDto>(okResult.Value);
+
+        }
+
+        private ICollection<Comment> GetFakeCommentsList()
+        {
+            return new List<Comment>()
+            {
+                new Comment()
+                {
+                    CommentId = 1,
+                    Text = "comment 1",
+                    CommenterId = 1,
+                    PostId = 2
+                },
+                new Comment()
+                {
+                    CommentId = 2,
+                    Text = "comment 2",
+                    CommenterId = 2,
+                    PostId = 2
+                }
+
+            };
+        }
+
         private ICollection<Post> GetFakePostList()
         {
             return new List<Post>()
@@ -350,6 +458,7 @@ namespace RecipeBox.Tests
                     Feeds = "3-4",
                     Cuisine = "Italian",
                     UserId = 2,
+                    Comments = GetFakeCommentsList()
 
                 }
             };

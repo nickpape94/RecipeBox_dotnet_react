@@ -142,11 +142,12 @@ namespace RecipeBox.API.Controllers
             // Add comment into comments
             postFromRepo.Comments.Add(comment);
             
-            _mapper.Map<PostsForDetailedDto>(postFromRepo);
 
             if (await _repo.SaveAll())
             {
-                 return CreatedAtRoute("GetPost", new {userId = userId, id = comment.CommentId}, postFromRepo);
+                var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
+                
+                return CreatedAtRoute("GetPost", new {userId = userId, id = comment.CommentId}, postToReturn);
             }
 
             throw new Exception("Creating the comment failed on save");
