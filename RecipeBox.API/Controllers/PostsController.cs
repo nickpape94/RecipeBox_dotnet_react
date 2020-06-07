@@ -13,7 +13,7 @@ namespace RecipeBox.API.Controllers
 {
     [Authorize]
     // [Route("api/[controller]")]
-    [Route("api/users/{userId}/[controller]")]
+    // [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
     {
@@ -53,7 +53,7 @@ namespace RecipeBox.API.Controllers
         }
 
         // Create a post
-        [HttpPost]
+        [HttpPost("~/api/users/{userId}/posts")]
         public async Task<IActionResult> CreatePost(int userId, PostForCreationDto postForCreationDto)
         {
             // Validate id of logged in user == userId
@@ -77,7 +77,7 @@ namespace RecipeBox.API.Controllers
         }
 
         // Update a post
-        [HttpPut("{postId}")]
+        [HttpPut("~/api/users/{userId}/posts/{postId}")]
         public async Task<IActionResult> UpdatePost(int userId, int postId, PostForUpdateDto postForUpdateDto)
         {
             // Validate id of logged in user == userId
@@ -100,7 +100,7 @@ namespace RecipeBox.API.Controllers
         }
 
         // Delete a post
-        [HttpDelete("{postId}")]
+        [HttpDelete("~/api/users/{userId}/posts/{postId}")]
         public async Task<IActionResult> DeletePost(int userId, int postId)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
@@ -121,10 +121,8 @@ namespace RecipeBox.API.Controllers
             return Unauthorized();
         }
 
-        // "api/users/{userId}/[controller]/{postId}/comments"
-
         // Add comment to post
-        [HttpPost("{postId}/comments")]
+        [HttpPost("~/api/users/{userId}/posts/{postId}/comments")]
         public async Task<IActionResult> AddComment(int userId, int postId,  CommentForCreationDto commentForCreationDto)
         {
             // Validate id of logged in user == userId
@@ -135,6 +133,8 @@ namespace RecipeBox.API.Controllers
 
             // Get post from repo
             var postFromRepo = await _repo.GetPost(postId);
+
+            if (postFromRepo == null) return NotFound($"Post with id {postId} not found");
 
             // Map comment into CommentForCreationDto
             var comment = _mapper.Map<Comment>(commentForCreationDto);
@@ -154,19 +154,16 @@ namespace RecipeBox.API.Controllers
         }
         
         // Update comment
-        [HttpPut("{postId}/comments/{commentId}")]
-        public async Task<IActionResult> UpdateComment(int postId, int commentId, int userId, CommentForUpdateDto commentForUpdateDto)
+        [HttpPut("~/api/users/{userId}/comments/{commentId}")]
+        public async Task<IActionResult> UpdateComment(int userId, int commentId, CommentForUpdateDto commentForUpdateDto)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             var commentFromRepo = await _repo.GetComment(commentId);
-            var postFromRepo = await _repo.GetPost(postId);
-
+            if (commentFromRepo == null) return NotFound($"Comment {commentId} not found");
             if (commentFromRepo.CommenterId != userId) return Unauthorized();
 
-            // commentFromRepo.Text = commentForUpdateDto.Text;
-
-            // _repo.Update(commentFromRepo);
+            var postFromRepo = await _repo.GetPost(commentFromRepo.PostId);
             
             var commentToUpdate = _mapper.Map(commentForUpdateDto, commentFromRepo);
             var commentToReturn = _mapper.Map<Comment>(commentToUpdate);
@@ -174,7 +171,9 @@ namespace RecipeBox.API.Controllers
 
             if (await _repo.SaveAll())
             {
-                return CreatedAtRoute("GetPost", new {userId = userId, id = postFromRepo.PostId} , postFromRepo);
+                var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
+
+                return CreatedAtRoute("GetPost", new {userId = userId, id = postFromRepo.PostId} , postToReturn);
 
             }
                 
@@ -182,7 +181,7 @@ namespace RecipeBox.API.Controllers
         }
         
         // Delete comment from post
-        [HttpDelete("{postId}/comments/{commentId}")]
+        [HttpDelete("~/api/users/{userId}/comments/{commentId}")]
         public async Task<IActionResult> DeleteComment(int commentId, int userId)
         {
             // Validate id of logged in user == userId
@@ -192,6 +191,7 @@ namespace RecipeBox.API.Controllers
             var comment = await _repo.GetComment(commentId);
 
             // Confirm user made the comment
+            if (comment == null ) return NotFound($"Comment {commentId} not found");
             if (comment.CommenterId != userId) return Unauthorized();
 
             // Delete from repo

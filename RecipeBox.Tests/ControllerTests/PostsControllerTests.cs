@@ -406,6 +406,148 @@ namespace RecipeBox.Tests
 
         }
 
+        [Fact]
+        public void DeleteComment_NotAuthorized_ReturnsUnauthorized()
+        {
+            // Arrange
+            int userId = 1;
+            int commentId = 2;
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommenterId == userId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Delete(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.DeleteComment(commentId, userId).Result;
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+            
+        }
+
+        [Fact]
+        public async void DeleteComment_FailsOnSave_ReturnsException()
+        {
+            // Arrange
+            int userId = 2;
+            int commentId = 2;
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommenterId == userId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Delete(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+
+            // Act
+            Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.DeleteComment(commentId, userId));
+
+            // Assert
+            Assert.Equal("Deleting the comment failed on save", ex.Message);
+
+        }
+
+        [Fact]
+        public void DeleteComment_Authorized_SuccessfullyDeletesPost()
+        {
+            // Arrange
+            int userId = 2;
+            int commentId = 2;
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommenterId == userId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Delete(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.DeleteComment(commentId, userId).Result as OkObjectResult;
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Comment was successfully deleted", okResult.Value);
+        }
+
+        [Fact]
+        public void UpdateComment_UserClaimsUnauthorized_ReturnsUnauthorized()
+        {
+            // Arrange
+            int commentId = 2;
+            int userId = 1;
+            var commentForUpdate = new CommentForUpdateDto
+            {
+                Text = "My newly updated comment"
+            };
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommentId == commentId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Update(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.UpdateComment(userId, commentId, commentForUpdate).Result;
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public async void UpdateComment_FailsOnSave_ReturnsException()
+        {
+            // Arrange
+            int commentId = 2;
+            int userId = 2;
+            var commentForUpdate = new CommentForUpdateDto
+            {
+                Text = "My newly updated comment"
+            };
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommentId == commentId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Update(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+
+            // Act
+            Exception ex = await Assert.ThrowsAsync<Exception>(() => _postsController.UpdateComment(userId, commentId, commentForUpdate));
+
+            // Assert
+            Assert.Equal("Updating the comment failed on save", ex.Message);
+        }
+
+        [Fact]
+        public void UpdateComment_Authorized_SuccessfullyUpdatedComment()
+        {
+            // Update comment controller is screwy, can update post which doesnt match the id of said post. Fix!. And maybe check post update as well
+            int commentId = 2;
+            int userId = 2;
+            var commentForUpdate = new CommentForUpdateDto
+            {
+                Text = "My newly updated comment"
+            };
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommentId == commentId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == commentFromRepo.PostId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Update(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+            _repoMock.Setup(x => x.GetPost(commentFromRepo.PostId)).ReturnsAsync(postFromRepo);
+
+            // Act
+            var result = _postsController.UpdateComment(userId, commentId, commentForUpdate).Result as CreatedAtRouteResult;
+
+            // Assert
+            var okResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var updatedComment = Assert.IsType<PostsForDetailedDto>(result.Value);
+            // Assert.Equal("yes", okResult.Value);
+
+
+            
+            // Assert
+            // var okResult = Assert.IsType<CreatedAtRouteResult>(result);
+            // var updatedPost = Assert.IsType<PostsForDetailedDto>(result.Value);
+            // Assert.Equal(postFromRepo.NameOfDish, updatedPost.NameOfDish);
+            // Assert.Equal(postFromRepo.Cuisine, updatedPost.Cuisine);
+            // Assert.Equal(postFromRepo.Description, updatedPost.Description);
+        }
+
         private ICollection<Comment> GetFakeCommentsList()
         {
             return new List<Comment>()

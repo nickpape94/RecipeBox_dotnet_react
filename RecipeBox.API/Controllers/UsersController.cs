@@ -8,7 +8,7 @@ using RecipeBox.API.Dtos;
 
 namespace RecipeBox.API.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
