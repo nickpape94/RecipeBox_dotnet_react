@@ -15,5 +15,7 @@ namespace RecipeBox.API.Data
         Task<Post> GetPost(int id);
         Task<Comment> GetComment(int commentId);
         Task<IEnumerable<Post>> GetPosts();
+
+        
     }
 }
