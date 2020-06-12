@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RecipeBox.API.Models;
@@ -67,6 +68,20 @@ namespace RecipeBox.API.Data
             var comment = await _context.Comments.FirstOrDefaultAsync(c => c.CommentId == commentId);
 
             return comment; 
+        }
+
+        public async Task<UserPhoto> GetUserPhoto(int photoId)
+        {
+            var photo = await _context.UserPhotos.FirstOrDefaultAsync(x => x.UserPhotoId == photoId);
+
+            return photo;
+        }
+
+        public async Task<UserPhoto> GetMainPhotoForUser(int userId)
+        {
+            var photo = await _context.UserPhotos.Where(u => u.UserId == userId).FirstOrDefaultAsync(p => p.IsMain);
+
+            return photo;
         }
     }
 }

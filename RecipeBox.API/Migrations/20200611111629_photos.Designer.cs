@@ -9,8 +9,8 @@ using RecipeBox.API.Data;
 namespace RecipeBox.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200525144313_CommentsSection")]
-    partial class CommentsSection
+    [Migration("20200611111629_photos")]
+    partial class photos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -103,15 +103,18 @@ namespace RecipeBox.API.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("PostId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("PostPhotoId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PostId");
 
                     b.ToTable("PostPhotos");
                 });
@@ -157,6 +160,9 @@ namespace RecipeBox.API.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("PublicId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
@@ -168,20 +174,6 @@ namespace RecipeBox.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserPhotos");
-                });
-
-            modelBuilder.Entity("RecipeBox.API.Models.Value", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Values");
                 });
 
             modelBuilder.Entity("RecipeBox.API.Models.Comment", b =>
@@ -210,9 +202,9 @@ namespace RecipeBox.API.Migrations
 
             modelBuilder.Entity("RecipeBox.API.Models.PostPhoto", b =>
                 {
-                    b.HasOne("RecipeBox.API.Models.User", "User")
+                    b.HasOne("RecipeBox.API.Models.Post", "Post")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

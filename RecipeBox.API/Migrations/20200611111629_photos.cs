@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RecipeBox.API.Migrations
 {
-    public partial class CommentsSection : Migration
+    public partial class photos : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,42 +22,6 @@ namespace RecipeBox.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Values",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Values", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PostPhotos",
-                columns: table => new
-                {
-                    PostPhotoId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Url = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    DateAdded = table.Column<DateTime>(nullable: false),
-                    IsMain = table.Column<bool>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PostPhotos", x => x.PostPhotoId);
-                    table.ForeignKey(
-                        name: "FK_PostPhotos_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -98,6 +62,7 @@ namespace RecipeBox.API.Migrations
                     Description = table.Column<string>(nullable: true),
                     DateAdded = table.Column<DateTime>(nullable: false),
                     IsMain = table.Column<bool>(nullable: false),
+                    PublicId = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -139,6 +104,30 @@ namespace RecipeBox.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PostPhotos",
+                columns: table => new
+                {
+                    PostPhotoId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Url = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    DateAdded = table.Column<DateTime>(nullable: false),
+                    IsMain = table.Column<bool>(nullable: false),
+                    PublicId = table.Column<string>(nullable: true),
+                    PostId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostPhotos", x => x.PostPhotoId);
+                    table.ForeignKey(
+                        name: "FK_PostPhotos_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_CommenterId",
                 table: "Comments",
@@ -150,9 +139,9 @@ namespace RecipeBox.API.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostPhotos_UserId",
+                name: "IX_PostPhotos_PostId",
                 table: "PostPhotos",
-                column: "UserId");
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",
@@ -175,9 +164,6 @@ namespace RecipeBox.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserPhotos");
-
-            migrationBuilder.DropTable(
-                name: "Values");
 
             migrationBuilder.DropTable(
                 name: "Posts");

@@ -12,7 +12,7 @@ namespace RecipeBox.API.Data
         {
             if (!context.Users.Any())
             {
-                var userData = System.IO.File.ReadAllText("src/Main/Data/UserSeedData.json");
+                var userData = System.IO.File.ReadAllText("Data/UserSeedData.json");
 
                 var users = JsonConvert.DeserializeObject<List<User>>(userData);
 
