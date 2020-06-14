@@ -32,7 +32,7 @@ namespace RecipeBox.API.Data
 
         public async Task<Post> GetPost(int id)
         {
-            var post = await _context.Posts.Include(c => c.Comments).FirstOrDefaultAsync(x => x.PostId == id);
+            var post = await _context.Posts.Include(c => c.Comments).Include(p => p.PostPhoto).FirstOrDefaultAsync(x => x.PostId == id);
 
             return post;
         }
@@ -80,6 +80,20 @@ namespace RecipeBox.API.Data
         public async Task<UserPhoto> GetMainPhotoForUser(int userId)
         {
             var photo = await _context.UserPhotos.Where(u => u.UserId == userId).FirstOrDefaultAsync(p => p.IsMain);
+
+            return photo;
+        }
+
+        public async Task<PostPhoto> GetPostPhoto(int photoId)
+        {
+            var photo = await _context.PostPhotos.FirstOrDefaultAsync(p => p.PostPhotoId == photoId);
+
+            return photo;
+        }
+
+        public async Task<PostPhoto> GetMainPhotoForPost(int postId)
+        {
+            var photo = await _context.PostPhotos.Where(u => u.PostId == postId).FirstOrDefaultAsync(p => p.IsMain);
 
             return photo;
         }

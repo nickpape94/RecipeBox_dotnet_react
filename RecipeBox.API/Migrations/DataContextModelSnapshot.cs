@@ -201,7 +201,7 @@ namespace RecipeBox.API.Migrations
             modelBuilder.Entity("RecipeBox.API.Models.PostPhoto", b =>
                 {
                     b.HasOne("RecipeBox.API.Models.Post", "Post")
-                        .WithMany()
+                        .WithMany("PostPhoto")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

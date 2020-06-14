@@ -2,9 +2,9 @@ using System;
 
 namespace RecipeBox.API.Dtos
 {
-    public class PhotosForDetailedDto
+    public class PostPhotosForReturnDto
     {
-        public int UserPhotoId { get; set; }
+        public int PostPhotoId { get; set; }
         public string Url { get; set; }
         public string Description { get; set; }
         public DateTime DateAdded { get; set; }

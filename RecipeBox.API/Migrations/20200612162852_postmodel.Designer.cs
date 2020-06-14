@@ -9,8 +9,8 @@ using RecipeBox.API.Data;
 namespace RecipeBox.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200611111629_photos")]
-    partial class photos
+    [Migration("20200612162852_postmodel")]
+    partial class postmodel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -203,7 +203,7 @@ namespace RecipeBox.API.Migrations
             modelBuilder.Entity("RecipeBox.API.Models.PostPhoto", b =>
                 {
                     b.HasOne("RecipeBox.API.Models.Post", "Post")
-                        .WithMany()
+                        .WithMany("PostPhoto")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

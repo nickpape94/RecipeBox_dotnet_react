@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RecipeBox.API.Migrations
 {
-    public partial class photos : Migration
+    public partial class postmodel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

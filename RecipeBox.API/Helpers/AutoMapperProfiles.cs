@@ -15,7 +15,8 @@ namespace RecipeBox.API.Helpers
             CreateMap<User, UserForDetailedDto>()
                 .ForMember( dest => dest.PhotoUrl, opt =>
                     opt.MapFrom(src => src.UserPhotos.FirstOrDefault(p => p.IsMain).Url));
-            CreateMap<UserPhoto, PhotosForDetailedDto>();
+            CreateMap<UserPhoto, UserPhotosForReturnDto>();
+            CreateMap<PostPhoto, PostPhotosForReturnDto>();
             CreateMap<Post, PostsForDetailedDto>();
             CreateMap<Post, PostsForListDto>();
             CreateMap<PostForCreationDto, Post>();

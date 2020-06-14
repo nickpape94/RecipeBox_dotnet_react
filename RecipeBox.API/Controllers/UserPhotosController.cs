@@ -45,7 +45,7 @@ namespace RecipeBox.API.Controllers
         {
             var userPhotoFromRepo = await _repo.GetUserPhoto(id);
 
-            var photo = _mapper.Map<PhotosForDetailedDto>(userPhotoFromRepo);
+            var photo = _mapper.Map<UserPhotosForReturnDto>(userPhotoFromRepo);
 
             return Ok(photo);
         }
@@ -83,11 +83,14 @@ namespace RecipeBox.API.Controllers
 
             var photo = _mapper.Map<UserPhoto>(userPhotoForCreationDto);
 
+            if (!userFromRepo.UserPhotos.Any(u => u.IsMain))
+                photo.IsMain = true;
+
             userFromRepo.UserPhotos.Add(photo);
 
             if (await _repo.SaveAll())
             {
-                var photoToReturn = _mapper.Map<PhotosForDetailedDto>(photo);
+                var photoToReturn = _mapper.Map<UserPhotosForReturnDto>(photo);
                 return CreatedAtRoute("GetUserPhoto", new { userId = userId, id = photo.UserPhotoId}, photoToReturn);
 
             }
