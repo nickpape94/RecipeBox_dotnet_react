@@ -189,6 +189,37 @@ namespace RecipeBox.Tests
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
         }
+        
+        [Fact]
+        public void UpdatePost_UserIdOfPostMismatch_ReturnsUnauthorized()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 3;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+            var postForUpdate = new PostForUpdateDto()
+            {
+                NameOfDish = "Katsu curry",
+                Description = "chicken and rice",
+                Ingredients = "chicken, rice",
+                Method = "fry chicken, boil rice",
+                PrepTime = "20 min",
+                CookingTime = "20 min",
+                Feeds = "3",
+                Cuisine = "Japanese"
+            };
+
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            
+            // Act
+            var result = _postsController.UpdatePost(userId, postId, postForUpdate).Result;
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+        }
 
         [Fact]
         public async void UpdatePost_SaveFails_ThrowsException()
@@ -256,7 +287,7 @@ namespace RecipeBox.Tests
         }
 
         [Fact]
-        public void DeletingPost_Unauthorized_ReturnsUnauthorized()
+        public void DeletingPost_UnauthorizedUserClaims_ReturnsUnauthorized()
         {
             // Arrange
             int userId = 1;
@@ -274,6 +305,27 @@ namespace RecipeBox.Tests
             Assert.IsType<UnauthorizedResult>(result);
             
             // Assert.Equal(new OkObjectResult(okResult).StatusCode, result.StatusCode);
+
+        }
+
+        [Fact]
+        public void DeletingPost_UserIdOfPostMismatch_ReturnsUnauthorized()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 3;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+            
+            _repoMock.Setup(p => p.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(p => p.Delete(postFromRepo));
+            _repoMock.Setup(s => s.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.DeletePost(userId, postId).Result;
+
+            // Assert
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
+            
 
         }
         
@@ -347,6 +399,34 @@ namespace RecipeBox.Tests
             // var returnPost = Assert.IsType<PostsForDetailedDto>(okResult.Value);
             
 
+        }
+
+        [Fact]
+        public void AddComment_PostNotFound_ReturnsNotFound()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 5;
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var commentForCreation = new CommentForCreationDto
+            {
+                Text = "Test comment"
+            };
+            commentForCreation.CommenterId = userId;
+
+        
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.Add(commentForCreation));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.AddComment(userId, postId, commentForCreation).Result;
+
+            // Assert
+            var okResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Post with id 5 not found", okResult.Value);
         }
 
         [Fact]
@@ -467,6 +547,45 @@ namespace RecipeBox.Tests
         }
 
         [Fact]
+        public void DeleteComment_CommentNotFound_ReturnsNotFound()
+        {
+            // Arrange
+            int userId = 2;
+            int commentId = 12;
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommenterId == commentId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Delete(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.DeleteComment(commentId, userId).Result;
+
+            // Assert
+            var okResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Comment 12 not found", okResult.Value);
+        }
+
+        [Fact]
+        public void DeleteComment_CommentIdUserIdMismatch_ReturnsUnauthorized()
+        {
+            // Arrange
+            int userId = 2;
+            int commentId = 1;
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommenterId == commentId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Delete(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.DeleteComment(commentId, userId).Result;
+
+            // Assert
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
         public void UpdateComment_UserClaimsUnauthorized_ReturnsUnauthorized()
         {
             // Arrange
@@ -487,6 +606,55 @@ namespace RecipeBox.Tests
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public void UpdateComment_CommentNotFound_ReturnsNotFound()
+        {
+            int commentId = 12;
+            int userId = 2;
+            var commentForUpdate = new CommentForUpdateDto
+            {
+                Text = "My newly updated comment"
+            };
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommentId == commentId);
+            // var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == commentFromRepo.PostId);
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Update(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.UpdateComment(userId, commentId, commentForUpdate).Result;
+
+            // Assert
+            var okResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Comment 12 not found", okResult.Value);
+
+        }
+        
+        [Fact]
+        public void UpdateComment_CommenterIdUserIdMismatch_ReturnsUnauthorized()
+        {
+            int commentId = 1;
+            int userId = 2;
+            var commentForUpdate = new CommentForUpdateDto
+            {
+                Text = "My newly updated comment"
+            };
+            var commentFromRepo = GetFakeCommentsList().SingleOrDefault(x => x.CommentId == commentId);
+        
+
+            _repoMock.Setup(x => x.GetComment(commentId)).ReturnsAsync(commentFromRepo);
+            _repoMock.Setup(x => x.Update(commentFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.UpdateComment(userId, commentId, commentForUpdate).Result;
+
+            // Assert
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
+
         }
 
         [Fact]
@@ -515,7 +683,6 @@ namespace RecipeBox.Tests
         [Fact]
         public void UpdateComment_Authorized_SuccessfullyUpdatedComment()
         {
-            // Update comment controller is screwy, can update post which doesnt match the id of said post. Fix!. And maybe check post update as well
             int commentId = 2;
             int userId = 2;
             var commentForUpdate = new CommentForUpdateDto
@@ -536,16 +703,7 @@ namespace RecipeBox.Tests
             // Assert
             var okResult = Assert.IsType<CreatedAtRouteResult>(result);
             var updatedComment = Assert.IsType<PostsForDetailedDto>(result.Value);
-            // Assert.Equal("yes", okResult.Value);
 
-
-            
-            // Assert
-            // var okResult = Assert.IsType<CreatedAtRouteResult>(result);
-            // var updatedPost = Assert.IsType<PostsForDetailedDto>(result.Value);
-            // Assert.Equal(postFromRepo.NameOfDish, updatedPost.NameOfDish);
-            // Assert.Equal(postFromRepo.Cuisine, updatedPost.Cuisine);
-            // Assert.Equal(postFromRepo.Description, updatedPost.Description);
         }
 
         private ICollection<Comment> GetFakeCommentsList()
@@ -601,6 +759,21 @@ namespace RecipeBox.Tests
                     Cuisine = "Italian",
                     UserId = 2,
                     Comments = GetFakeCommentsList()
+
+                },
+                new Post()
+                {
+                    PostId = 3,
+                    NameOfDish = "Cake",
+                    Description = "Birthday treat",
+                    Ingredients = "sugar, flour",
+                    Method = "Cook",
+                    PrepTime = "25 min",
+                    CookingTime = "25 min",
+                    Feeds = "3-4",
+                    Cuisine = "british",
+                    UserId = 1,
+                    Comments = null
 
                 }
             };
