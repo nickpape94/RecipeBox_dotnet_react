@@ -46,7 +46,7 @@ namespace RecipeBox.API.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).FirstOrDefaultAsync(x => x.UserId == id);
+            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).Include(p => p.Favourites).FirstOrDefaultAsync(x => x.UserId == id);
 
             return user;
         }
@@ -97,5 +97,15 @@ namespace RecipeBox.API.Data
 
             return photo;
         }
+
+        public async Task<IEnumerable<Favourite>> GetFavourites(int userId)
+        {
+            
+            var favourites = await _context.Favourites.Where(u => u.FavouriterId == userId).ToListAsync();
+
+            return favourites;
+        }
+
+        
     }
 }

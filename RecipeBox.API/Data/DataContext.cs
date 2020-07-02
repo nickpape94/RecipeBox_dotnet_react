@@ -12,11 +12,12 @@ namespace RecipeBox.API.Data
         public DbSet<PostPhoto> PostPhotos { get; set; }
         public DbSet<UserPhoto> UserPhotos { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Favourite> Favourites { get; set; }
 
         // protected override void OnModelCreating(ModelBuilder builder)
         // {
-        //     // builder.Entity<Comment>()
-        //     //     .HasKey(k => new {k.UserId, k.PostId});
+        //     builder.Entity<Favourite>()
+        //         .HasKey(k => new {k.UserId, k.PostId});
 
         //     builder.Entity<Comment>()
         //         .HasOne(c => c.Post)

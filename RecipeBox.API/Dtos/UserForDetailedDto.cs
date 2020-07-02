@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Dtos
 {
@@ -12,5 +13,6 @@ namespace RecipeBox.API.Dtos
         public string PhotoUrl { get; set; }
         public ICollection<UserPhotosForReturnDto> UserPhotos { get; set; }
         public ICollection<PostsForDetailedDto> Posts { get; set; }
+        // public ICollection<Favourite> Posts { get; set; }
     }
 }

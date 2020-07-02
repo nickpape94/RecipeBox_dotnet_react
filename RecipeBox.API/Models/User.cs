@@ -13,6 +13,6 @@ namespace RecipeBox.API.Models
         public DateTime LastActive { get; set; }
         public ICollection<UserPhoto> UserPhotos { get; set; }
         public ICollection<Post> Posts { get; set; }
-        // public ICollection<Comment> Comments { get; set; }
+        public ICollection<Favourite> Favourites { get; set; }
     }
 }

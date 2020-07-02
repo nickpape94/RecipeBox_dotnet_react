@@ -30,6 +30,7 @@ namespace RecipeBox.API.Helpers
             CreateMap<Comment, PostsForDetailedDto>();
             CreateMap<PostPhotoForCreationDto, PostPhoto>();
             CreateMap<UserPhotoForCreationDto, UserPhoto>();
+            CreateMap<Favourite, FavouritesForListDto>();
         
         }
     }
