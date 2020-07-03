@@ -18,10 +18,8 @@ namespace RecipeBox.API.Controllers
     public class FavouritesController : ControllerBase
     {
         private readonly IRecipeRepository _repo;
-        private readonly IMapper _mapper;
-        public FavouritesController(IRecipeRepository repo, IMapper mapper)
+        public FavouritesController(IRecipeRepository repo)
         {
-            _mapper = mapper;
             _repo = repo;
             
         }
@@ -76,6 +74,27 @@ namespace RecipeBox.API.Controllers
         }
 
         // Delete post from favourites
+        [HttpDelete("postId/{postId}")]
+        public async Task<IActionResult> DeleteAFavourite(int userId, int postId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            var favouritesFromRepo = await _repo.GetFavourites(userId);
+
+            var favouriteToDelete = favouritesFromRepo.FirstOrDefault(x => x.PostId == postId);
+
+            if ( favouriteToDelete == null) return NotFound($"Recipe with id {postId} not found in favourites");
+            if (favouriteToDelete.FavouriterId != userId) return Unauthorized();
+
+            _repo.Delete(favouriteToDelete);
+
+            if (await _repo.SaveAll())
+            {
+                return Ok("Favourite successfully deleted");
+            }
+
+            return BadRequest("Could not delete photo from favourites");
+        }
 
 
     }
