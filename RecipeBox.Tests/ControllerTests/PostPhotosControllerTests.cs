@@ -149,7 +149,6 @@ namespace RecipeBox.Tests.ControllerTests
         public void SetMainPhoto_FailsOnSave_ReturnsBadRequest()
         {
             // Arrange
-            var userId = 2;
             var postId = 2;
             var postPhotoId = 2;
             var userFromRepo = GetFakePostList().SingleOrDefault(x => x.UserId == postId);
