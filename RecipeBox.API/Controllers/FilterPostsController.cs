@@ -23,40 +23,59 @@ namespace RecipeBox.API.Controllers
             _repo = repo;
             
         }
-        
-        // Sort by most discussed
-        [HttpGet("mostDiscussed")]
-        public async Task<IActionResult> SortByMostDiscussed()
+
+        [HttpPost]
+        public async Task<IActionResult> Sort(PostForSearch postForSearch)
         {
+            // sortOrder = JsonSerializer
+
             var posts = await _repo.GetPosts();
 
-            posts = posts.OrderByDescending(x => x.Comments.Count);
+            if (postForSearch.OrderBy == "most discussed") 
+                posts = posts.OrderByDescending(x => x.Comments.Count);
 
-            return Ok(posts);    
-        }
-        
-        
-        // Sort by newest
-        [HttpGet("newest")]
-        public async Task<IActionResult> SortByNewest()
-        {
-            var posts = await _repo.GetPosts();
-            
-            posts = posts.OrderByDescending(x => x.Created);
-
+            if (postForSearch.OrderBy == "oldest") 
+                posts = posts.OrderBy(x => x.Created); 
+                
+            if (postForSearch.OrderBy == "newest")
+                posts = posts.OrderByDescending(x => x.Created);
+                
             return Ok(posts);
         }
         
-        // Sort by oldest
-        [HttpGet("oldest")]
-        public async Task<IActionResult> SortByOldest()
-        {
-            var posts = await _repo.GetPosts();
-            
-            posts = posts.OrderBy(x => x.Created);
+        // // Sort by most discussed
+        // [HttpGet("mostDiscussed")]
+        // public async Task<IActionResult> SortByMostDiscussed()
+        // {
+        //     var posts = await _repo.GetPosts();
 
-            return Ok(posts);
-        }
+        //     posts = posts.OrderByDescending(x => x.Comments.Count);
+
+        //     return Ok(posts);    
+        // }
+        
+        
+        // // Sort by newest
+        // [HttpGet("newest")]
+        // public async Task<IActionResult> SortByNewest()
+        // {
+        //     var posts = await _repo.GetPosts();
+            
+        //     posts = posts.OrderByDescending(x => x.Created);
+
+        //     return Ok(posts);
+        // }
+        
+        // // Sort by oldest
+        // [HttpGet("oldest")]
+        // public async Task<IActionResult> SortByOldest()
+        // {
+        //     var posts = await _repo.GetPosts();
+            
+        //     posts = posts.OrderBy(x => x.Created);
+
+        //     return Ok(posts);
+        // }
 
 
         // Sort by the user
@@ -72,27 +91,21 @@ namespace RecipeBox.API.Controllers
             return Ok(filteredPosts);
         }
 
-        // Search by cuisine
+        // Search by cuisine, name or user
         [HttpPost("search")]
         public async Task<IActionResult> SearchPosts(PostForSearch postForSearch)
         {
-            var toLowerCase = postForSearch.SearchParams.Trim().ToLower();
-            // var splitWords = toLowerCase.Split(" ");
-            // IEnumerable<Post> filteredPosts = new IEnumerable<Post>();
+            var searchQueryToLower = postForSearch.SearchParams.Trim().ToLower();
 
             var posts = await _repo.GetPosts();
 
-            var filteredPosts = posts.Where(x => x.NameOfDish.ToLower().Contains(toLowerCase) || 
-                                                 x.Cuisine.ToLower().Contains(toLowerCase));
+            var filteredPosts = posts.Where(x => x.NameOfDish.ToLower().Contains(searchQueryToLower) || 
+                                                 x.Cuisine.ToLower().Contains(searchQueryToLower));
+
+            filteredPosts = filteredPosts.OrderByDescending(x => x.Created);
 
             if (filteredPosts.Count() == 0) return NotFound("No posts match the criteria");
 
-            // foreach (var word in splitWords)
-            // {
-            //     var filteredPosts = posts.Where(x => x.NameOfDish.ToLower().Contains(word));
-            //     if (filteredPosts == null) return NotFound("No recipes match this criteria");
-
-            // }
 
             return Ok(filteredPosts);
 
