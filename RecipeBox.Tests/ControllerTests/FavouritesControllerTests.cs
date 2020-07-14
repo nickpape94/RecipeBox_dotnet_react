@@ -14,7 +14,7 @@ namespace RecipeBox.Tests.ControllerTests
 {
     public class FavouritesControllerTests
     {
-        private Mock<IRecipeRepository> _repoMock;
+        private Mock<IRecipeRepository> _repoMock; 
         private FavouritesController _favouritesController;
         private readonly ClaimsPrincipal _userClaims;
 

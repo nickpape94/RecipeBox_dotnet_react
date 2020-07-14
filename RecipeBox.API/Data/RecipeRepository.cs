@@ -32,15 +32,15 @@ namespace RecipeBox.API.Data
 
         public async Task<Post> GetPost(int id)
         {
-            var post = await _context.Posts.Include(c => c.Comments).Include(p => p.PostPhoto).FirstOrDefaultAsync(x => x.PostId == id);
+            var post = await _context.Posts.Include(c => c.Comments).Include(p => p.PostPhoto).Include(r => r.Ratings).FirstOrDefaultAsync(x => x.PostId == id);
 
             return post;
         }
 
         public async Task<IEnumerable<Post>> GetPosts()
         {
-            var posts = await _context.Posts.Include(c => c.Comments).ToListAsync();
-
+            var posts = await _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).ToListAsync();
+            
             return posts;
         }
 
@@ -54,6 +54,7 @@ namespace RecipeBox.API.Data
         public async Task<IEnumerable<User>> GetUsers()
         {
             var users = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).ToListAsync();
+            
 
             return users;
         }
@@ -106,6 +107,9 @@ namespace RecipeBox.API.Data
             return favourites;
         }
 
-        
+        // public async Task<IEnumerable<Rating>> GetRatings(int postId)
+        // {
+        //     var post = await _context.Posts.Include(c => c.Comments).Include(p => p.PostPhoto).FirstOrDefaultAsync(x => x.PostId == postId);
+        // }
     }
 }

@@ -13,6 +13,7 @@ namespace RecipeBox.API.Data
         public DbSet<UserPhoto> UserPhotos { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Favourite> Favourites { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
 
         // protected override void OnModelCreating(ModelBuilder builder)
         // {

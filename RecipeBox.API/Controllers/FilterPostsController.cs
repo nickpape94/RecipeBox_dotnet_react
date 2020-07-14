@@ -25,7 +25,7 @@ namespace RecipeBox.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Sort(PostForSearch postForSearch)
+        public async Task<IActionResult> Sort(PostForSearchDto postForSearch)
         {
             // sortOrder = JsonSerializer
 
@@ -91,9 +91,9 @@ namespace RecipeBox.API.Controllers
             return Ok(filteredPosts);
         }
 
-        // Search by cuisine, name or user
+        // Search by cuisine, name
         [HttpPost("search")]
-        public async Task<IActionResult> SearchPosts(PostForSearch postForSearch)
+        public async Task<IActionResult> SearchPosts(PostForSearchDto postForSearch)
         {
             var searchQueryToLower = postForSearch.SearchParams.Trim().ToLower();
 

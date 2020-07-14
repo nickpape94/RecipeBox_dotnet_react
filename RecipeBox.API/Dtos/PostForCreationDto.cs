@@ -24,15 +24,15 @@ namespace RecipeBox.API.Dtos
         public string Method { get; set; }
         
         [Required]
-        [StringLength(30, MinimumLength = 5, ErrorMessage = "Prep time must be between 5 and 30 characters long")]
+        [StringLength(20, MinimumLength = 1, ErrorMessage = "Prep time must be between 5 and 30 characters long")]
         public string PrepTime { get; set; }
        
         [Required]       
-        [StringLength(30, MinimumLength = 5, ErrorMessage = "Cooking time must be between 5 and 30 characters long")]
+        [StringLength(20, MinimumLength = 1, ErrorMessage = "Cooking time must be between 5 and 30 characters long")]
         public string CookingTime { get; set; }
         
         [Required]
-        [StringLength(30, MinimumLength = 5, ErrorMessage = "Number of people this recipe feeds must be between 5 and 30 characters long")]
+        [StringLength(10, MinimumLength = 1, ErrorMessage = "Number of people this recipe feeds must be between 5 and 30 characters long")]
         public string Feeds { get; set; }
         
         [StringLength(35, MinimumLength = 2, ErrorMessage = "Cuisine must be between 2 and 35 characters long")]

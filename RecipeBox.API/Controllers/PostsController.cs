@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -203,6 +204,37 @@ namespace RecipeBox.API.Controllers
             }
 
             throw new Exception("Deleting the comment failed on save");
+        }
+
+        // Add a rating to a post
+        [HttpPost("~/api/users/{userId}/posts/{postId}/ratings")]
+        public async Task<IActionResult> AddRatingToPost(int userId, int postId, RatePostDto ratePostDto)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            var postFromRepo = await _repo.GetPost(postId);
+
+            ratePostDto.RaterId = userId;
+
+            if (postFromRepo.UserId == userId) return Unauthorized("You cannot rate your own recipe");
+            if (postFromRepo.Ratings.Any(x => x.RaterId == userId)) return BadRequest("You have already rated this post once");
+
+            // var newRating = ratePostDto.Score;
+
+            var rating = _mapper.Map<Rating>(ratePostDto);
+
+            postFromRepo.Ratings.Add(rating);
+
+            if (await _repo.SaveAll())
+            {
+                var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
+                
+                return CreatedAtRoute("GetPost", new {userId = userId, id = rating.RatingId}, postToReturn);
+
+            }
+
+            return BadRequest("Failed to add a rating to post");
+
         }
     
     }
