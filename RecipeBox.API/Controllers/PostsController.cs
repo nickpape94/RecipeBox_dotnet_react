@@ -233,20 +233,7 @@ namespace RecipeBox.API.Controllers
             {
                 postFromRepo.Ratings.Add(rating);
             }
-
             
-            
-            // if (postFromRepo.Ratings.Any(x => x.RaterId == userId)) 
-            // {
-            //     var rating = _mapper.Map<Rating>(ratePostDto);
-
-            //     postFromRepo.Ratings.Where(x => x.RaterId == userId).Select(x => {
-            //         x.Score = rating.Score; return x;
-            //     });
-            // }
-
-            
-
             if (await _repo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
@@ -258,6 +245,31 @@ namespace RecipeBox.API.Controllers
 
             return BadRequest("Failed to add a rating to post");
 
+        }
+
+        // Get number of ratings and average rating
+        [AllowAnonymous]
+        [HttpGet("~/api/posts/{postId}/ratings")]
+        public async Task<IActionResult> GetAverageRating(int postId)
+        {
+            var ratingsForPost = await _repo.GetRatings(postId);
+
+            if (ratingsForPost.Count() == 0) return BadRequest("No ratings for this post yet");
+
+            var sum = 0;
+            var numberOfRatings = ratingsForPost.Count();
+            
+            foreach (var rating in ratingsForPost)
+            {
+                sum += rating.Score;
+            }
+
+            var result = new {
+                averageRating = sum / numberOfRatings,
+                numberOfRatings
+            };
+
+            return Ok(result);
         }
     
     }

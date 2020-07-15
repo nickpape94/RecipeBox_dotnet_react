@@ -706,6 +706,157 @@ namespace RecipeBox.Tests
 
         }
 
+        [Fact]
+        public void AddRating_Unauthorized_UserClaims_Return_Unauthorized()
+        {
+            // Arrange
+            var userId = 1;
+            var postId = 2;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+
+            // Act
+            var result = _postsController.AddRatingToPost(userId, postId, new RatePostDto{
+                Score = 3,
+                RaterId = userId
+            }).Result;
+
+            // Assert
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
+        }
+        
+        [Fact]
+        public void AddRating_User_Tries_To_Rate_Own_Post_Return_Unauthorized()
+        {
+            // Arrange
+            var userId = 2;
+            var postId = 2;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+
+            // Act
+            var result = _postsController.AddRatingToPost(userId, postId, new RatePostDto{
+                Score = 3,
+                RaterId = userId
+            }).Result;
+
+            // Assert
+            var okResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal("You cannot rate your own recipe", okResult.Value);
+        }
+
+        [Fact]
+        public void AddRating_User_AlreadyRated_Post_UpdatesPost()
+        {
+            // Arrange
+            var userId = 2;
+            var postId = 3;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+            var ratingFromRepo = GetFakeRatingsList().SingleOrDefault(x => x.RaterId == userId && x.PostId == postId);
+
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.GetRating(userId, postId)).ReturnsAsync(ratingFromRepo);
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.AddRatingToPost(userId, postId, new RatePostDto{
+                Score = 5,
+                RaterId = userId
+            }).Result;
+
+            // Assert
+            var okResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var returnPost = Assert.IsType<PostsForDetailedDto>(okResult.Value);
+        }
+        
+        [Fact]
+        public void AddRating_Post_NotRated_RatePost()
+        {
+            // Arrange
+            var userId = 2;
+            var postId = 4;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _postsController.AddRatingToPost(userId, postId, new RatePostDto{
+                Score = 5,
+                RaterId = userId
+            }).Result;
+
+            // Assert
+            var okResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var returnPost = Assert.IsType<PostsForDetailedDto>(okResult.Value);
+        }
+        
+        [Fact]
+        public void AddRating_FailsOnSave_Returns_BadRequest()
+        {
+            // Arrange
+            var userId = 2;
+            var postId = 4;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+
+            // Act
+            var result = _postsController.AddRatingToPost(userId, postId, new RatePostDto{
+                Score = 5,
+                RaterId = userId
+            }).Result;
+
+            // Assert
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Failed to add a rating to post", okResult.Value);
+        }
+
+        [Fact]
+        public void GetAverageRatingOfPosts_NoRatingsYet_Returns_BadRequest()
+        {
+            // Arrange
+            var postId = 2;
+            var ratingsFromRepo = GetFakeRatingsList2().Where(x => x.PostId == postId);
+
+            // Act
+            _repoMock.Setup(x => x.GetRatings(postId)).ReturnsAsync(ratingsFromRepo);
+            
+            var result = _postsController.GetAverageRating(postId).Result;
+
+            // Assert
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("No ratings for this post yet", okResult.Value);
+        }
+        
+        [Fact]
+        public void GetAverageRatingOfPosts_Returns_OkObject()
+        {
+            // Arrange
+            var postId = 4;
+            var ratingsFromRepo = GetFakeRatingsList2().Where(x => x.PostId == postId);
+
+            // Act
+            _repoMock.Setup(x => x.GetRatings(postId)).ReturnsAsync(ratingsFromRepo);
+            
+            var result = _postsController.GetAverageRating(postId).Result;
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            // Assert.Equal("No ratings for this post yet", okResult.Value);
+        }
+
         private ICollection<Comment> GetFakeCommentsList()
         {
             return new List<Comment>()
@@ -725,6 +876,43 @@ namespace RecipeBox.Tests
                     PostId = 2
                 }
 
+            };
+        }
+
+        private ICollection<Rating> GetFakeRatingsList()
+        {
+            return new List<Rating>()
+            {
+                new Rating()
+                {
+                    RatingId = 1,
+                    Score = 4,
+                    RaterId = 2,
+                    PostId = 3
+                },
+                
+            };
+        }
+
+        private ICollection<Rating> GetFakeRatingsList2()
+        {
+            return new List<Rating>()
+            {
+                new Rating()
+                {
+                    RatingId = 2,
+                    Score = 3,
+                    RaterId = 1,
+                    PostId = 4
+                },
+                new Rating()
+                {
+                    RatingId = 3,
+                    Score = 5,
+                    RaterId = 3,
+                    PostId = 4
+                }
+                
             };
         }
 
@@ -773,8 +961,24 @@ namespace RecipeBox.Tests
                     Feeds = "3-4",
                     Cuisine = "british",
                     UserId = 1,
-                    Comments = null
-
+                    Comments = null,
+                    Ratings = GetFakeRatingsList()
+                },
+                new Post()
+                {
+                    PostId = 4,
+                    NameOfDish = "Ragu",
+                    Description = "Italian classic",
+                    Ingredients = "spaghetti, mince",
+                    Method = "Cook",
+                    PrepTime = "25 min",
+                    CookingTime = "25 min",
+                    Feeds = "3-4",
+                    Cuisine = "Italian",
+                    UserId = 1,
+                    Comments = null,
+                    Ratings = GetFakeRatingsList2()
+                    
                 }
             };
         }
