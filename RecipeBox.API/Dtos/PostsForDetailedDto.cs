@@ -23,5 +23,6 @@ namespace RecipeBox.API.Dtos
         public string User { get; set; }
         public int UserId { get; set; }
         
+        
     }
 }

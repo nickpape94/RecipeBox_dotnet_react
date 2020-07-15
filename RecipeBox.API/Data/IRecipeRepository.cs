@@ -21,7 +21,8 @@ namespace RecipeBox.API.Data
         Task<PostPhoto> GetPostPhoto(int photoId);
         Task<PostPhoto> GetMainPhotoForPost(int postId);
         Task<IEnumerable<Favourite>> GetFavourites(int userId);
-        // Task<IEnumerable<Rating>> GetRatings(int postId);
+        Task<IEnumerable<Rating>> GetRatings(int postId);
+        Task<Rating> GetRating(int raterId, int postId);
 
     }
 }

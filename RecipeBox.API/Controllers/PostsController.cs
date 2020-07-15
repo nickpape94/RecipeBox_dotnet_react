@@ -217,19 +217,42 @@ namespace RecipeBox.API.Controllers
             ratePostDto.RaterId = userId;
 
             if (postFromRepo.UserId == userId) return Unauthorized("You cannot rate your own recipe");
-            if (postFromRepo.Ratings.Any(x => x.RaterId == userId)) return BadRequest("You have already rated this post once");
-
-            // var newRating = ratePostDto.Score;
 
             var rating = _mapper.Map<Rating>(ratePostDto);
 
-            postFromRepo.Ratings.Add(rating);
+            // Check if user has already rated the post, and to replace if they have
+            if ( postFromRepo.Ratings.Any(x => x.RaterId == userId))
+            {
+                var originalRating = await _repo.GetRating(userId, postId);
+                originalRating.Score = ratePostDto.Score;
+
+            }
+
+            // If user has not yet rated this post, add new rating
+            if (!postFromRepo.Ratings.Any(x => x.RaterId == userId))
+            {
+                postFromRepo.Ratings.Add(rating);
+            }
+
+            
+            
+            // if (postFromRepo.Ratings.Any(x => x.RaterId == userId)) 
+            // {
+            //     var rating = _mapper.Map<Rating>(ratePostDto);
+
+            //     postFromRepo.Ratings.Where(x => x.RaterId == userId).Select(x => {
+            //         x.Score = rating.Score; return x;
+            //     });
+            // }
+
+            
 
             if (await _repo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
                 
                 return CreatedAtRoute("GetPost", new {userId = userId, id = rating.RatingId}, postToReturn);
+                // return Ok();
 
             }
 

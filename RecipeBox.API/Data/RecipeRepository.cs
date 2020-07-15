@@ -107,9 +107,18 @@ namespace RecipeBox.API.Data
             return favourites;
         }
 
-        // public async Task<IEnumerable<Rating>> GetRatings(int postId)
-        // {
-        //     var post = await _context.Posts.Include(c => c.Comments).Include(p => p.PostPhoto).FirstOrDefaultAsync(x => x.PostId == postId);
-        // }
+        public async Task<IEnumerable<Rating>> GetRatings(int postId)
+        {
+            var ratings = await _context.Ratings.Where(x => x.PostId == postId).ToListAsync();
+
+            return ratings;
+        }
+
+        public async Task<Rating> GetRating(int raterId, int postId)
+        {
+            var rating = await _context.Ratings.FirstOrDefaultAsync(x => x.RaterId == raterId && x.PostId == postId);
+
+            return rating;
+        }
     }
 }
