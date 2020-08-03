@@ -74,18 +74,19 @@ namespace RecipeBox.Tests
         // }
 
         [Fact]
-        public void Register_Should_Return_BadRequest_When_Username_Already_Exists()
+        public void Register_Should_Return_BadRequest_When_Email_Already_Exists()
         {
             // Arrange
             string username = "james";
-
-            _repoMock.Setup(x => x.UserExists(username.ToLower()))
+            string email = "james1@fakemail.com";
+            _repoMock.Setup(x => x.UserExists(email.ToLower()))
                 .Returns(() => Task.FromResult(true));
 
             // Act
             var result = _authController.Register(new UserForRegisterDto
             {
-                Username = "james",
+                Username = username,
+                Email = email,
                 Password = "password123"
             }).Result;
 
@@ -98,14 +99,15 @@ namespace RecipeBox.Tests
         {
             // Arrange
             string username = "Bob";
+            string email = "bob123@fakemail.com";
             string password = "password123";
-            _repoMock.Setup(x => x.Login(username.ToLower(), password))
-                .Returns(Task.FromResult( new User { UserId = 1, Username = username}));
+            _repoMock.Setup(x => x.Login(email.ToLower(), password))
+                .Returns(Task.FromResult( new User { UserId = 1, Username = username, Email = email}));
             
             // Act
             var result = _authController.Login( new UserForLoginDto
             {
-                Username = username,
+                Email = email,
                 Password = password
             }).Result as OkObjectResult;
 
@@ -118,7 +120,7 @@ namespace RecipeBox.Tests
         public void Login_Should_Return_Unauthorized_If_Credentials_Invalid()
         {
             // Arrange
-            string username = "Bob";
+            string email = "bob123@fakemail.com";
             string password = "An extremely long and highly incorrect password";
             _repoMock.Setup(x => x.Login(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(() => null);
@@ -126,7 +128,7 @@ namespace RecipeBox.Tests
             // Act
             var result = _authController.Login( new UserForLoginDto
             {
-                Username = username,
+                Email = email,
                 Password = password
             }).Result;
 

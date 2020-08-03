@@ -17,6 +17,7 @@ namespace RecipeBox.API.Dtos
         public string Cuisine { get; set; }
         public ICollection<CommentsForReturnedDto> Comments { get; set; }
         public ICollection<RatingsForReturnedDto> Ratings { get; set; }
+        public double AverageRating { get; set; }
         public ICollection<PostPhotosForReturnDto> PostPhoto { get; set; }
         // public int Rating { get; set; }
         public DateTime Created { get; set; }

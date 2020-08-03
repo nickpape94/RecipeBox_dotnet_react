@@ -18,6 +18,7 @@ namespace RecipeBox.API.Models
         public ICollection<PostPhoto> PostPhoto { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Rating> Ratings { get; set; }
+        public double AverageRating { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
         

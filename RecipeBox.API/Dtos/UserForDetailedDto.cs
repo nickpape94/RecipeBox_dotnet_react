@@ -8,6 +8,7 @@ namespace RecipeBox.API.Dtos
     {
         public int UserId { get; set; }
         public string Username  { get; set; }
+        public string Email  { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
         public string PhotoUrl { get; set; }
