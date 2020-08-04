@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos;
+using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Controllers
@@ -17,12 +18,12 @@ namespace RecipeBox.API.Controllers
         private readonly IRecipeRepository _repo;
         private readonly IMapper _mapper;
 
-        public FilterPostsController(IRecipeRepository repo, IMapper mapper )
+        public FilterPostsController(IRecipeRepository repo, IMapper mapper)
         {
             _mapper = mapper;
             _repo = repo;
-            
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Sort(PostForSearchDto postForSearch)
@@ -30,6 +31,7 @@ namespace RecipeBox.API.Controllers
             // sortOrder = JsonSerializer
 
             var posts = await _repo.GetPosts();
+            var calculateAverageRatings = new CalculateAverageRatings(_repo);
 
             if (postForSearch.OrderBy == "most discussed") 
                 posts = posts.OrderByDescending(x => x.Comments.Count);
@@ -42,10 +44,11 @@ namespace RecipeBox.API.Controllers
 
             if (postForSearch.OrderBy == "highest rated")
             {
-                // foreach (var post in posts)
-                // {
-                //     post.AverageRating = post.Ratings;
-                // }
+                foreach (var post in posts)
+                {
+                    post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+                }
+                posts = posts.OrderByDescending(x => x.AverageRating);
             }
                 
             return Ok(posts);

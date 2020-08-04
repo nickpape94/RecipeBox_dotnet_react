@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using RecipeBox.API.Data;
 
 namespace RecipeBox.API.Helpers
 {
@@ -12,5 +14,6 @@ namespace RecipeBox.API.Helpers
 
             response.Headers.Add("Access-Control-Allow-Origin", "*");
         }
+
     }
 }

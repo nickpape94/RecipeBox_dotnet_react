@@ -20,6 +20,7 @@ namespace RecipeBox.Tests
     {
         private Mock<IRecipeRepository> _repoMock;
         private PostsController _postsController;
+        private CalculateAverageRatings _calculateAverageRatings;
         private readonly ClaimsPrincipal _userClaims;
         public PostsControllerTests()
         {
@@ -30,6 +31,7 @@ namespace RecipeBox.Tests
             var mapper = mockMapper.CreateMapper();
 
             _postsController = new PostsController(_repoMock.Object, mapper);
+            _calculateAverageRatings = new CalculateAverageRatings(_repoMock.Object);
 
             // Mock claim types
             _userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -833,7 +835,7 @@ namespace RecipeBox.Tests
             // Act
             _repoMock.Setup(x => x.GetRatings(postId)).ReturnsAsync(ratingsFromRepo);
             
-            var result = _postsController.GetAverageRating(postId).Result;
+            var result = _calculateAverageRatings.GetAverageRating(postId).Result;
 
             // Assert
             var okResult = Assert.IsType<double>(result);
@@ -850,7 +852,7 @@ namespace RecipeBox.Tests
             // Act
             _repoMock.Setup(x => x.GetRatings(postId)).ReturnsAsync(ratingsFromRepo);
             
-            var result = _postsController.GetAverageRating(postId).Result;
+            var result = _calculateAverageRatings.GetAverageRating(postId).Result;
 
             // Assert
             var okResult = Assert.IsType<double>(result);

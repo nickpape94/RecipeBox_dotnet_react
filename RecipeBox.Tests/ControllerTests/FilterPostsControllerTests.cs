@@ -17,6 +17,7 @@ namespace RecipeBox.Tests.ControllerTests
     {
         private Mock<IRecipeRepository> _repoMock;
         private FilterPostsController _filterPostsController;
+        private CalculateAverageRatings _calculateAverageRatings;
 
         public FilterPostsControllerTests()
         {
@@ -27,6 +28,8 @@ namespace RecipeBox.Tests.ControllerTests
             var mapper = mockMapper.CreateMapper();
 
             _filterPostsController = new FilterPostsController(_repoMock.Object, mapper);
+
+            _calculateAverageRatings = new CalculateAverageRatings(_repoMock.Object);
         }
 
         [Fact]
@@ -87,6 +90,26 @@ namespace RecipeBox.Tests.ControllerTests
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(postsSorted , okResult.Value);
+
+        }
+        
+        [Fact]
+        public void SortPosts_ByHighestRated()
+        {
+            // Arrange
+            var postsFromRepo = GetFakePosts();
+            // var postsSorted = postsFromRepo.OrderByDescending( r => r.Created);
+            
+            // Act
+            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
+
+            var result = _filterPostsController.Sort(new PostForSearchDto {
+                OrderBy = "highest rated"
+            }).Result;
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            // Assert.Equal(postsSorted , okResult.Value);
 
         }
 

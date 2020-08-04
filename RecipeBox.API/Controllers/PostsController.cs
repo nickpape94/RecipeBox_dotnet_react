@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos;
+using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Controllers
@@ -20,7 +21,7 @@ namespace RecipeBox.API.Controllers
     {
         
         private readonly IMapper _mapper;
-        private readonly IRecipeRepository _repo;
+        private readonly IRecipeRepository _repo; 
         public PostsController(IRecipeRepository repo, IMapper mapper)
         {
         
@@ -35,10 +36,11 @@ namespace RecipeBox.API.Controllers
         public async Task<IActionResult> GetPosts()
         {
             var posts = await _repo.GetPosts();
+            var calculateAverageRatings = new CalculateAverageRatings(_repo);
 
             foreach (var post in posts)
             {
-                post.AverageRating = GetAverageRating(post.PostId).Result;
+                post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
             }
 
             var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
@@ -52,7 +54,9 @@ namespace RecipeBox.API.Controllers
         public async Task<IActionResult> GetPost(int id)
         {
             var post = await _repo.GetPost(id);
-            var average = GetAverageRating(id).Result;
+            var calculateAverageRatings = new CalculateAverageRatings(_repo);
+
+            var average = calculateAverageRatings.GetAverageRating(id).Result;
             post.AverageRating = average;
             
             var postFromRepo = _mapper.Map<PostsForDetailedDto>(post);
@@ -220,6 +224,7 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             var postFromRepo = await _repo.GetPost(postId);
+            var calculateAverageRatings = new CalculateAverageRatings(_repo);
 
             ratePostDto.RaterId = userId;
 
@@ -240,19 +245,14 @@ namespace RecipeBox.API.Controllers
             {
                 postFromRepo.Ratings.Add(rating);
             }
-
-            // Compute average rating
-            // var average = GetAverageRating(postId).Result;
-            // postFromRepo.AverageRating = average;
             
             if (await _repo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
-                var average = GetAverageRating(postId).Result;
+                var average = calculateAverageRatings.GetAverageRating(postId).Result;
                 postToReturn.AverageRating = average;
                 
                 return CreatedAtRoute("GetPost", new {userId = userId, id = rating.RatingId}, postToReturn);
-                // return Ok();
 
             }
 
@@ -261,26 +261,26 @@ namespace RecipeBox.API.Controllers
         }
 
         // Get average rating
-        [AllowAnonymous]
-        [HttpGet("~/api/posts/{postId}/ratings")]
-        public async Task<double> GetAverageRating(int postId)
-        {
-            var ratingsForPost = await _repo.GetRatings(postId);
+        // [AllowAnonymous]
+        // [HttpGet("~/api/posts/{postId}/ratings")]
+        // public async Task<double> GetAverageRating(int postId)
+        // {
+        //     var ratingsForPost = await _repo.GetRatings(postId);
 
-            double sum = 0;
-            double numberOfRatings = ratingsForPost.Count();
+        //     double sum = 0;
+        //     double numberOfRatings = ratingsForPost.Count();
             
-            foreach (var rating in ratingsForPost)
-            {
-                sum += rating.Score;
-            }
+        //     foreach (var rating in ratingsForPost)
+        //     {
+        //         sum += rating.Score;
+        //     }
 
-            if (numberOfRatings == 0) return 0.0;
+        //     if (numberOfRatings == 0) return 0.0;
             
-            var averageRating = sum / numberOfRatings;
+        //     var averageRating = sum / numberOfRatings;
 
-            return Math.Round(averageRating, 3);
-        }
+        //     return Math.Round(averageRating, 2);
+        // }
     
     }
 }
