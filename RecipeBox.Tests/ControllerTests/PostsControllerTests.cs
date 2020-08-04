@@ -824,7 +824,7 @@ namespace RecipeBox.Tests
         }
 
         [Fact]
-        public void GetAverageRatingOfPosts_NoRatingsYet_Returns_BadRequest()
+        public void GetAverageRatingOfPosts_NoRatingsYet_Returns_Default()
         {
             // Arrange
             var postId = 2;
@@ -836,8 +836,8 @@ namespace RecipeBox.Tests
             var result = _postsController.GetAverageRating(postId).Result;
 
             // Assert
-            var okResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("No ratings for this post yet", okResult.Value);
+            var okResult = Assert.IsType<double>(result);
+            Assert.Equal(ratingsFromRepo.Count().ToString(), okResult.ToString());
         }
         
         [Fact]
@@ -853,7 +853,7 @@ namespace RecipeBox.Tests
             var result = _postsController.GetAverageRating(postId).Result;
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
+            var okResult = Assert.IsType<double>(result);
             // Assert.Equal("No ratings for this post yet", okResult.Value);
         }
 

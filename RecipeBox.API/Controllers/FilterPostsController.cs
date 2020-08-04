@@ -39,6 +39,14 @@ namespace RecipeBox.API.Controllers
                 
             if (postForSearch.OrderBy == "newest")
                 posts = posts.OrderByDescending(x => x.Created);
+
+            if (postForSearch.OrderBy == "highest rated")
+            {
+                // foreach (var post in posts)
+                // {
+                //     post.AverageRating = post.Ratings;
+                // }
+            }
                 
             return Ok(posts);
         }

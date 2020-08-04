@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RecipeBox.API.Migrations
 {
-    public partial class postmodel : Migration
+    public partial class ChangeScoreFromIntToDouble : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,6 +14,7 @@ namespace RecipeBox.API.Migrations
                     UserId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Username = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<byte[]>(nullable: true),
                     PasswordSalt = table.Column<byte[]>(nullable: true),
                     Created = table.Column<DateTime>(nullable: false),
@@ -39,6 +40,7 @@ namespace RecipeBox.API.Migrations
                     Feeds = table.Column<string>(nullable: true),
                     Cuisine = table.Column<string>(nullable: true),
                     Created = table.Column<DateTime>(nullable: false),
+                    AverageRating = table.Column<double>(nullable: false),
                     UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -105,6 +107,32 @@ namespace RecipeBox.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Favourites",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FavouriterId = table.Column<int>(nullable: false),
+                    PostId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favourites", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Favourites_Users_FavouriterId",
+                        column: x => x.FavouriterId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Favourites_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PostPhotos",
                 columns: table => new
                 {
@@ -128,6 +156,33 @@ namespace RecipeBox.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Ratings",
+                columns: table => new
+                {
+                    RatingId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Score = table.Column<double>(nullable: false),
+                    RaterId = table.Column<int>(nullable: false),
+                    PostId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ratings", x => x.RatingId);
+                    table.ForeignKey(
+                        name: "FK_Ratings_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ratings_Users_RaterId",
+                        column: x => x.RaterId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_CommenterId",
                 table: "Comments",
@@ -136,6 +191,16 @@ namespace RecipeBox.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_PostId",
                 table: "Comments",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Favourites_FavouriterId",
+                table: "Favourites",
+                column: "FavouriterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Favourites_PostId",
+                table: "Favourites",
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
@@ -149,6 +214,16 @@ namespace RecipeBox.API.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ratings_PostId",
+                table: "Ratings",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_RaterId",
+                table: "Ratings",
+                column: "RaterId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserPhotos_UserId",
                 table: "UserPhotos",
                 column: "UserId");
@@ -160,7 +235,13 @@ namespace RecipeBox.API.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "Favourites");
+
+            migrationBuilder.DropTable(
                 name: "PostPhotos");
+
+            migrationBuilder.DropTable(
+                name: "Ratings");
 
             migrationBuilder.DropTable(
                 name: "UserPhotos");

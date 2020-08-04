@@ -9,8 +9,8 @@ using RecipeBox.API.Data;
 namespace RecipeBox.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200802121552_Email_To_User_Model")]
-    partial class Email_To_User_Model
+    [Migration("20200804104307_ChangeScoreFromIntToDouble")]
+    partial class ChangeScoreFromIntToDouble
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,6 +71,9 @@ namespace RecipeBox.API.Migrations
                     b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("AverageRating")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("CookingTime")
                         .HasColumnType("TEXT");
@@ -152,8 +155,8 @@ namespace RecipeBox.API.Migrations
                     b.Property<int>("RaterId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Score")
-                        .HasColumnType("INTEGER");
+                    b.Property<double>("Score")
+                        .HasColumnType("REAL");
 
                     b.HasKey("RatingId");
 

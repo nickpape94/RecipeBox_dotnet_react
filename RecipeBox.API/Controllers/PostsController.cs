@@ -240,10 +240,16 @@ namespace RecipeBox.API.Controllers
             {
                 postFromRepo.Ratings.Add(rating);
             }
+
+            // Compute average rating
+            // var average = GetAverageRating(postId).Result;
+            // postFromRepo.AverageRating = average;
             
             if (await _repo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
+                var average = GetAverageRating(postId).Result;
+                postToReturn.AverageRating = average;
                 
                 return CreatedAtRoute("GetPost", new {userId = userId, id = rating.RatingId}, postToReturn);
                 // return Ok();
@@ -256,13 +262,13 @@ namespace RecipeBox.API.Controllers
 
         // Get average rating
         [AllowAnonymous]
-        [HttpGet("~/api/posts/{postId}/ratings", Name = "GetAverageRating")]
+        [HttpGet("~/api/posts/{postId}/ratings")]
         public async Task<double> GetAverageRating(int postId)
         {
             var ratingsForPost = await _repo.GetRatings(postId);
 
-            var sum = 0;
-            var numberOfRatings = ratingsForPost.Count();
+            double sum = 0;
+            double numberOfRatings = ratingsForPost.Count();
             
             foreach (var rating in ratingsForPost)
             {
@@ -273,7 +279,7 @@ namespace RecipeBox.API.Controllers
             
             var averageRating = sum / numberOfRatings;
 
-            return averageRating;
+            return Math.Round(averageRating, 3);
         }
     
     }

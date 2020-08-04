@@ -7,7 +7,7 @@ namespace RecipeBox.API.Dtos
     {
         [Required]
         [Range(1, 5, ErrorMessage = "Value must be between 1 and 5")]
-        public int Score { get; set; }
+        public double Score { get; set; }
 
         public User User { get; set; }
         public int RaterId { get; set; }

@@ -153,8 +153,8 @@ namespace RecipeBox.API.Migrations
                     b.Property<int>("RaterId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Score")
-                        .HasColumnType("INTEGER");
+                    b.Property<double>("Score")
+                        .HasColumnType("REAL");
 
                     b.HasKey("RatingId");
 
