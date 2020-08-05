@@ -37,7 +37,7 @@ namespace RecipeBox.API.Controllers
             userForRegisterDto.Email = userForRegisterDto.Email.ToLower();
             
             if ( await _authRepo.UserExists(userForRegisterDto.Email))
-                return BadRequest("Email already exists");
+                return BadRequest("Email already in use");
 
             var userToCreate = _mapper.Map<User>(userForRegisterDto);
 

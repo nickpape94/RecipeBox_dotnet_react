@@ -75,7 +75,7 @@ namespace RecipeBox.API.Data
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); 
 
             return user;
         }

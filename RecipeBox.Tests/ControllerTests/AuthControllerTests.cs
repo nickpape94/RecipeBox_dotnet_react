@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -17,14 +19,15 @@ namespace RecipeBox.Tests
 {
     public class AuthControllerTests
     {
-        private Mock<IAuthRepository> _repoMock;
-        private Mock<RecipeRepository> _recipeMock;
+        private Mock<IAuthRepository> _authRepoMock;
+        private Mock<IRecipeRepository> _recipeRepoMock;
         private Mock<IConfiguration> _configMock;
         private AuthController _authController;
-
+        private readonly ClaimsPrincipal _userClaims;
         public AuthControllerTests()
         {
-            _repoMock = new Mock<IAuthRepository>(MockBehavior.Strict);
+            _authRepoMock = new Mock<IAuthRepository>(MockBehavior.Strict);
+            _recipeRepoMock = new Mock<IRecipeRepository>();
             _configMock = new Mock<IConfiguration>();
 
             var mockMapper = new MapperConfiguration(cfg => { cfg.AddProfile(new AutoMapperProfiles()); });
@@ -33,7 +36,18 @@ namespace RecipeBox.Tests
 
             _configMock.Setup(x => x.GetSection("AppSettings:Token").Value).Returns("my super secret key");
 
-            _authController = new AuthController(_repoMock.Object, _configMock.Object, mapper);
+            _authController = new AuthController(_authRepoMock.Object, _recipeRepoMock.Object ,_configMock.Object, mapper);
+
+            // Mock claim types
+            _userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "josh"),
+                new Claim(ClaimTypes.NameIdentifier, "2"),
+            }, "mock"));
+            _authController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = _userClaims }
+            };
         }
 
         // [Fact]
@@ -56,9 +70,9 @@ namespace RecipeBox.Tests
         //         PasswordSalt = passwordSalt
         //     };
             
-        //     _repoMock.Setup(x => x.UserExists(username.ToLower()))
+        //     _authRepoMock.Setup(x => x.UserExists(username.ToLower()))
         //         .Returns(() => Task.FromResult(false));
-        //     _repoMock.Setup(x => x.Register(userToSubmit, password)).Returns(Task.FromResult(userToReturn));
+        //     _authRepoMock.Setup(x => x.Register(userToSubmit, password)).Returns(Task.FromResult(userToReturn));
 
 
         //     // Act
@@ -79,7 +93,7 @@ namespace RecipeBox.Tests
             // Arrange
             string username = "james";
             string email = "james1@fakemail.com";
-            _repoMock.Setup(x => x.UserExists(email.ToLower()))
+            _authRepoMock.Setup(x => x.UserExists(email.ToLower()))
                 .Returns(() => Task.FromResult(true));
 
             // Act
@@ -101,7 +115,7 @@ namespace RecipeBox.Tests
             string username = "Bob";
             string email = "bob123@fakemail.com";
             string password = "password123";
-            _repoMock.Setup(x => x.Login(email.ToLower(), password))
+            _authRepoMock.Setup(x => x.Login(email.ToLower(), password))
                 .Returns(Task.FromResult( new User { UserId = 1, Username = username, Email = email}));
             
             // Act
@@ -122,7 +136,7 @@ namespace RecipeBox.Tests
             // Arrange
             string email = "bob123@fakemail.com";
             string password = "An extremely long and highly incorrect password";
-            _repoMock.Setup(x => x.Login(It.IsAny<string>(), It.IsAny<string>()))
+            _authRepoMock.Setup(x => x.Login(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(() => null);
             
             // Act
@@ -134,6 +148,65 @@ namespace RecipeBox.Tests
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public void ChangePassword_UnauthorizedUserClaims_ReturnsUnauthorized()
+        {
+            // arrange
+            var userId = 1;
+            var userFromRepo = FakeUsers().SingleOrDefault(x => x.UserId == userId);
+
+            // act
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+
+            var result = _authController.ChangePassword(userId, new PasswordForChangeDto {
+                OldPassword = "password",
+                NewPassword = "password1"
+            }).Result;
+
+            // assert
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+        
+        [Fact]
+        public void ChangePassword_Success_ReturnsOk()
+        {
+            // arrange
+            var userId = 2;
+            var oldPassword = "password";
+            var newPassword = "new password";
+            var userFromRepo = FakeUsers().SingleOrDefault(x => x.UserId == userId);
+            
+
+            // act
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _authRepoMock.Setup(x => x.ResetPassword(userId, oldPassword, newPassword)).ReturnsAsync(userFromRepo);
+
+            var result = _authController.ChangePassword(userId, new PasswordForChangeDto {
+                OldPassword = oldPassword,
+                NewPassword = newPassword
+            }).Result;
+
+            // assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        private ICollection<User> FakeUsers()
+        {
+            return new List<User>()
+            {
+                new User
+                {
+                    UserId = 1,
+                    Username = "nick",
+                },
+                new User
+                {
+                    UserId = 2,
+                    Username = "josh"
+                }
+            };
         }
 
     }

@@ -8,6 +8,7 @@ using Moq;
 using RecipeBox.API.Controllers;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.UserDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 using Xunit;
@@ -16,20 +17,22 @@ namespace RecipeBox.Tests.ControllerTests
 {
     public class UsersControllerTests
     {
-        private Mock<IRecipeRepository> _repoMock;
+        private Mock<IRecipeRepository> _recipeRepoMock;
+        private Mock<IAuthRepository> _authRepoMock; 
         private UsersController _usersController;
         private readonly ClaimsPrincipal _userClaims;
 
         public UsersControllerTests()
         {
-            _repoMock = new Mock<IRecipeRepository>();
+            _recipeRepoMock = new Mock<IRecipeRepository>();
+            _authRepoMock = new Mock<IAuthRepository>();
 
             var mockMapper = new MapperConfiguration(cfg => {cfg.AddProfile(
                 new AutoMapperProfiles()); });
 
             var mapper = mockMapper.CreateMapper();
 
-            _usersController = new UsersController(_repoMock.Object, mapper);
+            _usersController = new UsersController(_recipeRepoMock.Object, _authRepoMock.Object,  mapper);
 
             // Mock user claims
             _userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -51,7 +54,7 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 2;
             var user = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
             
-            _repoMock.Setup(x => x.GetUser(userId))
+            _recipeRepoMock.Setup(x => x.GetUser(userId))
                 .ReturnsAsync(user);
 
             // Act
@@ -69,7 +72,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Arrange
             var users = GetFakeUserList().ToList();
 
-            _repoMock.Setup(x => x.GetUsers())
+            _recipeRepoMock.Setup(x => x.GetUsers())
                 .ReturnsAsync(users);
 
             // Act
@@ -80,6 +83,115 @@ namespace RecipeBox.Tests.ControllerTests
             var returnValue = Assert.IsType<List<UserForListDto>>(okResult.Value);
             Assert.Equal(returnValue[0].Username, users[0].Username);
             Assert.Equal(users.Count, returnValue.Count);
+        }
+
+        [Fact]
+        public void UpdateEmail_UnauthorizedUserClaims_ReturnsUnauthorized()
+        {
+            // arrange
+            var userId = 1;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+
+            // Act
+            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+                Email = "josh2@famemail.com"
+            }).Result;
+
+
+            // assert
+            Assert.IsType<UnauthorizedResult>(result);
+            
+        }
+        
+        [Fact]
+        public void UpdateEmail_UserNotFound_ReturnsNotFound()
+        {
+            // arrange
+            var userId = 2;
+            var email = "josh2@famemail.com";
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+
+            _recipeRepoMock.Setup(x => x.GetUser(userId));
+            _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(true);
+
+            // Act
+            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+                Email = email
+            }).Result;
+
+
+            // assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        
+        [Fact]
+        public void UpdateEmail_EmailAlreadyInUse_ReturnsBadRequest()
+        {
+            // arrange
+            var userId = 2;
+            var email = "josh2@famemail.com";
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(true);
+
+            // Act
+            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+                Email = email
+            }).Result;
+
+
+            // assert
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Email already in use", okResult.Value);
+        }
+        
+        [Fact]
+        public void UpdateEmail_Successful_ReturnsSuccessMessage()
+        {
+            // arrange
+            var userId = 2;
+            var email = "josh2@famemail.com";
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(false);
+            _recipeRepoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+                Email = email
+            }).Result;
+
+
+            // assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Email address updated successfully", okResult.Value);
+        }
+        
+        [Fact]
+        public void UpdateEmail_FailsOnSave_ReturnsBadRequest()
+        {
+            // arrange
+            var userId = 2;
+            var email = "josh2@famemail.com";
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(false);
+            _recipeRepoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+
+            // Act
+            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+                Email = email
+            }).Result;
+
+
+            // assert
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Updating email address failed on save", okResult.Value);
         }
 
         private ICollection<User> GetFakeUserList()
