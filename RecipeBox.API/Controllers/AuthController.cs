@@ -20,8 +20,10 @@ namespace RecipeBox.API.Controllers
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
+        private readonly IRecipeRepository _recipeRepo;
+        public AuthController(IAuthRepository repo, IRecipeRepository recipeRepo, IConfiguration config, IMapper mapper)
         {
+            _recipeRepo = recipeRepo;
             _mapper = mapper;
             _config = config;
             _repo = repo;   
@@ -53,7 +55,7 @@ namespace RecipeBox.API.Controllers
             // return StatusCode(201);
         }
 
-        [HttpPost("login")]
+        [HttpPost("login", Name = "Login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
             var userFromRepo = await _repo.Login(userForLoginDto.Email.ToLower(), userForLoginDto.Password);
@@ -86,12 +88,30 @@ namespace RecipeBox.API.Controllers
             });
         }
 
-        // [HttpPost("user/{userId}/changePassword")]
-        // public async Task<IActionResult> ChangePassword(int userId, PasswordForChangeDto passwordForChangeDto)
-        // {
-        //     // get user
-        //     // 
+        [HttpPost("user/{userId}/changePassword")]
+        public async Task<IActionResult> ChangePassword(int userId, PasswordForChangeDto passwordForChangeDto)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-        // }
+            var user = await _recipeRepo.GetUser(userId);
+
+            // var passwordToChange = _mapper.Map<User>(passwordForChangeDto);
+
+            var updatedUserPassword = await _repo.ResetPassword(userId, passwordForChangeDto.OldPassword ,passwordForChangeDto.NewPassword);
+
+            var userToReturn = _mapper.Map<UserForDetailedDto>(updatedUserPassword);
+
+            // Relogin user back in if logged out during password reset
+            var userForLogin = new UserForLoginDto
+            {
+                Email = user.Email,
+                Password = passwordForChangeDto.NewPassword
+            };
+
+            var loginWithNewPassword = Login(userForLogin);
+
+            return Ok(userToReturn);
+
+        }
     }
 }

@@ -56,6 +56,30 @@ namespace RecipeBox.API.Data
             return user;
         }
 
+        public async Task<User> ResetPassword(int userId, string oldPassword, string newPassword)
+        {
+            // Check old password matches first
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            
+            if (user == null)
+                return null;
+
+            if (!VerifyPasswordHash(oldPassword, user.PasswordHash, user.PasswordSalt))
+                return null;
+
+
+            // Old password matches, now need to write new password
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            await _context.SaveChangesAsync();
+
+            return user;
+        }
+
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512()) 
@@ -72,5 +96,7 @@ namespace RecipeBox.API.Data
 
             return false;
         }
+
+        
     }
 }
