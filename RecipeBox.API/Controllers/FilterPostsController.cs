@@ -15,13 +15,13 @@ namespace RecipeBox.API.Controllers
     [Route("api/[controller]/sort")]
     public class FilterPostsController : ControllerBase
     {
-        private readonly IRecipeRepository _repo;
+        private readonly IRecipeRepository _recipeRepo;
         private readonly IMapper _mapper;
 
-        public FilterPostsController(IRecipeRepository repo, IMapper mapper)
+        public FilterPostsController(IRecipeRepository recipeRepo, IMapper mapper)
         {
             _mapper = mapper;
-            _repo = repo;
+            _recipeRepo = recipeRepo;
         }
 
 
@@ -30,8 +30,8 @@ namespace RecipeBox.API.Controllers
         {
             // sortOrder = JsonSerializer
 
-            var posts = await _repo.GetPosts();
-            var calculateAverageRatings = new CalculateAverageRatings(_repo);
+            var posts = await _recipeRepo.GetPosts();
+            var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
 
             if (postForSearch.OrderBy == "most discussed") 
                 posts = posts.OrderByDescending(x => x.Comments.Count);
@@ -58,7 +58,7 @@ namespace RecipeBox.API.Controllers
         // [HttpGet("mostDiscussed")]
         // public async Task<IActionResult> SortByMostDiscussed()
         // {
-        //     var posts = await _repo.GetPosts();
+        //     var posts = await _recipeRepo.GetPosts();
 
         //     posts = posts.OrderByDescending(x => x.Comments.Count);
 
@@ -70,7 +70,7 @@ namespace RecipeBox.API.Controllers
         // [HttpGet("newest")]
         // public async Task<IActionResult> SortByNewest()
         // {
-        //     var posts = await _repo.GetPosts();
+        //     var posts = await _recipeRepo.GetPosts();
             
         //     posts = posts.OrderByDescending(x => x.Created);
 
@@ -81,7 +81,7 @@ namespace RecipeBox.API.Controllers
         // [HttpGet("oldest")]
         // public async Task<IActionResult> SortByOldest()
         // {
-        //     var posts = await _repo.GetPosts();
+        //     var posts = await _recipeRepo.GetPosts();
             
         //     posts = posts.OrderBy(x => x.Created);
 
@@ -93,7 +93,7 @@ namespace RecipeBox.API.Controllers
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> SortByUser(int userId)
         {
-            var posts = await _repo.GetPosts();
+            var posts = await _recipeRepo.GetPosts();
 
             var filteredPosts = posts.Where(x => x.UserId == userId);
 
@@ -108,7 +108,7 @@ namespace RecipeBox.API.Controllers
         {
             var searchQueryToLower = postForSearch.SearchParams.Trim().ToLower();
 
-            var posts = await _repo.GetPosts();
+            var posts = await _recipeRepo.GetPosts();
 
             var filteredPosts = posts.Where(x => x.NameOfDish.ToLower().Contains(searchQueryToLower) || 
                                                  x.Cuisine.ToLower().Contains(searchQueryToLower));

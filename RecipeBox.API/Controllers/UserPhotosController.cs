@@ -19,16 +19,16 @@ namespace RecipeBox.API.Controllers
     [ApiController]
     public class UserPhotosController : ControllerBase
     {
-        private readonly IRecipeRepository _repo;
+        private readonly IRecipeRepository _recipeRepo;
         private readonly IOptions<CloudinarySettings> _cloudinaryConfig;
         private readonly IMapper _mapper;
         private Cloudinary _cloudinary;
 
-        public UserPhotosController(IRecipeRepository repo, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
+        public UserPhotosController(IRecipeRepository recipeRepo, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
         {
             _mapper = mapper;
             _cloudinaryConfig = cloudinaryConfig;
-            _repo = repo;
+            _recipeRepo = recipeRepo;
 
             Account acc = new Account(
                 _cloudinaryConfig.Value.CloudName,
@@ -43,7 +43,7 @@ namespace RecipeBox.API.Controllers
         [HttpPost("{id}", Name = "GetUserPhoto")]
         public async Task<IActionResult> GetUserPhoto(int id)
         {
-            var userPhotoFromRepo = await _repo.GetUserPhoto(id);
+            var userPhotoFromRepo = await _recipeRepo.GetUserPhoto(id);
 
             var photo = _mapper.Map<UserPhotosForReturnDto>(userPhotoFromRepo);
 
@@ -56,7 +56,7 @@ namespace RecipeBox.API.Controllers
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-            var userFromRepo = await _repo.GetUser(userId);
+            var userFromRepo = await _recipeRepo.GetUser(userId);
 
             var file = userPhotoForCreationDto.File;
 
@@ -88,7 +88,7 @@ namespace RecipeBox.API.Controllers
 
             userFromRepo.UserPhotos.Add(photo);
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 var photoToReturn = _mapper.Map<UserPhotosForReturnDto>(photo);
                 return CreatedAtRoute("GetUserPhoto", new { userId = userId, id = photo.UserPhotoId}, photoToReturn);
@@ -105,21 +105,21 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) 
             return Unauthorized();
 
-            var userFromRepo = await _repo.GetUser(userId);
+            var userFromRepo = await _recipeRepo.GetUser(userId);
 
             if (!userFromRepo.UserPhotos.Any(p => p.UserPhotoId == id)) return Unauthorized();
 
-            var photoFromRepo = await _repo.GetUserPhoto(id);
+            var photoFromRepo = await _recipeRepo.GetUserPhoto(id);
 
             if (photoFromRepo.IsMain)
                 return BadRequest("This is already the main photo");
 
-            var currentMainPhoto = await _repo.GetMainPhotoForUser(userId);
+            var currentMainPhoto = await _recipeRepo.GetMainPhotoForUser(userId);
             currentMainPhoto.IsMain = false;
 
             photoFromRepo.IsMain = true;
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
                 return NoContent();
 
             return BadRequest("Could not set photo to main");
@@ -131,12 +131,12 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var userFromRepo = await _repo.GetUser(userId);
+            var userFromRepo = await _recipeRepo.GetUser(userId);
 
             if (!userFromRepo.UserPhotos.Any(p => p.UserPhotoId == id))
                 return Unauthorized();
 
-            var photoFromRepo = await _repo.GetUserPhoto(id);
+            var photoFromRepo = await _recipeRepo.GetUserPhoto(id);
 
             if (photoFromRepo.PublicId != null)
             {
@@ -146,16 +146,16 @@ namespace RecipeBox.API.Controllers
 
                 if (result.Result == "ok")
                 {
-                    _repo.Delete(photoFromRepo);
+                    _recipeRepo.Delete(photoFromRepo);
                 }
             }
 
             if (photoFromRepo.PublicId == null)
             {
-                _repo.Delete(photoFromRepo);
+                _recipeRepo.Delete(photoFromRepo);
             }
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
                 return Ok();
 
             return BadRequest("Failed to delete the photo");

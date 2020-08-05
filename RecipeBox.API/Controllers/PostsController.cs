@@ -21,12 +21,12 @@ namespace RecipeBox.API.Controllers
     {
         
         private readonly IMapper _mapper;
-        private readonly IRecipeRepository _repo; 
-        public PostsController(IRecipeRepository repo, IMapper mapper)
+        private readonly IRecipeRepository _recipeRepo; 
+        public PostsController(IRecipeRepository recipeRepo, IMapper mapper)
         {
         
             _mapper = mapper;
-            _repo = repo;
+            _recipeRepo = recipeRepo;
             
         }
 
@@ -35,8 +35,8 @@ namespace RecipeBox.API.Controllers
         [HttpGet("~/api/posts")]
         public async Task<IActionResult> GetPosts()
         {
-            var posts = await _repo.GetPosts();
-            var calculateAverageRatings = new CalculateAverageRatings(_repo);
+            var posts = await _recipeRepo.GetPosts();
+            var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
 
             foreach (var post in posts)
             {
@@ -53,8 +53,8 @@ namespace RecipeBox.API.Controllers
         [HttpGet("~/api/posts/{id}", Name = "GetPost")]
         public async Task<IActionResult> GetPost(int id)
         {
-            var post = await _repo.GetPost(id);
-            var calculateAverageRatings = new CalculateAverageRatings(_repo);
+            var post = await _recipeRepo.GetPost(id);
+            var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
 
             var average = calculateAverageRatings.GetAverageRating(id).Result;
             post.AverageRating = average;
@@ -72,14 +72,14 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             // Get user with this id from the repo       
-            var userFromRepo = await _repo.GetUser(userId);
+            var userFromRepo = await _recipeRepo.GetUser(userId);
 
             // Get post data from the client
             var post = _mapper.Map<Post>(postForCreationDto);
 
             userFromRepo.Posts.Add(post);
             
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(post);
                 return CreatedAtRoute("GetPost", new {userId = userId, id = post.PostId}, postToReturn);
@@ -96,7 +96,7 @@ namespace RecipeBox.API.Controllers
             if ( userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             // Get post from repo
-            var postFromRepo = await _repo.GetPost(postId);
+            var postFromRepo = await _recipeRepo.GetPost(postId);
 
             // Check post was made by the user
             if (postFromRepo.UserId != userId) return Unauthorized(); 
@@ -105,7 +105,7 @@ namespace RecipeBox.API.Controllers
             var postToUpdate = _mapper.Map(postForUpdateDto, postFromRepo);
             var postToReturn = _mapper.Map<PostsForDetailedDto>(postToUpdate);
 
-            if ( await _repo.SaveAll())
+            if ( await _recipeRepo.SaveAll())
                 return CreatedAtRoute("GetPost", new {userId = userId, id = postFromRepo.PostId}, postToReturn);
 
             throw new Exception($"Updating post {postId} failed on save");
@@ -118,13 +118,13 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             // Get post from the repo
-            var postFromRepo = await _repo.GetPost(postId);
+            var postFromRepo = await _recipeRepo.GetPost(postId);
 
             if (postFromRepo.UserId == userId)
             {
-                _repo.Delete(postFromRepo);
+                _recipeRepo.Delete(postFromRepo);
 
-                if (await _repo.SaveAll())
+                if (await _recipeRepo.SaveAll())
                     return Ok("Successfully deleted post");
 
                 throw new Exception($"Deleting post {postId} failed on save");
@@ -144,7 +144,7 @@ namespace RecipeBox.API.Controllers
             commentForCreationDto.CommenterId = userId;
 
             // Get post from repo
-            var postFromRepo = await _repo.GetPost(postId);
+            var postFromRepo = await _recipeRepo.GetPost(postId);
 
             if (postFromRepo == null) return NotFound($"Post with id {postId} not found");
 
@@ -155,7 +155,7 @@ namespace RecipeBox.API.Controllers
             postFromRepo.Comments.Add(comment);
             
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
                 
@@ -171,17 +171,17 @@ namespace RecipeBox.API.Controllers
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-            var commentFromRepo = await _repo.GetComment(commentId);
+            var commentFromRepo = await _recipeRepo.GetComment(commentId);
             if (commentFromRepo == null) return NotFound($"Comment {commentId} not found");
             if (commentFromRepo.CommenterId != userId) return Unauthorized();
 
-            var postFromRepo = await _repo.GetPost(commentFromRepo.PostId);
+            var postFromRepo = await _recipeRepo.GetPost(commentFromRepo.PostId);
             
             var commentToUpdate = _mapper.Map(commentForUpdateDto, commentFromRepo);
             var commentToReturn = _mapper.Map<Comment>(commentToUpdate);
             // var commentToReturn = _mapper.Map<CommentsForReturnedDto>(commentToUpdate);
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
 
@@ -200,16 +200,16 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             // Get comment from repo
-            var comment = await _repo.GetComment(commentId);
+            var comment = await _recipeRepo.GetComment(commentId);
 
             // Confirm user made the comment
             if (comment == null ) return NotFound($"Comment {commentId} not found");
             if (comment.CommenterId != userId) return Unauthorized();
 
             // Delete from repo
-            _repo.Delete(comment);
+            _recipeRepo.Delete(comment);
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 return Ok("Comment was successfully deleted");  
             }
@@ -223,8 +223,8 @@ namespace RecipeBox.API.Controllers
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-            var postFromRepo = await _repo.GetPost(postId);
-            var calculateAverageRatings = new CalculateAverageRatings(_repo);
+            var postFromRepo = await _recipeRepo.GetPost(postId);
+            var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
 
             ratePostDto.RaterId = userId;
 
@@ -235,7 +235,7 @@ namespace RecipeBox.API.Controllers
             // Check if user has already rated the post, and to replace if they have
             if ( postFromRepo.Ratings.Any(x => x.RaterId == userId))
             {
-                var originalRating = await _repo.GetRating(userId, postId);
+                var originalRating = await _recipeRepo.GetRating(userId, postId);
                 originalRating.Score = ratePostDto.Score;
 
             }
@@ -246,7 +246,7 @@ namespace RecipeBox.API.Controllers
                 postFromRepo.Ratings.Add(rating);
             }
             
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
                 var average = calculateAverageRatings.GetAverageRating(postId).Result;

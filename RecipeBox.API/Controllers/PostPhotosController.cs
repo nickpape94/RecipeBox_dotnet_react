@@ -19,16 +19,16 @@ namespace RecipeBox.API.Controllers
     [ApiController]
     public class PostPhotosController : ControllerBase
     {
-        private readonly IRecipeRepository _repo;
+        private readonly IRecipeRepository _recipeRepo;
         private readonly IMapper _mapper;
         private readonly IOptions<CloudinarySettings> _cloudinaryConfig;
         private Cloudinary _cloudinary;
         
-        public PostPhotosController(IRecipeRepository repo, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
+        public PostPhotosController(IRecipeRepository recipeRepo, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
         {
             _mapper = mapper;
             _cloudinaryConfig = cloudinaryConfig;
-            _repo = repo;
+            _recipeRepo = recipeRepo;
 
             Account acc = new Account(
                 _cloudinaryConfig.Value.CloudName,
@@ -43,7 +43,7 @@ namespace RecipeBox.API.Controllers
         [HttpGet("{id}", Name ="GetPostPhotos")]
         public async Task<IActionResult> GetPostPhoto(int id)
         {
-            var postPhotoFromRepo = await _repo.GetPostPhoto(id);
+            var postPhotoFromRepo = await _recipeRepo.GetPostPhoto(id);
 
             var photo = _mapper.Map<PostPhotosForReturnDto>(postPhotoFromRepo);
 
@@ -53,7 +53,7 @@ namespace RecipeBox.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPhotoToPost(int postId, [FromForm]PostPhotoForCreationDto postPhotoForCreationDto)
         {
-            var postFromRepo = await _repo.GetPost(postId);
+            var postFromRepo = await _recipeRepo.GetPost(postId);
 
             if (postFromRepo == null) return NotFound();
 
@@ -88,7 +88,7 @@ namespace RecipeBox.API.Controllers
 
             postFromRepo.PostPhoto.Add(photo);
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 var photoToReturn = _mapper.Map<PostPhotosForReturnDto>(photo);
                 return CreatedAtRoute("GetPostPhotos", new {postId = postId, id = photo.PostPhotoId}, photoToReturn);
@@ -100,7 +100,7 @@ namespace RecipeBox.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePhoto(int postId, int id)
         {
-            var postFromRepo = await _repo.GetPost(postId);
+            var postFromRepo = await _recipeRepo.GetPost(postId);
 
             if (postFromRepo.UserId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) 
                 return Unauthorized();
@@ -108,7 +108,7 @@ namespace RecipeBox.API.Controllers
             if (!postFromRepo.PostPhoto.Any(p => p.PostPhotoId == id))
                 return Unauthorized();
 
-            var photoFromRepo = await _repo.GetPostPhoto(id);
+            var photoFromRepo = await _recipeRepo.GetPostPhoto(id);
 
             if (photoFromRepo.IsMain)
                 return BadRequest("You cannot delete the main photo");
@@ -121,16 +121,16 @@ namespace RecipeBox.API.Controllers
 
                 if (result.Result == "ok")
                 {
-                    _repo.Delete(photoFromRepo);
+                    _recipeRepo.Delete(photoFromRepo);
                 }
             }
 
             if (photoFromRepo.PublicId == null)
             {
-                _repo.Delete(photoFromRepo);
+                _recipeRepo.Delete(photoFromRepo);
             }
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
                 return Ok();
 
             return BadRequest("Failed to delete the photo");
@@ -139,7 +139,7 @@ namespace RecipeBox.API.Controllers
         [HttpPost("{id}/setMain")]
         public async Task<IActionResult> SetMainPhoto(int postId, int id)
         {
-            var postFromRepo = await _repo.GetPost(postId);
+            var postFromRepo = await _recipeRepo.GetPost(postId);
 
             if (postFromRepo.UserId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
@@ -147,17 +147,17 @@ namespace RecipeBox.API.Controllers
             if (!postFromRepo.PostPhoto.Any(p => p.PostPhotoId == id))
                 return Unauthorized();
 
-            var photoFromRepo = await _repo.GetPostPhoto(id);
+            var photoFromRepo = await _recipeRepo.GetPostPhoto(id);
 
             if (photoFromRepo.IsMain)
                 return BadRequest("This is already the main photo");
 
-            var currentMainPhoto = await _repo.GetMainPhotoForPost(postId);
+            var currentMainPhoto = await _recipeRepo.GetMainPhotoForPost(postId);
             currentMainPhoto.IsMain = false;
 
             photoFromRepo.IsMain = true;
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
                 return NoContent();
 
             return BadRequest("Could not set photo to main");

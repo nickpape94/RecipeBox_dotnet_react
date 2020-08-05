@@ -17,10 +17,10 @@ namespace RecipeBox.API.Controllers
     [ApiController]
     public class FavouritesController : ControllerBase
     {
-        private readonly IRecipeRepository _repo;
-        public FavouritesController(IRecipeRepository repo)
+        private readonly IRecipeRepository _recipeRepo;
+        public FavouritesController(IRecipeRepository recipeRepo)
         {
-            _repo = repo;
+            _recipeRepo = recipeRepo;
             
         }
 
@@ -29,9 +29,9 @@ namespace RecipeBox.API.Controllers
         [HttpGet(Name = "GetFavourites")]
         public async Task<IActionResult> GetFavourites(int userId)
         {
-            var favouritesFromRepo = await _repo.GetFavourites(userId);
+            var favouritesFromRepo = await _recipeRepo.GetFavourites(userId);
 
-            var postsFromRepo = await _repo.GetPosts();
+            var postsFromRepo = await _recipeRepo.GetPosts();
             
             var filteredPosts = postsFromRepo.Where(x => favouritesFromRepo.Any(y => y.PostId == x.PostId));
             // var postsFromRepo = _mapper.Map<IEnumerable<FavouritesForListDto>>(favouritesFromRepo);
@@ -47,10 +47,10 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             // Get user
-            var userFromRepo = await _repo.GetUser(userId);
+            var userFromRepo = await _recipeRepo.GetUser(userId);
 
             // Find post
-            var postFromRepo = await _repo.GetPost(postId);
+            var postFromRepo = await _recipeRepo.GetPost(postId);
             if (postFromRepo == null) return NotFound();
 
             // Add post to users favourites, and save
@@ -65,7 +65,7 @@ namespace RecipeBox.API.Controllers
 
             userFromRepo.Favourites.Add(postForFavourite);
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 return Ok("Recipe added successfully");
             }
@@ -79,16 +79,16 @@ namespace RecipeBox.API.Controllers
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-            var favouritesFromRepo = await _repo.GetFavourites(userId);
+            var favouritesFromRepo = await _recipeRepo.GetFavourites(userId);
 
             var favouriteToDelete = favouritesFromRepo.FirstOrDefault(x => x.PostId == postId);
 
             if ( favouriteToDelete == null) return NotFound($"Recipe with id {postId} not found in favourites");
             if (favouriteToDelete.FavouriterId != userId) return Unauthorized();
 
-            _repo.Delete(favouriteToDelete);
+            _recipeRepo.Delete(favouriteToDelete);
 
-            if (await _repo.SaveAll())
+            if (await _recipeRepo.SaveAll())
             {
                 return Ok("Favourite successfully deleted");
             }

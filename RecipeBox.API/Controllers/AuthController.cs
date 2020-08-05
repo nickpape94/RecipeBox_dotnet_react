@@ -17,16 +17,18 @@ namespace RecipeBox.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthRepository _repo;
+        private readonly IAuthRepository _authRepo;
+        private readonly IRecipeRepository _recipeRepo;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        private readonly IRecipeRepository _recipeRepo;
-        public AuthController(IAuthRepository repo, IRecipeRepository recipeRepo, IConfiguration config, IMapper mapper)
+        
+        public AuthController(IAuthRepository authRepo, IRecipeRepository recipeRepo, IConfiguration config, IMapper mapper)
         {
             _recipeRepo = recipeRepo;
+            _authRepo = authRepo; 
             _mapper = mapper;
             _config = config;
-            _repo = repo;   
+              
         }
 
         [HttpPost("register")]
@@ -34,7 +36,7 @@ namespace RecipeBox.API.Controllers
         {
             userForRegisterDto.Email = userForRegisterDto.Email.ToLower();
             
-            if ( await _repo.UserExists(userForRegisterDto.Email))
+            if ( await _authRepo.UserExists(userForRegisterDto.Email))
                 return BadRequest("Email already exists");
 
             var userToCreate = _mapper.Map<User>(userForRegisterDto);
@@ -46,7 +48,7 @@ namespace RecipeBox.API.Controllers
             // }; 
 
             // Testing fails on createdUser
-            var createdUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
+            var createdUser = await _authRepo.Register(userToCreate, userForRegisterDto.Password);
 
             var userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);
 
@@ -58,7 +60,7 @@ namespace RecipeBox.API.Controllers
         [HttpPost("login", Name = "Login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            var userFromRepo = await _repo.Login(userForLoginDto.Email.ToLower(), userForLoginDto.Password);
+            var userFromRepo = await _authRepo.Login(userForLoginDto.Email.ToLower(), userForLoginDto.Password);
 
             if (userFromRepo == null) return Unauthorized();
 
@@ -97,7 +99,7 @@ namespace RecipeBox.API.Controllers
 
             // var passwordToChange = _mapper.Map<User>(passwordForChangeDto);
 
-            var updatedUserPassword = await _repo.ResetPassword(userId, passwordForChangeDto.OldPassword ,passwordForChangeDto.NewPassword);
+            var updatedUserPassword = await _authRepo.ResetPassword(userId, passwordForChangeDto.OldPassword ,passwordForChangeDto.NewPassword);
 
             var userToReturn = _mapper.Map<UserForDetailedDto>(updatedUserPassword);
 
