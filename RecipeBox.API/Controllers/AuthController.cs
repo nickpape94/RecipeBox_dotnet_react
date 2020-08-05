@@ -85,5 +85,13 @@ namespace RecipeBox.API.Controllers
                 token = tokenHandler.WriteToken(token)
             });
         }
+
+        // [HttpPost("user/{userId}/changePassword")]
+        // public async Task<IActionResult> ChangePassword(int userId, PasswordForChangeDto passwordForChangeDto)
+        // {
+        //     // get user
+        //     // 
+
+        // }
     }
 }
