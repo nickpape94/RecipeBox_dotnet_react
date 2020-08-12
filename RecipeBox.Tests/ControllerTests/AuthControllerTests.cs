@@ -26,7 +26,8 @@ namespace RecipeBox.Tests
         private readonly ClaimsPrincipal _userClaims;
         public AuthControllerTests()
         {
-            _authRepoMock = new Mock<IAuthRepository>(MockBehavior.Strict);
+            _authRepoMock = new Mock<IAuthRepository>();
+            // (MockBehavior.Strict)
             _recipeRepoMock = new Mock<IRecipeRepository>();
             _configMock = new Mock<IConfiguration>();
 
@@ -55,32 +56,38 @@ namespace RecipeBox.Tests
         // {
         //     // Arrange
         //     string username = "George";
+        //     string email = "George1@fake-mail.com";
         //     string password = "password123";
-        //     Random rand = new Random();
-        //     byte[] passwordHash = new byte[64]; 
-        //     byte[] passwordSalt = new byte[128];
-        //     rand.NextBytes(passwordHash); 
-        //     var userToSubmit = new User {
+        //     // Random rand = new Random();
+        //     // byte[] passwordHash = new byte[64]; 
+        //     // byte[] passwordSalt = new byte[128];
+        //     // rand.NextBytes(passwordHash); 
+        //     var userToCreate = new User {
         //         Username = username,
+        //         Email = email
+        //     };
+        //     var userForRegisterDto = new UserForRegisterDto
+        //     {
+        //         Username = username,
+        //         Email = email,
+        //         Password = password
         //     };
         //     var userToReturn = new User {
-        //         UserId = 1,
+        //         // UserId = 1,
         //         Username = username,
-        //         PasswordHash = passwordHash,
-        //         PasswordSalt = passwordSalt
+        //         Email = email.ToLower(),
+        //         PasswordHash = It.IsAny<byte[]>(),
+        //         PasswordSalt = It.IsAny<byte[]>()
         //     };
             
         //     _authRepoMock.Setup(x => x.UserExists(username.ToLower()))
         //         .Returns(() => Task.FromResult(false));
-        //     _authRepoMock.Setup(x => x.Register(userToSubmit, password)).Returns(Task.FromResult(userToReturn));
+        //     // _authRepoMock.Setup(x => x.Register(userToCreate, password)).ReturnsAsync(userToReturn);
+        //     // _authRepoMock.Setup(x => x.Register(userToCreate, password)).Returns(Task.FromResult(userToReturn));
 
 
         //     // Act
-        //     var result = _authController.Register(new UserForRegisterDto
-        //     {
-        //         Username = username,
-        //         Password = password
-        //     }).Result;
+        //     var result = _authController.Register(userForRegisterDto).Result;
 
         //     // Assert
         //     var okResult = Assert.IsType<CreatedAtRouteResult>(result);
@@ -105,7 +112,8 @@ namespace RecipeBox.Tests
             }).Result;
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Email already in use", okResult.Value);
         }
 
         [Fact]

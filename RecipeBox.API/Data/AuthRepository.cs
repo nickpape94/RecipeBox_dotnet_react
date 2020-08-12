@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RecipeBox.API.Models;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace RecipeBox.API.Data
 {
@@ -97,6 +99,16 @@ namespace RecipeBox.API.Data
             return false;
         }
 
-        
+        public async Task SendEmailAsync(string toEmail, string subject, string content)
+        {
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+            // var apiKey = Configuration.GetSection("AppSettings:Token").Value;
+            Console.WriteLine(apiKey);
+            var client = new SendGridClient(apiKey);
+            var from = new EmailAddress("recipeboxbot@gmail.com", "RecipeBox");
+            var to = new EmailAddress(toEmail);
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
+            var response = await client.SendEmailAsync(msg);
+        }
     }
 }
