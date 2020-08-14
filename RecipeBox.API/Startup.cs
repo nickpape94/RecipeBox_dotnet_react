@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using RecipeBox.API.Data;
 using RecipeBox.API.Helpers;
+using RecipeBox.API.Service;
 
 namespace RecipeBox.API
 {
@@ -46,6 +47,7 @@ namespace RecipeBox.API
             services.AddAutoMapper(typeof(RecipeRepository).Assembly);
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddTransient<IEmailService, EmailService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters

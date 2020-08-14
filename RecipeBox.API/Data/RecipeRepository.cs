@@ -51,6 +51,13 @@ namespace RecipeBox.API.Data
             return user;
         }
 
+        public async Task<User> GetUser(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+
+            return user;
+        }
+
         public async Task<IEnumerable<User>> GetUsers()
         {
             var users = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).ToListAsync();
@@ -120,5 +127,7 @@ namespace RecipeBox.API.Data
 
             return rating;
         }
+
+       
     }
 }

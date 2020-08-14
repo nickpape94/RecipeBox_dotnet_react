@@ -84,7 +84,7 @@ namespace RecipeBox.API.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            await _authRepo.SendEmailAsync(userForLoginDto.Email, "Password reset", $"<p>Hi {userFromRepo.Username}, You recently requested to reset your password</p> <br> <p>Please follow the link below to reset your password</p> <br> <a href=https://www.w3schools.com/ >Link to my website</a> <br> <p>If this wasn't you, please ignore this email</p> <br> <p>Regards, RecipeBox</p>");
+            
 
             return Ok(new {
                 token = tokenHandler.WriteToken(token)
@@ -116,5 +116,7 @@ namespace RecipeBox.API.Controllers
             return Ok(userToReturn);
 
         }
+
+        
     }
 }

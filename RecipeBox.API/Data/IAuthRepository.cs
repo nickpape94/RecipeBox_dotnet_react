@@ -9,6 +9,5 @@ namespace RecipeBox.API.Data
         Task<User> Login(string email, string password);
         Task<User> ResetPassword(int userId, string oldPassword, string newPassword);
         Task<bool> UserExists(string email);
-        Task SendEmailAsync(string toEmail, string subject, string content);
     }
 }
