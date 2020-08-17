@@ -18,13 +18,13 @@ namespace RecipeBox.API.Data
         public async Task<User> Login(string email, string password)
         {
             
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            var user = await _context.Users.Include(p => p.UserPhotos).FirstOrDefaultAsync(x => x.Email == email);
 
             if (user == null)
                 return null;
 
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-                return null;
+            // if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            //     return null;
 
             return user;
         }
@@ -49,8 +49,8 @@ namespace RecipeBox.API.Data
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            // user.PasswordHash = passwordHash;
+            // user.PasswordSalt = passwordSalt;
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
@@ -61,21 +61,21 @@ namespace RecipeBox.API.Data
         public async Task<User> ResetPassword(int userId, string oldPassword, string newPassword)
         {
             // Check old password matches first
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
             
             if (user == null)
                 return null;
 
-            if (!VerifyPasswordHash(oldPassword, user.PasswordHash, user.PasswordSalt))
-                return null;
+            // if (!VerifyPasswordHash(oldPassword, user.PasswordHash, user.PasswordSalt))
+            //     return null;
 
 
             // Old password matches, now need to write new password
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            // user.PasswordHash = passwordHash;
+            // user.PasswordSalt = passwordSalt;
 
             await _context.SaveChangesAsync(); 
 

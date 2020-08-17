@@ -6,7 +6,7 @@ namespace RecipeBox.API.Dtos
 {
     public class UserForDetailedDto
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public string Username  { get; set; }
         // public string Email  { get; set; }
         public DateTime Created { get; set; }

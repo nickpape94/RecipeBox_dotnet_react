@@ -46,7 +46,7 @@ namespace RecipeBox.API.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).Include(p => p.Favourites).FirstOrDefaultAsync(x => x.UserId == id);
+            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).Include(p => p.Favourites).FirstOrDefaultAsync(x => x.Id == id);
 
             return user;
         }

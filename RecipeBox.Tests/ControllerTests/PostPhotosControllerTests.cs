@@ -90,7 +90,7 @@ namespace RecipeBox.Tests.ControllerTests
             var userId = 1;
             var photoId = 1;
             var postId = 1;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
@@ -110,7 +110,7 @@ namespace RecipeBox.Tests.ControllerTests
             var userId = 2;
             var photoId = 10;
             var postId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
@@ -366,14 +366,14 @@ namespace RecipeBox.Tests.ControllerTests
                 
                 new User()
                 {
-                    UserId = 1,
-                    Username = "mike",
+                    Id = 1,
+                    UserName = "mike",
                     
                 },
                 new User()
                 {
-                    UserId = 2,
-                    Username = "josh",
+                    Id = 2,
+                    UserName = "josh",
                     
                 }
             };

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos;
@@ -13,18 +14,13 @@ using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Controllers
 {
-    [Authorize]
-    // [Route("api/[controller]")]
-    // [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
     {
-        
         private readonly IMapper _mapper;
         private readonly IRecipeRepository _recipeRepo; 
         public PostsController(IRecipeRepository recipeRepo, IMapper mapper)
         {
-        
             _mapper = mapper;
             _recipeRepo = recipeRepo;
             

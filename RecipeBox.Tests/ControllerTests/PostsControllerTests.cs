@@ -107,7 +107,7 @@ namespace RecipeBox.Tests
         {
             // Arrange
             int userId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var postForCreation = new PostForCreationDto
             {
                 NameOfDish = "Katsu curry",
@@ -135,7 +135,7 @@ namespace RecipeBox.Tests
         {
             // Arrange
             int userId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             var postForCreation = new PostForCreationDto
             {
@@ -198,7 +198,7 @@ namespace RecipeBox.Tests
             // Arrange
             int userId = 2;
             int postId = 3;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
             var postForUpdate = new PostForUpdateDto()
@@ -410,7 +410,7 @@ namespace RecipeBox.Tests
             int userId = 2;
             int postId = 5;
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var commentForCreation = new CommentForCreationDto
             {
                 Text = "Test comment"
@@ -466,7 +466,7 @@ namespace RecipeBox.Tests
             int userId = 2;
             int postId = 2;
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var commentForCreation = new CommentForCreationDto
             {
                 Text = "Test comment"
@@ -714,7 +714,7 @@ namespace RecipeBox.Tests
             // Arrange
             var userId = 1;
             var postId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
 
@@ -734,7 +734,7 @@ namespace RecipeBox.Tests
             // Arrange
             var userId = 2;
             var postId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -757,7 +757,7 @@ namespace RecipeBox.Tests
             // Arrange
             var userId = 2;
             var postId = 3;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
             var ratingFromRepo = GetFakeRatingsList().SingleOrDefault(x => x.RaterId == userId && x.PostId == postId);
 
@@ -783,7 +783,7 @@ namespace RecipeBox.Tests
             // Arrange
             var userId = 2;
             var postId = 4;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -807,7 +807,7 @@ namespace RecipeBox.Tests
             // Arrange
             var userId = 2;
             var postId = 4;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -993,14 +993,14 @@ namespace RecipeBox.Tests
                 
                 new User()
                 {
-                    UserId = 1,
-                    Username = "mike",
+                    Id = 1,
+                    UserName = "mike",
                     
                 },
                 new User()
                 {
-                    UserId = 2,
-                    Username = "josh",
+                    Id = 2,
+                    UserName = "josh",
                     Posts = GetFakePostList()
                     
                 }

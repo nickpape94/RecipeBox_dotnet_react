@@ -5,6 +5,7 @@ using AutoMapper;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using RecipeBox.API.Data;
@@ -14,7 +15,6 @@ using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Controllers
 {
-    [Authorize]
     [Route("api/users/{userId}/photos")]
     [ApiController]
     public class UserPhotosController : ControllerBase

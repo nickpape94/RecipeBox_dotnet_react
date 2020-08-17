@@ -118,7 +118,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             // Arrange
             int userId = 2;
-            var userFromRepo = GetFakeUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetFakePosts();
 
             // Act
@@ -136,7 +136,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             // Arrange
             int userId = 1;
-            var userFromRepo = GetFakeUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetFakePosts();
             var filteredPosts = postsFromRepo.Where(x => x.UserId == userId);
 
@@ -291,14 +291,14 @@ namespace RecipeBox.Tests.ControllerTests
             {
                 new User()
                 {
-                    UserId = 1,
-                    Username = "nick",
+                    Id = 1,
+                    UserName = "nick",
                     Posts = GetFakePosts()
                 },
                 new User()
                 {
-                    UserId = 2,
-                    Username = "jim"
+                    Id = 2,
+                    UserName = "jim"
                 }
             };
         }

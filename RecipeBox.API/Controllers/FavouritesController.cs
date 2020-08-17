@@ -9,15 +9,16 @@ using RecipeBox.API.Models;
 using System;
 using System.Collections.Generic;
 using RecipeBox.API.Dtos;
+using Microsoft.AspNetCore.Identity;
 
 namespace RecipeBox.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]/userId/{userId}")]
     [ApiController]
     public class FavouritesController : ControllerBase
     {
         private readonly IRecipeRepository _recipeRepo;
+        
         public FavouritesController(IRecipeRepository recipeRepo)
         {
             _recipeRepo = recipeRepo;
@@ -57,7 +58,7 @@ namespace RecipeBox.API.Controllers
             var postForFavourite = new Favourite
             {
                 PostId = postFromRepo.PostId,
-                FavouriterId = userFromRepo.UserId
+                FavouriterId = userFromRepo.Id
             };
 
             // Check if post has already been favourited

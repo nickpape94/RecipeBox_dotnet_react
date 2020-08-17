@@ -14,7 +14,6 @@ using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Controllers
 {
-    [Authorize]
     [Route("api/posts/{postId}/photos")]
     [ApiController]
     public class PostPhotosController : ControllerBase

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using RecipeBox.API.Models;
 
@@ -8,9 +9,9 @@ namespace RecipeBox.API.Data
 {
     public class Seed
     {
-        public static void SeedUsers(DataContext context)
+        public static void SeedUsers(UserManager<User> userManager)
         {
-            if (!context.Users.Any())
+            if (!userManager.Users.Any())
             {
                 var userData = System.IO.File.ReadAllText("Data/UserSeedData.json");
 
@@ -18,17 +19,9 @@ namespace RecipeBox.API.Data
 
                 foreach (var user in users)
                 {
-                    byte[] passwordhash, passwordSalt;
+                    userManager.CreateAsync(user, "password").Wait();
+                } 
 
-                    CreatePasswordHash("password", out passwordhash, out passwordSalt);
-
-                    user.PasswordHash = passwordhash;
-                    user.PasswordSalt = passwordSalt;
-                    user.Username = user.Username.ToLower();
-                    context.Add(user);
-                }
-
-                context.SaveChanges();
             }
 
         }

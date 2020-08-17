@@ -32,7 +32,7 @@ namespace RecipeBox.Tests.ControllerTests
 
             var mapper = mockMapper.CreateMapper();
 
-            _usersController = new UsersController(_recipeRepoMock.Object, _authRepoMock.Object,  mapper);
+            _usersController = new UsersController(_recipeRepoMock.Object,  mapper);
 
             // Mock user claims
             _userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -52,7 +52,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             // Arrange
             int userId = 2;
-            var user = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var user = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             
             _recipeRepoMock.Setup(x => x.GetUser(userId))
                 .ReturnsAsync(user);
@@ -63,7 +63,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             var returnValue = Assert.IsType<UserForDetailedDto>(okResult.Value);
-            Assert.Equal(user.Username, returnValue.Username);
+            Assert.Equal(user.UserName, returnValue.Username);
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             var returnValue = Assert.IsType<List<UserForListDto>>(okResult.Value);
-            Assert.Equal(returnValue[0].Username, users[0].Username);
+            Assert.Equal(returnValue[0].Username, users[0].UserName);
             Assert.Equal(users.Count, returnValue.Count);
         }
 
@@ -90,7 +90,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             // arrange
             var userId = 1;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
 
@@ -111,7 +111,7 @@ namespace RecipeBox.Tests.ControllerTests
             // arrange
             var userId = 2;
             var email = "josh2@famemail.com";
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _recipeRepoMock.Setup(x => x.GetUser(userId));
             _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(true);
@@ -132,7 +132,7 @@ namespace RecipeBox.Tests.ControllerTests
             // arrange
             var userId = 2;
             var email = "josh2@famemail.com";
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(true);
@@ -154,7 +154,7 @@ namespace RecipeBox.Tests.ControllerTests
             // arrange
             var userId = 2;
             var email = "josh2@famemail.com";
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(false);
@@ -177,7 +177,7 @@ namespace RecipeBox.Tests.ControllerTests
             // arrange
             var userId = 2;
             var email = "josh2@famemail.com";
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(false);
@@ -200,18 +200,18 @@ namespace RecipeBox.Tests.ControllerTests
             {
                 new User()
                 {
-                    UserId = 1,
-                    Username = "Bob"
+                    Id = 1,
+                    UserName = "Bob"
                 },
                 new User()
                 {
-                    UserId = 2,
-                    Username = "George"
+                    Id = 2,
+                    UserName = "George"
                 },
                 new User()
                 {
-                    UserId = 3,
-                    Username = "Susie"
+                    Id = 3,
+                    UserName = "Susie"
                 }
             };
         }
