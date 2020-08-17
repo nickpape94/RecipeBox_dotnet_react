@@ -46,6 +46,7 @@ namespace RecipeBox.API
                 opt.Password.RequiredLength = 6;
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequireUppercase = false;
+                opt.User.RequireUniqueEmail = true;
             });
 
             builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);

@@ -9,7 +9,7 @@ using RecipeBox.API.Data;
 namespace RecipeBox.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200816143025_IdentityInitial")]
+    [Migration("20200817122250_IdentityInitial")]
     partial class IdentityInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
