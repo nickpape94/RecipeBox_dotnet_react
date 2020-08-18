@@ -85,114 +85,114 @@ namespace RecipeBox.Tests.ControllerTests
             Assert.Equal(users.Count, returnValue.Count);
         }
 
-        [Fact]
-        public void UpdateEmail_UnauthorizedUserClaims_ReturnsUnauthorized()
-        {
-            // arrange
-            var userId = 1;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        // [Fact]
+        // public void UpdateEmail_UnauthorizedUserClaims_ReturnsUnauthorized()
+        // {
+        //     // arrange
+        //     var userId = 1;
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
-            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
 
-            // Act
-            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
-                Email = "josh2@famemail.com"
-            }).Result;
+        //     // Act
+        //     var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+        //         Email = "josh2@famemail.com"
+        //     }).Result;
 
 
-            // assert
-            Assert.IsType<UnauthorizedResult>(result);
+        //     // assert
+        //     Assert.IsType<UnauthorizedResult>(result);
             
-        }
+        // }
         
-        [Fact]
-        public void UpdateEmail_UserNotFound_ReturnsNotFound()
-        {
-            // arrange
-            var userId = 2;
-            var email = "josh2@famemail.com";
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        // [Fact]
+        // public void UpdateEmail_UserNotFound_ReturnsNotFound()
+        // {
+        //     // arrange
+        //     var userId = 2;
+        //     var email = "josh2@famemail.com";
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
-            _recipeRepoMock.Setup(x => x.GetUser(userId));
-            _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(true);
+        //     _recipeRepoMock.Setup(x => x.GetUser(userId));
+        //     _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(true);
 
-            // Act
-            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
-                Email = email
-            }).Result;
+        //     // Act
+        //     var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+        //         Email = email
+        //     }).Result;
 
 
-            // assert
-            Assert.IsType<NotFoundResult>(result);
-        }
+        //     // assert
+        //     Assert.IsType<NotFoundResult>(result);
+        // }
         
-        [Fact]
-        public void UpdateEmail_EmailAlreadyInUse_ReturnsBadRequest()
-        {
-            // arrange
-            var userId = 2;
-            var email = "josh2@famemail.com";
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        // [Fact]
+        // public void UpdateEmail_EmailAlreadyInUse_ReturnsBadRequest()
+        // {
+        //     // arrange
+        //     var userId = 2;
+        //     var email = "josh2@famemail.com";
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
-            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(true);
+        //     _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(true);
 
-            // Act
-            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
-                Email = email
-            }).Result;
+        //     // Act
+        //     var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+        //         Email = email
+        //     }).Result;
 
 
-            // assert
-            var okResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Email already in use", okResult.Value);
-        }
+        //     // assert
+        //     var okResult = Assert.IsType<BadRequestObjectResult>(result);
+        //     Assert.Equal("Email already in use", okResult.Value);
+        // }
         
-        [Fact]
-        public void UpdateEmail_Successful_ReturnsSuccessMessage()
-        {
-            // arrange
-            var userId = 2;
-            var email = "josh2@famemail.com";
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        // [Fact]
+        // public void UpdateEmail_Successful_ReturnsSuccessMessage()
+        // {
+        //     // arrange
+        //     var userId = 2;
+        //     var email = "josh2@famemail.com";
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
-            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(false);
-            _recipeRepoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+        //     _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(false);
+        //     _recipeRepoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
 
-            // Act
-            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
-                Email = email
-            }).Result;
+        //     // Act
+        //     var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+        //         Email = email
+        //     }).Result;
 
 
-            // assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Email address updated successfully", okResult.Value);
-        }
+        //     // assert
+        //     var okResult = Assert.IsType<OkObjectResult>(result);
+        //     Assert.Equal("Email address updated successfully", okResult.Value);
+        // }
         
-        [Fact]
-        public void UpdateEmail_FailsOnSave_ReturnsBadRequest()
-        {
-            // arrange
-            var userId = 2;
-            var email = "josh2@famemail.com";
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        // [Fact]
+        // public void UpdateEmail_FailsOnSave_ReturnsBadRequest()
+        // {
+        //     // arrange
+        //     var userId = 2;
+        //     var email = "josh2@famemail.com";
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
-            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(false);
-            _recipeRepoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+        //     _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _authRepoMock.Setup(x => x.UserExists(email)).ReturnsAsync(false);
+        //     _recipeRepoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
 
-            // Act
-            var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
-                Email = email
-            }).Result;
+        //     // Act
+        //     var result = _usersController.UpdateUserEmail(userId, new UserEmailForUpdateDto {
+        //         Email = email
+        //     }).Result;
 
 
-            // assert
-            var okResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Updating email address failed on save", okResult.Value);
-        }
+        //     // assert
+        //     var okResult = Assert.IsType<BadRequestObjectResult>(result);
+        //     Assert.Equal("Updating email address failed on save", okResult.Value);
+        // }
 
         private ICollection<User> GetFakeUserList()
         {
