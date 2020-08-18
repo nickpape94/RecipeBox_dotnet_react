@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RecipeBox.API.Data;
 using RecipeBox.API.Models;
-using RecipeBox.API.Service;
+using RecipeBox.API.Services;
 
 namespace RecipeBox.API.Controllers
 {

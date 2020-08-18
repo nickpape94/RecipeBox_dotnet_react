@@ -24,7 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using RecipeBox.API.Data;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
-using RecipeBox.API.Service;
+using RecipeBox.API.Services;
 
 namespace RecipeBox.API
 {
