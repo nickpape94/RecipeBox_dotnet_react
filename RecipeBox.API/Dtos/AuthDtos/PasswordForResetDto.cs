@@ -5,7 +5,18 @@ namespace RecipeBox.API.Dtos.AuthDtos
     public class PasswordForResetDto
     {
         [Required]
-        [StringLength(20, MinimumLength = 6, ErrorMessage = "You must specify a password between 6 and 20 characters")]
+        public string Token { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(50, MinimumLength = 6)]
         public string NewPassword { get; set; }
+
+        [Required]
+        [StringLength(50, MinimumLength = 6)]
+        public string ConfirmPassword { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.AuthDtos;
 using RecipeBox.API.Models;
 using RecipeBox.API.Services;
 
@@ -69,7 +71,7 @@ namespace RecipeBox.API.Controllers
         }
 
         // /api/auth/confirmemail?userid&token
-        [HttpGet("confirmemail")]
+        [HttpGet("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail(int userId, string token)
         {
             var user = await _recipeRepo.GetUser(userId);
@@ -105,6 +107,34 @@ namespace RecipeBox.API.Controllers
             }
 
             return Unauthorized();
+        }
+
+        [HttpPost("forgetPassword")]
+        public async Task<IActionResult> ForgetPassword([FromBody]string email)
+        {
+            var emailAttribute = new EmailAddressAttribute();
+            if (!emailAttribute.IsValid(email)) return BadRequest("Invalid email");
+
+            var userFromRepo = await _recipeRepo.GetUser(email);
+            if (userFromRepo == null) return BadRequest("User not found");
+
+            var result = await _emailService.ForgetPasswordAsync(userFromRepo.Email);
+            
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
+        
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPassword(PasswordForResetDto passwordForResetDto)
+        {
+            var result = await _emailService.ResetPasswordAsync(passwordForResetDto);
+
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
         }
        
         // [HttpPost("user/{userId}/changePassword")]
