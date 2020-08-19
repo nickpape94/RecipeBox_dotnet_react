@@ -14,6 +14,7 @@ using RecipeBox.API.Data;
 using RecipeBox.API.Dtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
+using RecipeBox.API.Services;
 using RecipeBox.Tests.Helpers;
 using Xunit;
 
@@ -25,6 +26,7 @@ namespace RecipeBox.Tests
         private Mock<IConfiguration> _configMock;
         private Mock<FakeUserManager> _mockUserManager;
         private Mock<FakeSignInManager> _mockSignInManager;
+        private Mock<IEmailService> _mockEmailService;
         private AuthController _authController;
         private readonly ClaimsPrincipal _userClaims;
         public AuthControllerTests()
@@ -32,6 +34,7 @@ namespace RecipeBox.Tests
             // (MockBehavior.Strict)
             _recipeRepoMock = new Mock<IRecipeRepository>();
             _configMock = new Mock<IConfiguration>();
+            _mockEmailService = new Mock<IEmailService>();
 
             var userStoreMock = new Mock<IUserStore<User>>();
 
@@ -48,7 +51,7 @@ namespace RecipeBox.Tests
 
             _configMock.Setup(x => x.GetSection("AppSettings:Token").Value).Returns("my super secret key");
 
-            _authController = new AuthController(_recipeRepoMock.Object ,_configMock.Object, mapper, _mockUserManager.Object, _mockSignInManager.Object);
+            _authController = new AuthController(_recipeRepoMock.Object ,_configMock.Object, mapper, _mockUserManager.Object, _mockSignInManager.Object, _mockEmailService.Object);
 
             // Mock claim types
             _userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -72,8 +75,13 @@ namespace RecipeBox.Tests
                 UserName = "nick"
             };
 
+            // var fakeToken = "Q2ZESjhFVE5VYVBEb3FOQWhNbDduWHRuUXF3OWZZdDMva2dtUU9zTlJZR3JXcytXOG54MXF6bVc2UktDeUdZbVk1RUlHYTduUmRmM0o5Vkp4M2dTMHJZeHNzN0FPMGFFNE9YbGxCL0JiTzZ1TWZEb0RBME4yMERGVFdraUNXYWtOUkR1OFJpTXF3dkEzUEltRFh0Wm8wbDNLSnZqU21INlBNYytGdDEzLzFIUE5QNDc2V2NYZWVyT2pHVjNKOWI3K25Kc0ZnPT0";
+
             _mockUserManager.Setup(x => x.CreateAsync(It.IsAny<User>(), "password123")).Returns(Task.FromResult(IdentityResult.Success)).Verifiable();
+           
             _mockUserManager.Setup(x => x.FindByEmailAsync(userToCreate.Email)).Returns(Task.FromResult(userToCreate));
+            
+            _mockUserManager.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync("ervipevpievpjevpoj").Verifiable();
 
             // Act
             var result = _authController.Register(new UserForRegisterDto
@@ -111,6 +119,68 @@ namespace RecipeBox.Tests
 
             // Assert
             var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(new List<IdentityError>(), okResult.Value);
+        }
+
+        [Fact]
+        public void Confirm_Email_User_Not_Found_Returns_Not_Found()
+        {
+            // Arrange
+            int userId = 10;
+            _recipeRepoMock.Setup(x => x.GetUser(userId));
+
+            // Act
+            var result = _authController.ConfirmEmail(userId, It.IsAny<string>()).Result;
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+        
+        [Fact]
+        public void Confirm_Email_Successful_ReturnsOk()
+        {
+            // Arrange
+            int userId = 10;
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(new User
+            {
+                Email = "nick@fakemail.com",
+                UserName = "nick"
+            });
+            _mockEmailService.Setup(x => x.ConfirmEmailAsync(userId, It.IsAny<string>())).ReturnsAsync(new UserManagerResponse
+            {
+                Message = "success",
+                IsSuccess = true
+            });
+
+            // Act
+            var result = _authController.ConfirmEmail(userId, "somerandomstring").Result;
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Thanks for confirming your email!", okResult.Value);
+        }
+        
+        [Fact]
+        public void Confirm_Email_Fails_Returns_BadRequest()
+        {
+            // Arrange
+            int userId = 10;
+            var response = new UserManagerResponse 
+            { Errors = null, ExpireDate = null, IsSuccess = false, Message = "email confirmation failed" 
+            };
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(new User
+            {
+                Email = "nick@fakemail.com",
+                UserName = "nick"
+            });
+            _mockEmailService.Setup(x => x.ConfirmEmailAsync(userId, It.IsAny<string>())).ReturnsAsync(response);
+
+            // Act
+            var result = _authController.ConfirmEmail(userId, "somerandomstring").Result;
+
+            // Assert
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
         }
 
         [Fact]
