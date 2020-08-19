@@ -7,11 +7,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos;
 using RecipeBox.API.Models;
+using RecipeBox.API.Services;
 
 namespace RecipeBox.API.Controllers
 {
@@ -25,9 +27,11 @@ namespace RecipeBox.API.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailService _emailService;
         
-        public AuthController(IRecipeRepository recipeRepo, IConfiguration config, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthController(IRecipeRepository recipeRepo, IConfiguration config, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IEmailService emailService)
         {
+            _emailService = emailService;
             _signInManager = signInManager;
             _userManager = userManager;
             _recipeRepo = recipeRepo;
@@ -47,11 +51,40 @@ namespace RecipeBox.API.Controllers
 
             if (result.Succeeded)
             {
+                var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(userToCreate);
+
+                var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+                var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+                string url = $"localhost:5000/api/auth/confirmemail?userid={userToCreate.Id}&token={validEmailToken}";
+
+                await _emailService.SendEmailAsync(userToCreate.Email, "Confirm your email", 
+                $"<h3>Welcome to Recipe Box</h3> <p>Please confirm your email by <a href='{url}'>Clicking here</a></p>");
+
                 return CreatedAtRoute("GetUser", new {controller = "Users", id = userToCreate.Id}, userToReturn);
             }
 
             return BadRequest(result.Errors);
 
+        }
+
+        // /api/auth/confirmemail?userid&token
+        [HttpGet("confirmemail")]
+        public async Task<IActionResult> ConfirmEmail(int userId, string token)
+        {
+            var user = await _recipeRepo.GetUser(userId);
+            
+            if (user == null || string.IsNullOrWhiteSpace(token)) return NotFound();
+
+            var result = await _emailService.ConfirmEmailAsync(userId, token);
+
+            if (result.IsSuccess)
+            {
+                // Need to come back to this to return an HTML page!
+                return Ok("Thanks for confirming your email!");
+            }
+
+            return BadRequest(result);
         }
 
         [HttpPost("login", Name = "Login")]

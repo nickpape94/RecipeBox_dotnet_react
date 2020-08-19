@@ -84,6 +84,10 @@ namespace RecipeBox.API
             // services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddTransient<IEmailService, EmailService>();
+
+            services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<DataContext>()
+                .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
             
             
         }
