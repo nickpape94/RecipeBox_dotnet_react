@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RecipeBox.API.Controllers;
 using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.PostDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 using Xunit;

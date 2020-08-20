@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.PhotoDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 

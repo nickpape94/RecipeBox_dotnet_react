@@ -1,4 +1,4 @@
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.PostDtos
 {
     public class PostForSearchDto
     {

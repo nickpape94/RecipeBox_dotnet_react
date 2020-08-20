@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
 using RecipeBox.API.Dtos.AuthDtos;
+using RecipeBox.API.Dtos.UserDtos;
 using RecipeBox.API.Models;
 using RecipeBox.API.Services;
 
@@ -159,6 +159,7 @@ namespace RecipeBox.API.Controllers
             }
 
             return Unauthorized();
+
 
         }
 

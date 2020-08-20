@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using RecipeBox.API.Models;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.PostDtos
 {
     public class PostForUpdateDto
     {

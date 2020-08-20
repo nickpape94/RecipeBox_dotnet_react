@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.AuthDtos
 {
     public class UserForRegisterDto
     {

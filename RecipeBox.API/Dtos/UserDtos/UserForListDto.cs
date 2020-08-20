@@ -1,6 +1,6 @@
 using System;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.UserDtos
 {
     public class UserForListDto
     {

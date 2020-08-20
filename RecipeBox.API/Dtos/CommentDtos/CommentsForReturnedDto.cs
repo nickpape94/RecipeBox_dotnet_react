@@ -1,7 +1,7 @@
 using System;
 using RecipeBox.API.Models;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.CommentDtos
 {
     public class CommentsForReturnedDto
     {

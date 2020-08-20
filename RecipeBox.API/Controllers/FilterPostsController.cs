@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.PostDtos;
 using RecipeBox.API.Helpers;
-using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Controllers
 {
