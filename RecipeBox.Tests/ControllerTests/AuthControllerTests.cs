@@ -362,24 +362,70 @@ namespace RecipeBox.Tests
             Assert.Equal(response, okResult.Value);
         }
 
-        // [Fact]
-        // public void ChangePassword_UnauthorizedUserClaims_ReturnsUnauthorized()
-        // {
-        //     // arrange
-        //     var userId = 1;
-        //     var userFromRepo = FakeUsers().SingleOrDefault(x => x.Id == userId);
+        [Fact]
+        public void ChangePassword_UnauthorizedUserClaims_ReturnsUnauthorized()
+        {
+            _recipeRepoMock.Setup(x => x.GetUser(2)).ReturnsAsync(
+                new User
+                {
+                    UserName = "testuser",
+                    Email = "testuser@fakemail.com"
+                }
+            );
 
-        //     // act
-        //     _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            var result = _authController.ChangePassword(It.IsAny<int>(), new PasswordForChangeDto {
+                OldPassword = "password",
+                NewPassword = "password1"
+            }).Result;
 
-        //     var result = _authController.ChangePassword(userId, new PasswordForChangeDto {
-        //         OldPassword = "password",
-        //         NewPassword = "password1"
-        //     }).Result;
+            // assert
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+        
+        [Fact]
+        public void ChangePassword_UserAuthorized_ReturnsOkObjectResult_WithToken()
+        {
+            var userId = 2;
+            var oldPassword = "password";
+            var newPassword = "password2";
+            var userFromRepo = FakeUsers().SingleOrDefault(x => x.Id == userId);
 
-        //     // assert
-        //     Assert.IsType<UnauthorizedResult>(result);
-        // }
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _mockUserManager.Setup(x => x.ChangePasswordAsync(userFromRepo, oldPassword, newPassword)).ReturnsAsync(IdentityResult.Success);
+
+            var result = _authController.ChangePassword(userId, new PasswordForChangeDto {
+                OldPassword = oldPassword,
+                NewPassword = newPassword
+            }).Result;
+
+            // assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            // Assert.Equal(new {
+            //     token = typeof(string),
+            //     user = typeof(UserForDetailedDto)
+            // }, okResult.Value);
+        }
+        
+        [Fact]
+        public void ChangePassword_UserAuthorized_FailsToChangePassword_ReturnsUnauthorized()
+        {
+            var userId = 2;
+            var oldPassword = "password";
+            var newPassword = "password2";
+            var userFromRepo = FakeUsers().SingleOrDefault(x => x.Id == userId);
+
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+            _mockUserManager.Setup(x => x.ChangePasswordAsync(userFromRepo, oldPassword, newPassword)).ReturnsAsync(IdentityResult.Failed());
+
+            var result = _authController.ChangePassword(userId, new PasswordForChangeDto {
+                OldPassword = oldPassword,
+                NewPassword = newPassword
+            }).Result;
+
+            // assert
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
+            // Assert.Equal("hi", okResult.Value);
+        }
         
         // [Fact]
         // public void ChangePassword_Success_ReturnsOk()

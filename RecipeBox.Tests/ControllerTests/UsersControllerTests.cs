@@ -18,14 +18,12 @@ namespace RecipeBox.Tests.ControllerTests
     public class UsersControllerTests
     {
         private Mock<IRecipeRepository> _recipeRepoMock;
-        private Mock<IAuthRepository> _authRepoMock; 
         private UsersController _usersController;
         private readonly ClaimsPrincipal _userClaims;
 
         public UsersControllerTests()
         {
             _recipeRepoMock = new Mock<IRecipeRepository>();
-            _authRepoMock = new Mock<IAuthRepository>();
 
             var mockMapper = new MapperConfiguration(cfg => {cfg.AddProfile(
                 new AutoMapperProfiles()); });

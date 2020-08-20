@@ -137,31 +137,30 @@ namespace RecipeBox.API.Controllers
             return BadRequest(result);
         }
        
-        // [HttpPost("user/{userId}/changePassword")]
-        // public async Task<IActionResult> ChangePassword(int userId, PasswordForChangeDto passwordForChangeDto)
-        // {
-        //     if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+        [HttpPost("user/{userId}/changePassword")]
+        public async Task<IActionResult> ChangePassword(int userId, PasswordForChangeDto passwordForChangeDto)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-        //     var user = await _recipeRepo.GetUser(userId);
+            var user = await _recipeRepo.GetUser(userId);
 
-        //     // var passwordToChange = _mapper.Map<User>(passwordForChangeDto);
+            // if (passwordForChangeDto.NewPassword != passwordForChangeDto.OldPassword) return BadRequest("Passwords do not match");
 
-        //     var updatedUserPassword = await _authRepo.ResetPassword(userId, passwordForChangeDto.OldPassword ,passwordForChangeDto.NewPassword);
+            var result = await _userManager.ChangePasswordAsync(user, passwordForChangeDto.OldPassword, passwordForChangeDto.NewPassword);
 
-        //     var userToReturn = _mapper.Map<UserForDetailedDto>(updatedUserPassword);
+            if (result.Succeeded)
+            {
+                var userToReturn = _mapper.Map<UserForDetailedDto>(user);
 
-        //     // Relogin user back in if logged out during password reset
-        //     var userForLogin = new UserForLoginDto
-        //     {
-        //         Email = user.Email,
-        //         Password = passwordForChangeDto.NewPassword
-        //     };
+                return Ok(new {
+                    token = GenerateJwtToken(user),
+                    user = userToReturn
+                });
+            }
 
-        //     var loginWithNewPassword = Login(userForLogin);
+            return Unauthorized();
 
-        //     return Ok(userToReturn);
-
-        // }
+        }
 
         private string GenerateJwtToken(User user)
         {
