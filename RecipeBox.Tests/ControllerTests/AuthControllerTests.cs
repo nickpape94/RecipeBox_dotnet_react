@@ -12,6 +12,7 @@ using Moq;
 using RecipeBox.API.Controllers;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.AuthDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 using RecipeBox.API.Services;
@@ -237,6 +238,128 @@ namespace RecipeBox.Tests
             //     token = Type<Jw>,
             //     user = "RecipeBox.API.Dtos.UserForListDto"
             // });
+        }
+
+        [Fact]
+        public void ForgetPassword_InvalidEmail_ReturnsBadRequest()
+        {
+            var email = "invalidemail.com";
+
+            var result = _authController.ForgetPassword(email).Result;
+
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Invalid email", okResult.Value);
+
+        }
+        
+        [Fact]
+        public void ForgetPassword_NoMatchingUser_ReturnsBadRequest()
+        {
+            var email = "validemail@fakemail.com";
+
+            var result = _authController.ForgetPassword(email).Result;
+
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("User not found", okResult.Value);
+
+        }
+        
+        [Fact]
+        public void ForgetPassword_FindsUser_SendsEmail_ReturnsOk()
+        {
+            var email = "validemail@fakemail.com";
+            var response = new UserManagerResponse
+            {
+                IsSuccess = true,
+                Message = "Reset password URL has been sent to the email successfully"
+            };
+            _recipeRepoMock.Setup(x => x.GetUser(email)).ReturnsAsync(
+                new User
+                {
+                    UserName = "user1",
+                    Email = email
+                }
+            );
+            _mockEmailService.Setup(x => x.ForgetPasswordAsync(email)).ReturnsAsync(response);
+
+            var result = _authController.ForgetPassword(email).Result;
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
+
+        }
+        
+        [Fact]
+        public void ForgetPassword_FindsUser_FailsToSendsEmail_ReturnsBadRequest()
+        {
+            var email = "validemail@fakemail.com";
+            var response = new UserManagerResponse
+            {
+                IsSuccess = false,
+                Message = "Failed to send email to user"
+            };
+            _recipeRepoMock.Setup(x => x.GetUser(email)).ReturnsAsync(
+                new User
+                {
+                    UserName = "user1",
+                    Email = email
+                }
+            );
+            _mockEmailService.Setup(x => x.ForgetPasswordAsync(email)).ReturnsAsync(response);
+
+            var result = _authController.ForgetPassword(email).Result;
+
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
+
+        }
+
+        [Fact]
+        public void ResetPassword_Success_ReturnsOk()
+        {
+            var passwordForResetDto = new PasswordForResetDto
+            {
+                Token = It.IsAny<string>(),
+                Email = "someemail@fakemail.com",
+                NewPassword = "password1",
+                ConfirmPassword = "password1"
+            };
+            var response = new UserManagerResponse
+            {
+                IsSuccess = true,
+                Message = "Password reset was successful"
+            };
+            
+            _mockEmailService.Setup(x => x.ResetPasswordAsync(passwordForResetDto)).ReturnsAsync(response);
+
+            var result = _authController.ResetPassword(passwordForResetDto).Result;
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
+        }
+        
+        [Fact]
+        public void ResetPassWord_Fails_ReturnsBadRequest()
+        {
+            var passwordForResetDto = new PasswordForResetDto
+            {
+                Token = It.IsAny<string>(),
+                Email = "someemail@fakemail.com",
+                NewPassword = "password1",
+                ConfirmPassword = "password1"
+            };
+            var response = new UserManagerResponse
+            {
+                IsSuccess = false,
+                Message = "Password reset failed"
+            };
+            
+            _mockEmailService.Setup(x => x.ResetPasswordAsync(passwordForResetDto)).ReturnsAsync(response);
+
+            var result = _authController.ResetPassword(passwordForResetDto).Result;
+
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(response, okResult.Value);
         }
 
         // [Fact]
