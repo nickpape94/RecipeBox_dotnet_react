@@ -66,10 +66,14 @@ namespace RecipeBox.Tests
         {
             // Arrange
             var posts = GetFakePostList().ToList();
-            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(posts);
+            var pageParams = new PageParams();
+            var postsToPagedList = new PagedList<Post>(posts, 4, 1, 10);
+
+            _repoMock.Setup(x => x.GetPosts(pageParams))
+                .ReturnsAsync(postsToPagedList);
             
             // Act
-            var result = _postsController.GetPosts().Result;
+            var result = _postsController.GetPosts(pageParams).Result;
             
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);

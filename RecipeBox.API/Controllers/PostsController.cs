@@ -27,11 +27,29 @@ namespace RecipeBox.API.Controllers
         }
 
         // Get all posts
+        // [AllowAnonymous]
+        // [HttpGet("~/api/posts")]
+        // public async Task<IActionResult> GetPosts()
+        // {
+        //     var posts = await _recipeRepo.GetPosts();
+        //     var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
+
+        //     foreach (var post in posts)
+        //     {
+        //         post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+        //     }
+
+        //     var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
+
+        //     return Ok(postsFromRepo);
+        // }
+        
+        // Get all posts
         [AllowAnonymous]
         [HttpGet("~/api/posts")]
-        public async Task<IActionResult> GetPosts()
+        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams)
         {
-            var posts = await _recipeRepo.GetPosts();
+            var posts = await _recipeRepo.GetPosts(pageParams);
             var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
 
             foreach (var post in posts)
@@ -40,6 +58,8 @@ namespace RecipeBox.API.Controllers
             }
 
             var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
+
+            Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
 
             return Ok(postsFromRepo);
         }

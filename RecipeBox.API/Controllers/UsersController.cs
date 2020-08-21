@@ -1,15 +1,11 @@
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
 using RecipeBox.API.Dtos.UserDtos;
-using RecipeBox.API.Models;
+using RecipeBox.API.Helpers;
 
 namespace RecipeBox.API.Controllers
 {
@@ -27,11 +23,13 @@ namespace RecipeBox.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery]PageParams pageParams)
         {
-            var users = await _recipeRepo.GetUsers();
+            var users = await _recipeRepo.GetUsers(pageParams);
 
             var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
+
+            Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 
             return Ok(usersToReturn);
         }
