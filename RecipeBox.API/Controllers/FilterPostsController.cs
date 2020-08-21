@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos.PostDtos;
@@ -23,6 +24,7 @@ namespace RecipeBox.API.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Sort(PostForSearchDto postForSearch)
         {
             // sortOrder = JsonSerializer
@@ -88,6 +90,7 @@ namespace RecipeBox.API.Controllers
 
         // Sort by the user
         [HttpGet("user/{userId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> SortByUser(int userId)
         {
             var posts = await _recipeRepo.GetPosts();
@@ -101,6 +104,7 @@ namespace RecipeBox.API.Controllers
 
         // Search by cuisine, name
         [HttpPost("search")]
+        [AllowAnonymous]
         public async Task<IActionResult> SearchPosts(PostForSearchDto postForSearch)
         {
             var searchQueryToLower = postForSearch.SearchParams.Trim().ToLower();
