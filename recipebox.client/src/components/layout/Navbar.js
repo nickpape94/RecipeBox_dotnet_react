@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
 	return (
 		<nav className='navbar bg-dark'>
 			<h1>
-				<a href='index.html'>
+				<Link to='/'>
 					<i className='fas fa-drumstick-bite' /> FoodieConnector
-				</a>
+				</Link>
 			</h1>
 
 			{/* <!-- <div className="search-bar">
@@ -28,13 +29,13 @@ const Navbar = () => {
 
 			<ul>
 				<li>
-					<a href='profiles.html'>Chefs</a>
+					<Link to='!#'>Chefs</Link>
 				</li>
 				<li>
-					<a href='register.html'>Register</a>
+					<Link to='/register'>Register</Link>
 				</li>
 				<li>
-					<a href='login.html'>Login</a>
+					<Link to='/login'>Login</Link>
 				</li>
 			</ul>
 		</nav>
