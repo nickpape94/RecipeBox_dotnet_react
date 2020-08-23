@@ -43,10 +43,12 @@ namespace RecipeBox.API
             IdentityBuilder builder = services.AddIdentityCore<User>(opt =>
             {
                 opt.Password.RequireDigit = false;
-                opt.Password.RequiredLength = 6;
+                opt.Password.RequiredLength = 7;
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
                 opt.User.RequireUniqueEmail = true;
+                
             });
 
             builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);

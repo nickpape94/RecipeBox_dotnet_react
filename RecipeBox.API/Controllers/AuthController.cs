@@ -64,6 +64,7 @@ namespace RecipeBox.API.Controllers
                 $"<h3>Welcome to Recipe Box</h3> <p>Please confirm your email by <a href='{url}'>Clicking here</a></p>");
 
                 return CreatedAtRoute("GetUser", new {controller = "Users", id = userToCreate.Id}, userToReturn);
+                // return CreatedAtRoute("Login", new {controller = "Users", id = userToCreate.Id}, userToReturn);
             }
 
             return BadRequest(result.Errors);
