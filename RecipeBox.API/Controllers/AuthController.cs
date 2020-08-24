@@ -101,6 +101,8 @@ namespace RecipeBox.API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(userForLoginDto.Email);
 
+            if (user == null) return Unauthorized();
+
             var result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, false);
 
             if (result.Succeeded)
