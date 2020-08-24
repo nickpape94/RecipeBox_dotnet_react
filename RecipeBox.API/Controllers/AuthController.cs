@@ -63,8 +63,14 @@ namespace RecipeBox.API.Controllers
                 await _emailService.SendEmailAsync(userToCreate.Email, "Confirm your email", 
                 $"<h3>Welcome to Recipe Box</h3> <p>Please confirm your email by <a href='{url}'>Clicking here</a></p>");
 
-                return CreatedAtRoute("GetUser", new {controller = "Users", id = userToCreate.Id}, userToReturn);
+                // return CreatedAtRoute("GetUser", new {controller = "Users", id = userToCreate.Id}, userToReturn);
                 // return CreatedAtRoute("Login", new {controller = "Users", id = userToCreate.Id}, userToReturn);
+                var user = await _recipeRepo.GetUser(userToReturn.Id);
+
+                return Ok(new {
+                    token = GenerateJwtToken(user)
+                    // user = appUser
+                });
             }
 
             return BadRequest(result.Errors);

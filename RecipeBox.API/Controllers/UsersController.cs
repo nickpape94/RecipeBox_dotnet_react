@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos.UserDtos;
 using RecipeBox.API.Helpers;
+using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Controllers
 {
@@ -33,7 +36,7 @@ namespace RecipeBox.API.Controllers
 
             return Ok(usersToReturn);
         }
-
+        
         [AllowAnonymous]
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
@@ -41,6 +44,21 @@ namespace RecipeBox.API.Controllers
             var user = await _recipeRepo.GetUser(id);
             
             var userToReturn = _mapper.Map<UserForDetailedDto>(user);
+
+            return Ok(userToReturn);
+        }
+
+        [HttpGet("currentUser")]
+        // [AllowAnonymous]
+        public async Task<IActionResult> GetUser()
+        {
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // fails here
+
+            var user = await _recipeRepo.GetUser(currentUserId);
+
+            var userToReturn = _mapper.Map<UserForDetailedDto>(user);
+
+            // var result = _userManager.VerifyUserTokenAsync
 
             return Ok(userToReturn);
         }
