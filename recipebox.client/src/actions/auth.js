@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { setAlert } from './alert';
-import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL } from './types';
+import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
 // Load User
@@ -24,7 +24,8 @@ export const loadUser = () => async (dispatch) => {
 		});
 	} catch (err) {
 		dispatch({
-			type: AUTH_ERROR
+			type: AUTH_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
 		});
 	}
 };
@@ -95,4 +96,9 @@ export const login = ({ email, password }) => async (dispatch) => {
 			type: LOGIN_FAIL
 		});
 	}
+};
+
+// Logout
+export const logout = () => (dispatch) => {
+	dispatch({ type: LOGOUT });
 };
