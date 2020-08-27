@@ -9,7 +9,6 @@ const PostItem = ({
 	post: {
 		postId,
 		nameOfDish,
-		description,
 		prepTime,
 		cookingTime,
 		averageRating,
@@ -17,57 +16,64 @@ const PostItem = ({
 		comments,
 		postPhoto,
 		created,
+		ratings,
 		userId
 	}
-}) => {
-	return (
-		<div class='post bg-white p-1 my-1'>
-			<div>
-				<Link to={`/api/users/${userId}`}>
-					<img
-						class='round-img'
-						src='https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200'
-						alt=''
-					/>
-					<h4>John Doe</h4>
-				</Link>
-			</div>
-			{/* <div class="recipe-pics">
-          <Link to={`/api/posts/${postId}`}>
-            
-              <img class="recipe"
-                src="https://www.thespruceeats.com/thmb/5EJU2Kz4m7N3i2tTZe1G_wyzoVc=/1500x844/smart/filters:no_upscale()/classic-southern-fried-chicken-3056867-11_preview-5b106156119fa80036c19a9e.jpeg">
-           
-            <h2>Fried Chicken</h2>
-            <p class="my-1">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
-              possimus corporis sunt necessitatibus! Minus nesciunt soluta
-              suscipit nobis. Amet accusamus distinctio cupiditate blanditiis
-              dolor? Illo perferendis eveniet cum cupiditate aliquam?
-            </p>
-            <p class="post-date">
-              Posted on 04/16/2019
-            </p>
-            <button type="button" class="btn btn-light">
-              <i class="fas fa-thumbs-up"></i>
-              <span>4</span>
-            </button>
-            <button type="button" class="btn btn-light">
-              <i class="fas fa-thumbs-down"></i>
-              <span>2</span>
-            </button>
-
-            <a href="post.html" class="btn btn-primary">
-              Discussion <span class='comment-count'>2</span>
-            </a>
-            <button type="button" class="btn btn-danger">
-              <i class="fas fa-times"></i>
-            </button>
-          </Link>
-        </div> */}
+}) => (
+	<div className='post bg-white p-1 my-1'>
+		<div>
+			<a href='profile.html'>
+				<img
+					className='round-img'
+					src='https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200'
+					alt=''
+				/>
+				<h4>{nameOfDish}</h4>
+			</a>
 		</div>
-	);
-};
+		<div className='recipe-pics'>
+			<a href='recipe.html'>
+				<div className='zoom'>
+					<img className='recipe' src={postPhoto.url} />
+				</div>
+				<h2>{nameOfDish}</h2>
+				<p className='post-date'>{created}</p>
+				<a href='post.html'>
+					<i class='fas fa-comment' />
+					<span className='comment-count'>{comments.length}</span>
+				</a>
+				<button type='button' className='btn btn-danger'>
+					<i className='fas fa-times' />
+				</button>
+				<ul className='list-inline rating-list'>
+					<li>
+						<i className='fa fa-star ' title='Rate 5 Stars' />
+					</li>
+					<li>
+						<i className='fa fa-star' title='Rate 4 Stars' />
+					</li>
+					<li>
+						<i className='fa fa-star' title='Rate 3 Stars' />
+					</li>
+					<li>
+						<i className='fa fa-star checked' title='Rate 2 Stars' />
+					</li>
+					<li>
+						<i className='fa fa-star checked' title='Rate 1 Star' />
+					</li>
+					<small title='Ratings'>&nbsp;</small>
+				</ul>
+				<small title='Ratings'>({ratings.length})</small>
+				<p className='text-dark'>
+					<i class='far fa-clock'>{` Prep time: ${prepTime}`}</i>
+				</p>
+				<p className='text-dark'>
+					<i class='far fa-clock'>{` Cooking time: ${cookingTime}`}</i>
+				</p>
+			</a>
+		</div>
+	</div>
+);
 
 PostItem.propTypes = {
 	post: PropTypes.object.isRequired,

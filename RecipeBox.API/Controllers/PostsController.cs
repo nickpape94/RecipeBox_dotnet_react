@@ -55,9 +55,12 @@ namespace RecipeBox.API.Controllers
             foreach (var post in posts)
             {
                 post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+                
             }
 
             var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
+
+            postsFromRepo = postsFromRepo.OrderByDescending(x => x.Created);
 
             Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
 

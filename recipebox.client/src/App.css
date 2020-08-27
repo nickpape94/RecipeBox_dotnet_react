@@ -36,12 +36,35 @@ img {
 
 /* Utilities */
 .container {
-	max-width: 1100px;
+	max-width: 2100px;
 	margin: auto;
 	overflow: hidden;
 	padding: 0 2rem;
 	margin-top: 6rem;
 	margin-bottom: 3rem;
+}
+
+/* Star Rating system */
+
+.rating-list li {
+	float: right;
+	color: #ddd;
+	padding: 1px 4px;
+}
+
+/* .rating-list span {
+	flex-direction: column-reverse;
+	display: flex;
+} */
+
+.rating-list li:hover,
+.rating-list li:hover ~ li {
+	color: #e4cd4e;
+}
+
+.rating-list {
+	display: inline-block;
+	list-style: none;
 }
 
 /* Text Styles*/
@@ -167,6 +190,7 @@ img {
 .btn-light,
 .bg-light,
 .badge-light,
+.p-light,
 .alert-light {
 	background: var(--light-color);
 	color: #333;
@@ -457,9 +481,11 @@ button {
 
 .post {
 	display: grid;
-	grid-template-columns: 1fr 4fr;
-	grid-gap: 2rem;
-	align-items: center;
+	grid-template-columns: repeat(4, 1fr);
+	grid-auto-rows: 500px;
+	grid-auto-columns: 500px;
+	padding: 0.5rem;
+	column-gap: 10px;
 }
 
 .post > div:first-child {
@@ -479,7 +505,7 @@ button {
 }
 
 .post .post-date {
-	color: #aaa;
+	color: olivedrab;
 	font-size: 0.8rem;
 	margin-bottom: 0.5rem;
 }

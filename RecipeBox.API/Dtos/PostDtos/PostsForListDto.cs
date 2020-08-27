@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RecipeBox.API.Dtos.CommentDtos;
 using RecipeBox.API.Dtos.PhotoDtos;
@@ -19,5 +20,6 @@ namespace RecipeBox.API.Dtos.PostDtos
         public ICollection<PostPhotosForReturnDto> PostPhoto { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
+        public DateTime Created { get; set; }
     }
 }
