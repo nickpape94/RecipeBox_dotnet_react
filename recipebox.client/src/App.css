@@ -496,6 +496,26 @@ button {
 	border-bottom: 2px solid #cccccc;
 }
 
+.card__footer {
+	padding: 15px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	color: #bdb8b8;
+	background: rgb(207, 207, 207);
+	font-size: 0.8em;
+}
+
+.card__footer h3 {
+	font-size: 1.4em;
+	color: rgb(0, 0, 0);
+	margin-right: 240px;
+}
+
+.card__footer > div {
+	color: rgba(0, 0, 0, 0.781);
+}
+
 .card {
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
@@ -508,11 +528,11 @@ button {
 .card__content {
 	line-height: 1.5;
 	font-size: 0.9em;
-	padding: 15px;
+	padding: 10px;
 	background: #fafafa;
 }
 
-.card__content > p:first-of-type {
+.card__content .h3:hover {
 	margin-top: 0;
 }
 
@@ -521,12 +541,22 @@ button {
 }
 
 .card__link {
-	color: #64968c;
+	color: #212927;
 	text-decoration: none;
 }
 
 .card__link:hover {
 	text-decoration: underline;
+}
+
+/* Font awesome */
+.icon-a {
+	background: white;
+	border-radius: 50%;
+	height: 1.3em;
+	width: 1.3em;
+	padding-left: 15%;
+	padding-top: 10%;
 }
 
 /* Posts Page */

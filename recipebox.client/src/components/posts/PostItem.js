@@ -5,6 +5,10 @@ import Moment from 'react-moment';
 import { connect } from 'react-redux';
 import { Card } from 'react-bootstrap';
 
+// var userImage = !post.postPhoto ? <img src="https://www.pinpng.com/pngs/m/341-3415688_no-avatar-png-transparent-png.png"></img> : <img></img>
+// var mainPhoto = post.postPhoto.filter((x) => x.isMain == true);
+// console.log(mainPhoto);
+
 const PostItem = ({
 	auth,
 	post: {
@@ -15,31 +19,55 @@ const PostItem = ({
 		cookingTime,
 		averageRating,
 		cuisine,
-		comments,
 		postPhoto,
 		created,
 		ratings,
+		feeds,
 		userId
 	}
 }) => (
 	<div className='card'>
-		<img
-			src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Fish_and_chips_blackpool.jpg/1200px-Fish_and_chips_blackpool.jpg'
-			alt=''
-			className='card__img'
-		/>
-		<div className='__content'>
-			<h3>{nameOfDish}</h3>
-			<p>
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident veritatis, in veniam praesentium
-				assumenda similique dolore natus et, repellendus, dicta officia saepe minus rem sunt reiciendis facere
-				perspiciatis recusandae asperiores.
-			</p>
+		<Link to='#!'>
+			<img
+				src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Fish_and_chips_blackpool.jpg/1200px-Fish_and_chips_blackpool.jpg'
+				alt=''
+				className='card__img'
+			/>
+		</Link>
+		<div className='card__content'>
+			<Link to='#!' className='card__link'>
+				<h2>{nameOfDish}</h2>
+			</Link>
+			<p>{description}</p>
+
 			<div className='card__info'>
-				<div>310</div>
-				<a href='#!' className='card__link'>
-					view article
-				</a>
+				<div>
+					<i className='fas fa-utensils' />
+					{' ' + cuisine}
+				</div>
+				<div>
+					<i className='far fa-clock' /> Prep Time: {prepTime}
+				</div>
+				<div>
+					<i className='fas fa-clock' /> Cooking Time: {cookingTime}
+				</div>
+				<div>
+					<i className='fas fa-user-friends' /> Feeds: {feeds}
+				</div>
+			</div>
+
+			<div className='card__footer'>
+				<div className='round-img'>
+					<i className='fas fa-user fa-3x icon-a' />
+				</div>
+				<div>
+					<h3> Nick Pape</h3>
+				</div>
+				<div>
+					<h4>
+						Posted on <Moment format='DD/MM/YYYY'>{created}</Moment>
+					</h4>
+				</div>
 			</div>
 		</div>
 	</div>
