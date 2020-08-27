@@ -21,7 +21,8 @@ const PostItem = ({
 	}
 }) => (
 	<div className='post bg-white p-1 my-1'>
-		<div>
+		<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Fish_and_chips_blackpool.jpg/1200px-Fish_and_chips_blackpool.jpg' />
+		{/* <div>
 			<a href='profile.html'>
 				<img
 					className='round-img'
@@ -71,7 +72,7 @@ const PostItem = ({
 					<i class='far fa-clock'>{` Cooking time: ${cookingTime}`}</i>
 				</p>
 			</a>
-		</div>
+		</div> */}
 	</div>
 );
 

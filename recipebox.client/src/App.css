@@ -482,10 +482,12 @@ button {
 .post {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
+	/* grid-template-rows: repeat(3, 1fr); */
 	grid-auto-rows: 500px;
 	grid-auto-columns: 500px;
-	padding: 0.5rem;
+	padding: 0.002rem;
 	column-gap: 10px;
+	/* border: #0077b5; */
 }
 
 .post > div:first-child {
@@ -493,7 +495,8 @@ button {
 }
 
 .post img {
-	width: 100px;
+	height: 75%;
+	width: 429%;
 }
 
 .post .comment-count {
