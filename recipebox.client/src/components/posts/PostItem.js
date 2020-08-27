@@ -22,17 +22,12 @@ const PostItem = ({
 }) => (
 	<div className='post bg-white p-1 my-1'>
 		<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Fish_and_chips_blackpool.jpg/1200px-Fish_and_chips_blackpool.jpg' />
-		{/* <div>
+		<div className='post description bg-white p-1 my-1'>
 			<a href='profile.html'>
-				<img
-					className='round-img'
-					src='https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200'
-					alt=''
-				/>
 				<h4>{nameOfDish}</h4>
 			</a>
 		</div>
-		<div className='recipe-pics'>
+		{/* <div className='recipe-pics'>
 			<a href='recipe.html'>
 				<div className='zoom'>
 					<img className='recipe' src={postPhoto.url} />

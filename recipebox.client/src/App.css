@@ -499,6 +499,16 @@ button {
 	width: 429%;
 }
 
+.post .description {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	height: 25%;
+	width: 429%;
+	/* align-items: center; */
+	/* grid-area: center; */
+	/* margin-right: 100%; */
+}
+
 .post .comment-count {
 	background: var(--light-color);
 	color: var(--primary-color);
