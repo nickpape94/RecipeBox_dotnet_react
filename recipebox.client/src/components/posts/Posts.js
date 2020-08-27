@@ -18,7 +18,7 @@ const Posts = ({ getPosts, post: { posts, loading } }) => {
 		<Spinner />
 	) : (
 		<Fragment>
-			<div className='post'>{posts.map((post) => <PostItem key={post.postId} post={post} />)}</div>
+			<div className='cards'>{posts.map((post) => <PostItem key={post.postId} post={post} />)}</div>
 		</Fragment>
 	);
 };
