@@ -476,9 +476,9 @@ button {
 /* Cards */
 .cards {
 	margin: 0 auto;
-	max-width: 1700px;
+	max-width: 1500px;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 	grid-area: 20px;
 	font-family: sans-serif;
 	column-gap: 10px;
@@ -488,7 +488,7 @@ button {
 .card__info {
 	padding: 15px;
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: center;
 	color: #555555;
 	background: #eeeeee;
@@ -497,9 +497,9 @@ button {
 }
 
 .card__footer {
-	padding: 15px;
+	padding: 8px;
 	display: flex;
-	justify-content: space-between;
+	/* justify-content: space-between; */
 	align-items: center;
 	color: #bdb8b8;
 	background: rgb(207, 207, 207);
@@ -509,7 +509,15 @@ button {
 .card__footer h3 {
 	font-size: 1.2em;
 	color: rgb(0, 0, 0);
-	margin-right: 240px;
+	margin-right: auto;
+	padding-left: 8px;
+}
+
+.card__footer h4 {
+	font-size: 1.2em;
+	color: rgb(51, 49, 49);
+	margin-right: auto;
+	/* margin-right: 280px; */
 }
 
 .card__footer > div {

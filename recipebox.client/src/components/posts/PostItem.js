@@ -67,66 +67,15 @@ const PostItem = ({
 				<div>
 					<i className='fas fa-user fa-3x icon-a' />
 				</div>
-				<div>
-					<h3> {author}</h3>
-				</div>
+				<h3> {author}</h3>
 				<div>
 					<h4>
-						Posted on <Moment format='DD/MM/YYYY'>{created}</Moment>
+						Posted on: <Moment format='DD/MM/YYYY'>{created}</Moment>
 					</h4>
 				</div>
 			</div>
 		</div>
 	</div>
-	// <div className='post bg-white p-1 my-1'>
-	// 	<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Fish_and_chips_blackpool.jpg/1200px-Fish_and_chips_blackpool.jpg' />
-	// 	<div className='post description bg-white p-1 my-1'>
-	// 		<a href='profile.html'>
-	// 			<h4>{nameOfDish}</h4>
-	// 		</a>
-	// 	</div>
-	// 	<div className='recipe-pics'>
-	// 		<a href='recipe.html'>
-	// 			<div className='zoom'>
-	// 				<img className='recipe' src={postPhoto.url} />
-	// 			</div>
-	// 			<h2>{nameOfDish}</h2>
-	// 			<p className='post-date'>{created}</p>
-	// 			<a href='post.html'>
-	// 				<i class='fas fa-comment' />
-	// 				<span className='comment-count'>{comments.length}</span>
-	// 			</a>
-	// 			<button type='button' className='btn btn-danger'>
-	// 				<i className='fas fa-times' />
-	// 			</button>
-	// 			<ul className='list-inline rating-list'>
-	// 				<li>
-	// 					<i className='fa fa-star ' title='Rate 5 Stars' />
-	// 				</li>
-	// 				<li>
-	// 					<i className='fa fa-star' title='Rate 4 Stars' />
-	// 				</li>
-	// 				<li>
-	// 					<i className='fa fa-star' title='Rate 3 Stars' />
-	// 				</li>
-	// 				<li>
-	// 					<i className='fa fa-star checked' title='Rate 2 Stars' />
-	// 				</li>
-	// 				<li>
-	// 					<i className='fa fa-star checked' title='Rate 1 Star' />
-	// 				</li>
-	// 				<small title='Ratings'>&nbsp;</small>
-	// 			</ul>
-	// 			<small title='Ratings'>({ratings.length})</small>
-	// 			<p className='text-dark'>
-	// 				<i class='far fa-clock'>{` Prep time: ${prepTime}`}</i>
-	// 			</p>
-	// 			<p className='text-dark'>
-	// 				<i class='far fa-clock'>{` Cooking time: ${cookingTime}`}</i>
-	// 			</p>
-	// 		</a>
-	// 	</div>
-	// </div>
 );
 
 PostItem.propTypes = {
