@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using RecipeBox.API.Models;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.PostDtos
 {
     public class PostForUpdateDto
     {
@@ -29,7 +29,7 @@ namespace RecipeBox.API.Dtos
         public string CookingTime { get; set; }
         
         [Required]
-        [StringLength(30, MinimumLength = 5, ErrorMessage = "Number of people this recipe feeds must be between 5 and 30 characters long")]
+        [StringLength(15, MinimumLength = 1, ErrorMessage = "Number of people this recipe feeds must be between 1 and 15 characters long")]
         public string Feeds { get; set; }
         
         [StringLength(35, MinimumLength = 2, ErrorMessage = "Cuisine must be between 2 and 35 characters long")]

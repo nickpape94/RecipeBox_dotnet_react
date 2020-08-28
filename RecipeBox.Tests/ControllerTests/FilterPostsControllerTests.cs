@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RecipeBox.API.Controllers;
 using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.PostDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 using Xunit;
@@ -50,7 +50,7 @@ namespace RecipeBox.Tests.ControllerTests
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(postsSorted , okResult.Value);
 
-
+            // should return posts in order 2, 3, 1
         }
         
         [Fact]
@@ -98,10 +98,17 @@ namespace RecipeBox.Tests.ControllerTests
         {
             // Arrange
             var postsFromRepo = GetFakePosts();
+            var post1Ratings = Post1Ratings();
+            var post2Ratings = Post2Ratings();
+            var post3Ratings = Post3Ratings();
+
             // var postsSorted = postsFromRepo.OrderByDescending( r => r.Created);
             
             // Act
             _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
+            _repoMock.Setup(x => x.GetRatings(1)).ReturnsAsync(post1Ratings);
+            _repoMock.Setup(x => x.GetRatings(2)).ReturnsAsync(post2Ratings);
+            _repoMock.Setup(x => x.GetRatings(3)).ReturnsAsync(post3Ratings);
 
             var result = _filterPostsController.Sort(new PostForSearchDto {
                 OrderBy = "highest rated"
@@ -118,7 +125,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             // Arrange
             int userId = 2;
-            var userFromRepo = GetFakeUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetFakePosts();
 
             // Act
@@ -136,7 +143,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             // Arrange
             int userId = 1;
-            var userFromRepo = GetFakeUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetFakePosts();
             var filteredPosts = postsFromRepo.Where(x => x.UserId == userId);
 
@@ -202,6 +209,7 @@ namespace RecipeBox.Tests.ControllerTests
                     Cuisine = "Italian",
                     Created = new DateTime(2011, 6, 10),
                     Comments = Post1Comments(),
+                    Ratings = Post1Ratings(),
                     UserId = 1
                     
                 },
@@ -212,6 +220,7 @@ namespace RecipeBox.Tests.ControllerTests
                     Cuisine = "British",
                     Created = new DateTime(2009, 4, 3),
                     Comments = Post2Comments(),
+                    Ratings = Post2Ratings(),
                     UserId = 1
                 },
                 new Post()
@@ -221,6 +230,7 @@ namespace RecipeBox.Tests.ControllerTests
                     Cuisine = "Italian",
                     Created = new DateTime(2014, 4, 9),
                     Comments = Post3Comments(),
+                    Ratings = Post3Ratings(),
                     UserId = 1
                 }
             };
@@ -284,6 +294,64 @@ namespace RecipeBox.Tests.ControllerTests
                 
             };
         }
+        private ICollection<Rating> Post1Ratings()
+        {
+            return new List<Rating>()
+            {
+                new Rating()
+                {
+                    RatingId = 1,
+                    Score = 4.5,
+                    RaterId = 1,
+                    PostId = 1
+                },
+                new Rating()
+                {
+                    RatingId = 2,
+                    Score = 1.8,
+                    RaterId = 2,
+                    PostId = 1
+                }
+
+            };
+        }
+        private ICollection<Rating> Post2Ratings()
+        {
+            return new List<Rating>()
+            {
+                new Rating()
+                {
+                    RatingId = 3,
+                    Score = 5,
+                    RaterId = 1,
+                    PostId = 2
+                }
+
+            };
+        }
+        private ICollection<Rating> Post3Ratings()
+        {
+            return new List<Rating>()
+            {
+                new Rating()
+                {
+                    RatingId = 4,
+                    Score = 2.5,
+                    RaterId = 1,
+                    PostId = 3
+                },
+                new Rating()
+                {
+                    RatingId = 5,
+                    Score = 1.5,
+                    RaterId = 2,
+                    PostId = 3
+                }
+
+            };
+        }
+        
+        
 
         private ICollection<User> GetFakeUsers()
         {
@@ -291,14 +359,14 @@ namespace RecipeBox.Tests.ControllerTests
             {
                 new User()
                 {
-                    UserId = 1,
-                    Username = "nick",
+                    Id = 1,
+                    UserName = "nick",
                     Posts = GetFakePosts()
                 },
                 new User()
                 {
-                    UserId = 2,
-                    Username = "jim"
+                    Id = 2,
+                    UserName = "jim"
                 }
             };
         }

@@ -7,43 +7,62 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.CommentDtos;
+using RecipeBox.API.Dtos.PostDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Controllers
 {
-    [Authorize]
-    // [Route("api/[controller]")]
-    // [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
     {
-        
         private readonly IMapper _mapper;
         private readonly IRecipeRepository _recipeRepo; 
         public PostsController(IRecipeRepository recipeRepo, IMapper mapper)
         {
-        
             _mapper = mapper;
             _recipeRepo = recipeRepo;
             
         }
 
         // Get all posts
+        // [AllowAnonymous]
+        // [HttpGet("~/api/posts")]
+        // public async Task<IActionResult> GetPosts()
+        // {
+        //     var posts = await _recipeRepo.GetPosts();
+        //     var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
+
+        //     foreach (var post in posts)
+        //     {
+        //         post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+        //     }
+
+        //     var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
+
+        //     return Ok(postsFromRepo);
+        // }
+        
+        // Get all posts
         [AllowAnonymous]
         [HttpGet("~/api/posts")]
-        public async Task<IActionResult> GetPosts()
+        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams)
         {
-            var posts = await _recipeRepo.GetPosts();
+            var posts = await _recipeRepo.GetPosts(pageParams);
             var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
 
             foreach (var post in posts)
             {
                 post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+                
             }
 
             var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
+
+            postsFromRepo = postsFromRepo.OrderByDescending(x => x.Created);
+
+            Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
 
             return Ok(postsFromRepo);
         }

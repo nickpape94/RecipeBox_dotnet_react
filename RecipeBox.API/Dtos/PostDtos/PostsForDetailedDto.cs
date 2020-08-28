@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using RecipeBox.API.Models;
+using RecipeBox.API.Dtos.CommentDtos;
+using RecipeBox.API.Dtos.PhotoDtos;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.PostDtos
 {
     public class PostsForDetailedDto
     {

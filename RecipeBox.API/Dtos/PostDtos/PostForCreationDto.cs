@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using RecipeBox.API.Models;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.PostDtos
 {
     public class PostForCreationDto
     {
@@ -12,7 +12,7 @@ namespace RecipeBox.API.Dtos
         [StringLength(60, MinimumLength = 5, ErrorMessage = "Name of dish must be between 5 and 60 characters long")]
         public string NameOfDish { get; set; }
         
-        [StringLength(300, MinimumLength = 5, ErrorMessage = "Description must be between 5 and 300 characters long")]
+        [StringLength(200, MinimumLength = 5, ErrorMessage = "Description must be between 5 and 300 characters long")]
         public string Description { get; set; }
         
         [Required]

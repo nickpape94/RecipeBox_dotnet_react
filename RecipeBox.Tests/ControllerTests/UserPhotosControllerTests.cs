@@ -1,15 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -17,10 +12,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Moq;
-using Moq.Protected;
 using RecipeBox.API.Controllers;
 using RecipeBox.API.Data;
-using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.PhotoDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 using Xunit;
@@ -96,7 +90,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Arrange
             var userId = 1;
             var photoId = 1;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
 
@@ -115,7 +109,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Arrange
             var userId = 2;
             var userPhotoId = 10;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -136,7 +130,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Arrange
             var userId = 2;
             var userPhotoId = 1;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -157,7 +151,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Arrange
             var userId = 2;
             var userPhotoId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
             var currentMainPhoto = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == 1);
 
@@ -180,7 +174,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Arrange
             var userId = 2;
             var userPhotoId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
             var currentMainPhoto = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == 1);
 
@@ -204,7 +198,7 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 2;
             int userPhotoId = 2;
             var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
@@ -227,7 +221,7 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 2;
             int userPhotoId = 3;
             var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
             
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
@@ -260,7 +254,7 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 2;
             int userPhotoId = 2;
             var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
@@ -283,7 +277,7 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 1;
             int userPhotoId = 2;
             var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
@@ -306,14 +300,14 @@ namespace RecipeBox.Tests.ControllerTests
                 
                 new User()
                 {
-                    UserId = 1,
-                    Username = "mike",
+                    Id = 1,
+                    UserName = "mike",
                     
                 },
                 new User()
                 {
-                    UserId = 2,
-                    Username = "josh",
+                    Id = 2,
+                    UserName = "josh",
                     UserPhotos = GetFakeUserPhotoList()
                     
                 }

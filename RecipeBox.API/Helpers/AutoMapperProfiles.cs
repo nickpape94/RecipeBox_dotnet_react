@@ -1,6 +1,10 @@
 using System.Linq;
 using AutoMapper;
-using RecipeBox.API.Dtos;
+using RecipeBox.API.Dtos.AuthDtos;
+using RecipeBox.API.Dtos.CommentDtos;
+using RecipeBox.API.Dtos.PhotoDtos;
+using RecipeBox.API.Dtos.PostDtos;
+using RecipeBox.API.Dtos.UserDtos;
 using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Helpers

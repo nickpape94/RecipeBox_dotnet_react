@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 
 namespace RecipeBox.API.Data
@@ -46,7 +47,7 @@ namespace RecipeBox.API.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).Include(p => p.Favourites).FirstOrDefaultAsync(x => x.UserId == id);
+            var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).Include(p => p.Favourites).FirstOrDefaultAsync(x => x.Id == id);
 
             return user;
         }
@@ -56,14 +57,6 @@ namespace RecipeBox.API.Data
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
 
             return user;
-        }
-
-        public async Task<IEnumerable<User>> GetUsers()
-        {
-            var users = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).ToListAsync();
-            
-
-            return users;
         }
 
         public async Task<bool> SaveAll()
@@ -128,6 +121,18 @@ namespace RecipeBox.API.Data
             return rating;
         }
 
-       
+        public async Task<PagedList<User>> GetUsers(PageParams pageParams)
+        {
+            var users = _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts);
+
+            return await PagedList<User>.CreateAsync(users, pageParams.PageNumber, pageParams.PageSize);
+        }
+
+        public async Task<PagedList<Post>> GetPosts(PageParams pageParams)
+        {
+            var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto);
+
+            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
+        }
     }
 }

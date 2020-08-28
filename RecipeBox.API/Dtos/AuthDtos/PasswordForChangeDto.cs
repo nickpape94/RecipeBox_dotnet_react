@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.AuthDtos
 {
     public class PasswordForChangeDto
     {
@@ -10,6 +10,7 @@ namespace RecipeBox.API.Dtos
         [Required]
         [StringLength(20, MinimumLength = 6, ErrorMessage = "You must specify a password between 6 and 20 characters")]
         public string NewPassword { get; set; }
+        // public string ConfirmPassword { get; set; }
 
     }
 }

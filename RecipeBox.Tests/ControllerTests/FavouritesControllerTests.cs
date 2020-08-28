@@ -58,7 +58,7 @@ namespace RecipeBox.Tests.ControllerTests
         public void AddPostToFavourites_FalseUserClaims_ReturnsUnauthorized()
         {
             int userId = 1;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
 
@@ -72,7 +72,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 2;
             int postId = 100;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -88,7 +88,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 2;
             int postId = 1;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
             var favouritesFromRepo = GetNicksFavourites().Where(x => x.FavouriterId == userId);
 
@@ -107,7 +107,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 2;
             int postId = 4;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
             var favouritesFromRepo = GetNicksFavourites().Where(x => x.FavouriterId == userId);
 
@@ -127,7 +127,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 2;
             int postId = 4;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
             var favouritesFromRepo = GetNicksFavourites().Where(x => x.FavouriterId == userId);
 
@@ -146,7 +146,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 1;
             int postId = 1;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var postFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -162,7 +162,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 2;
             int postId = 100;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var favouritesFromRepo = GetNicksFavourites();
             var postFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
 
@@ -181,7 +181,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 2;
             int postId = 1;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var favouritesFromRepo = GetNicksFavourites();
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -197,7 +197,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 2;
             int postId = 1;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var favouritesFromRepo = GetJoshFavourites();
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -215,7 +215,7 @@ namespace RecipeBox.Tests.ControllerTests
         {
             int userId = 2;
             int postId = 1;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.UserId == userId);
+            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var favouritesFromRepo = GetJoshFavourites();
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
@@ -235,15 +235,15 @@ namespace RecipeBox.Tests.ControllerTests
             {
                 new User()
                 {
-                    UserId = 1,
-                    Username = "nick",
+                    Id = 1,
+                    UserName = "nick",
                     Favourites = GetNicksFavourites()
                     
                 },
                 new User()
                 {
-                    UserId = 2,
-                    Username = "josh",
+                    Id = 2,
+                    UserName = "josh",
                     Favourites = GetJoshFavourites()
                 }
             };

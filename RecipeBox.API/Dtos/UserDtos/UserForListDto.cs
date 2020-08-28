@@ -1,10 +1,10 @@
 using System;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.UserDtos
 {
     public class UserForListDto
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public string Username  { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }

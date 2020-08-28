@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Http;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.PhotoDtos
 {
     public class PostPhotoForCreationDto
     {

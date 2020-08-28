@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using RecipeBox.API.Models;
+using RecipeBox.API.Dtos.PhotoDtos;
+using RecipeBox.API.Dtos.PostDtos;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.UserDtos
 {
     public class UserForDetailedDto
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public string Username  { get; set; }
         // public string Email  { get; set; }
         public DateTime Created { get; set; }

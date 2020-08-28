@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using RecipeBox.API.Models;
 
-namespace RecipeBox.API.Dtos
+namespace RecipeBox.API.Dtos.CommentDtos
 {
     public class CommentForUpdateDto
     {
