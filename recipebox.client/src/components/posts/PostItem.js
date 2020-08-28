@@ -19,7 +19,7 @@ const PostItem = ({
 		cookingTime,
 		averageRating,
 		cuisine,
-		postPhoto,
+		mainPhoto,
 		created,
 		ratings,
 		feeds,
@@ -29,7 +29,13 @@ const PostItem = ({
 	<div className='card'>
 		<Link to='#!'>
 			<img
-				src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Fish_and_chips_blackpool.jpg/1200px-Fish_and_chips_blackpool.jpg'
+				src={
+					mainPhoto ? (
+						mainPhoto.url
+					) : (
+						'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png'
+					)
+				}
 				alt=''
 				className='card__img'
 			/>

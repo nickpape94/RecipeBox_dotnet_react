@@ -19,7 +19,7 @@ export const getPosts = () => async (dispatch) => {
 			ratings: post.ratings,
 			feeds: post.feeds,
 			userId: post.userId,
-			postPhoto: post.postPhoto.filter((photo) => photo.isMain)
+			mainPhoto: post.postPhoto.filter((photo) => photo.isMain)[0]
 		}));
 
 		dispatch({
