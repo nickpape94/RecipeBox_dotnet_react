@@ -7,9 +7,24 @@ export const getPosts = () => async (dispatch) => {
 	try {
 		const res = await axios.get('/api/posts');
 
+		const sortData = res.data.map((post) => ({
+			postId: post.postId,
+			nameOfDish: post.nameOfDish,
+			description: post.description,
+			prepTime: post.prepTime,
+			cookingTime: post.cookingTime,
+			averageRating: post.averageRating,
+			cuisine: post.cuisine,
+			created: post.created,
+			ratings: post.ratings,
+			feeds: post.feeds,
+			userId: post.userId,
+			postPhoto: post.postPhoto.filter((photo) => photo.isMain)
+		}));
+
 		dispatch({
 			type: GET_POSTS,
-			payload: res.data
+			payload: sortData
 		});
 	} catch (err) {
 		dispatch({

@@ -57,11 +57,11 @@ const PostItem = ({
 			</div>
 
 			<div className='card__footer'>
-				<div className='round-img'>
+				<div>
 					<i className='fas fa-user fa-3x icon-a' />
 				</div>
 				<div>
-					<h3> Nick Pape</h3>
+					<h3> Nicholas Pape</h3>
 				</div>
 				<div>
 					<h4>

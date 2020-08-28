@@ -18,7 +18,15 @@ const Posts = ({ getPosts, post: { posts, loading } }) => {
 		<Spinner />
 	) : (
 		<Fragment>
-			<div className='cards'>{posts.map((post) => <PostItem key={post.postId} post={post} />)}</div>
+			<div className='cards'>
+				{posts.map((post) => (
+					<PostItem
+						key={post.postId}
+						post={post}
+						// postPhoto={post.postPhoto.filter((photo) => photo.isMain == true)}
+					/>
+				))}
+			</div>
 		</Fragment>
 	);
 };
@@ -27,8 +35,6 @@ Posts.propTypes = {
 	getPosts: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired
 };
-
-console.log('hey');
 
 const mapStateToProps = (state) => ({
 	post: state.post

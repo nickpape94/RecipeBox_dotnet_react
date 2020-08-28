@@ -507,7 +507,7 @@ button {
 }
 
 .card__footer h3 {
-	font-size: 1.4em;
+	font-size: 1.2em;
 	color: rgb(0, 0, 0);
 	margin-right: 240px;
 }
@@ -534,6 +534,11 @@ button {
 
 .card__content .h3:hover {
 	margin-top: 0;
+}
+
+.card__content > p:first-of-type {
+	padding-bottom: 2%;
+	font-size: 1.3em;
 }
 
 .card__content > p:last-of-type {
