@@ -20,6 +20,7 @@ const PostItem = ({
 		averageRating,
 		cuisine,
 		author,
+		userPhotoUrl,
 		mainPhoto,
 		created,
 		ratings,
@@ -46,7 +47,6 @@ const PostItem = ({
 				<h2>{nameOfDish}</h2>
 			</Link>
 			<p>{description}</p>
-
 			<div className='card__info'>
 				<div>
 					<i className='fas fa-utensils' />
@@ -65,7 +65,11 @@ const PostItem = ({
 
 			<div className='card__footer'>
 				<div>
-					<i className='fas fa-user fa-3x icon-a' />
+					{userPhotoUrl ? (
+						<img className='icon-b' src={userPhotoUrl} />
+					) : (
+						<i className='fas fa-user fa-3x icon-a' />
+					)}
 				</div>
 				<h3> {author}</h3>
 				<div>

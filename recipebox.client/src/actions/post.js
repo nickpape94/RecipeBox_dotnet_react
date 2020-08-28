@@ -20,6 +20,7 @@ export const getPosts = () => async (dispatch) => {
 			feeds: post.feeds,
 			userId: post.userId,
 			author: post.author,
+			userPhotoUrl: post.userPhotoUrl,
 			mainPhoto: post.postPhoto.filter((photo) => photo.isMain)[0]
 		}));
 

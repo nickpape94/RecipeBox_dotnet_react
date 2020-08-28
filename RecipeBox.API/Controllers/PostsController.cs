@@ -60,6 +60,13 @@ namespace RecipeBox.API.Controllers
                 // Assign author of the post
                 var author = await _recipeRepo.GetUser(post.UserId);
                 post.Author = author.UserName;
+
+                // Assign users avatar to the post
+                var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
+                if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
+                
+
+                
                 
             }
 

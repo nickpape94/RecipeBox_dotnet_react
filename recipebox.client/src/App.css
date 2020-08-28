@@ -239,7 +239,7 @@ img {
 }
 
 .round-img {
-	border-radius: 50%;
+	border-radius: 100%;
 }
 
 .line {
@@ -568,6 +568,14 @@ button {
 	border-radius: 50%;
 	height: 1.3em;
 	width: 1.3em;
+	padding-left: 15%;
+	padding-top: 10%;
+}
+
+.icon-b {
+	border-radius: 90%;
+	height: 4em;
+	width: 4em;
 	padding-left: 15%;
 	padding-top: 10%;
 }
