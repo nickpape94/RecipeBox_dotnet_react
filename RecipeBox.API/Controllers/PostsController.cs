@@ -54,7 +54,12 @@ namespace RecipeBox.API.Controllers
 
             foreach (var post in posts)
             {
+                // Assign average rating to the post
                 post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+                
+                // Assign author of the post
+                var author = await _recipeRepo.GetUser(post.UserId);
+                post.Author = author.UserName;
                 
             }
 

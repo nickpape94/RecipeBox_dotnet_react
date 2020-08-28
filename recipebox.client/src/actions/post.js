@@ -3,7 +3,7 @@ import { setAlert } from './alert';
 import { GET_POSTS, POST_ERROR } from './types';
 
 // Get posts
-export const getPosts = () => async (dispatch) => {
+export const getPosts = (userId) => async (dispatch) => {
 	try {
 		const res = await axios.get('/api/posts');
 
@@ -19,6 +19,7 @@ export const getPosts = () => async (dispatch) => {
 			ratings: post.ratings,
 			feeds: post.feeds,
 			userId: post.userId,
+			author: post.author,
 			mainPhoto: post.postPhoto.filter((photo) => photo.isMain)[0]
 		}));
 

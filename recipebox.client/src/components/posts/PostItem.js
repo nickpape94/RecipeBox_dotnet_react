@@ -19,6 +19,7 @@ const PostItem = ({
 		cookingTime,
 		averageRating,
 		cuisine,
+		author,
 		mainPhoto,
 		created,
 		ratings,
@@ -67,7 +68,7 @@ const PostItem = ({
 					<i className='fas fa-user fa-3x icon-a' />
 				</div>
 				<div>
-					<h3> Nicholas Pape</h3>
+					<h3> {author}</h3>
 				</div>
 				<div>
 					<h4>

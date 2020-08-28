@@ -15,11 +15,12 @@ namespace RecipeBox.API.Dtos.PostDtos
         public string CookingTime { get; set; }
         public double AverageRating { get; set; }
         public string Feeds { get; set; }
+        public string Author { get; set; }
         public ICollection<RatingsForReturnedDto> Ratings { get; set; }
         public string Cuisine { get; set; }
         public ICollection<CommentsForReturnedDto> Comments { get; set; }
         public ICollection<PostPhotosForReturnDto> PostPhoto { get; set; }
-        public User User { get; set; }
+        // public User User { get; set; }
         public int UserId { get; set; }
         public DateTime Created { get; set; }
     }
