@@ -18,6 +18,17 @@ const Posts = ({ getPosts, post: { posts, loading } }) => {
 		<Spinner />
 	) : (
 		<Fragment>
+			<div className='post__navbar'>
+				<div className='search__wrapper'>
+					<input type='text' className='input' placeholder='Search for a recipe' />
+					<div className='searchbtn'>
+						<i class='fas fa-search' />
+					</div>
+				</div>
+				<div>
+					<button className='button'>Button</button>
+				</div>
+			</div>
 			<div className='cards'>
 				{posts.map((post) => (
 					<PostItem
