@@ -48,12 +48,76 @@ const PostItem = ({
 					<h2>{nameOfDish}</h2>
 				</Link>
 				<div className='ratings'>
-					<span className='fa fa-star checked' />
+					{averageRating === 0 && (
+						<div>
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 0 &&
+					averageRating <= 1 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 1 &&
+					averageRating <= 2 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 2 &&
+					averageRating <= 3 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star' />
+							<span className='fa fa-star' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 3 &&
+					averageRating <= 4 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 4 &&
+					averageRating <= 5 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{/* <span className='fa fa-star checked' />
 					<span className='fa fa-star checked' />
 					<span className='fa fa-star checked' />
 					<span className='fa fa-star' />
-					<span className='fa fa-star' />
-					({ratings.length})
+					<span className='fa fa-star' /> */}
 				</div>
 			</div>
 
