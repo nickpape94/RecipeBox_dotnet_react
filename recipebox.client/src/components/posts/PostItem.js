@@ -43,9 +43,20 @@ const PostItem = ({
 			/>
 		</Link>
 		<div className='card__content'>
-			<Link to='#!' className='card__link'>
-				<h2>{nameOfDish}</h2>
-			</Link>
+			<div className='card__header'>
+				<Link to='#!' className='card__link'>
+					<h2>{nameOfDish}</h2>
+				</Link>
+				<div className='ratings'>
+					<span className='fa fa-star checked' />
+					<span className='fa fa-star checked' />
+					<span className='fa fa-star checked' />
+					<span className='fa fa-star' />
+					<span className='fa fa-star' />
+					({ratings.length})
+				</div>
+			</div>
+
 			<p>{description}</p>
 			<div className='card__info'>
 				<div>

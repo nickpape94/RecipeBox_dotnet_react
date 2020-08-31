@@ -496,6 +496,20 @@ button {
 	border-bottom: 2px solid #cccccc;
 }
 
+.card__header {
+	display: flex;
+	align-items: center;
+}
+
+.card__header .ratings {
+	justify-content: space-between;
+	margin-left: auto;
+}
+
+.card__header .checked {
+	color: orange;
+}
+
 .card__footer {
 	padding: 8px;
 	display: flex;
@@ -573,11 +587,12 @@ button {
 }
 
 .icon-b {
-	border-radius: 90%;
-	height: 4em;
-	width: 4em;
-	padding-left: 15%;
-	padding-top: 10%;
+	border-radius: 50%;
+	height: 3.5em;
+	width: 3.5em;
+	/* padding-left: 15%; */
+	/* padding-top: 10%; */
+	/* padding-bottom: 5%; */
 }
 
 /* Posts Page */

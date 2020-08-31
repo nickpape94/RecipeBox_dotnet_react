@@ -65,9 +65,6 @@ namespace RecipeBox.API.Controllers
                 var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
                 if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
                 
-
-                
-                
             }
 
             var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
