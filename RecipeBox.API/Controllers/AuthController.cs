@@ -90,7 +90,8 @@ namespace RecipeBox.API.Controllers
             if (result.IsSuccess)
             {
                 // Need to come back to this to return an HTML page!
-                return Ok("Thanks for confirming your email!");
+                // return Ok("Thanks for confirming your email");
+                return Redirect("http://localhost:3000/email-confirmed");
             }
 
             return BadRequest(result);

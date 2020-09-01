@@ -5,6 +5,7 @@ import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import PasswordReset from './components/email/PasswordReset';
+import EmailConfirmed from './components/email/EmailConfirmed';
 import Posts from './components/posts/Posts';
 import Alert from './components/layout/Alert';
 
@@ -38,6 +39,7 @@ const App = () => {
 							<Route exact path='/login' component={Login} />
 							<Route exact path='/posts' component={Posts} />
 							<Route exact path='/password-reset' component={PasswordReset} />
+							<Route exact path='/email-confirmed' component={EmailConfirmed} />
 						</Switch>
 					</section>
 				</Fragment>
