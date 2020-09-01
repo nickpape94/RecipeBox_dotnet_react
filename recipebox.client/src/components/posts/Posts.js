@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getPosts } from '../../actions/post';
@@ -25,9 +26,9 @@ const Posts = ({ getPosts, post: { posts, loading } }) => {
 						<i class='fas fa-search' />
 					</div>
 				</div>
-				<div>
-					<button className='button'>Button</button>
-				</div>
+				<Link to='!#'>
+					<div className='button'>Submit recipe</div>
+				</Link>
 			</div>
 			<div className='cards'>
 				{posts.map((post) => (

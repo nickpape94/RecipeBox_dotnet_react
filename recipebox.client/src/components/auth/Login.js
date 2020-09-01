@@ -54,7 +54,7 @@ const Login = ({ login, isAuthenticated }) => {
 				<input type='submit' className='btn btn-primary' value='Login' />
 			</form>
 			<p className='my-1'>
-				<Link to='/passwordreset'>Forgotten Password?</Link>
+				<Link to='/password-reset'>Forgotten Password?</Link>
 			</p>
 		</Fragment>
 	);

@@ -474,14 +474,15 @@ button {
 }
 
 /* Posts search box, create ands filter */
-.post__navbar {
+/* .post__navbar {
 	margin: 0 auto;
 	align-items: center;
 	display: grid;
 	color: purple;
 	max-width: 1500px;
-	/* grid-area: 20px; */
-	justify-content: center;
+	width: 1450px;
+	grid-area: 20px;
+	justify-content: space-around;
 	grid-template-columns: repeat(auto-fill);
 	line-height: 5.5;
 	font-size: 0.9em;
@@ -489,13 +490,8 @@ button {
 	background: rgba(221, 212, 212, 0.623);
 	padding-bottom: 5px;
 	margin-bottom: 10px;
-	border-radius: 5px;
-	overflow: hidden;
-	position: relative;
-	display: grid;
-	grid-template-columns: repeat(auto-fill);
-	grid-area: 20px;
-}
+	border-radius: 5px
+} */
 
 .posts > input {
 	line-height: 15px;
@@ -503,17 +499,21 @@ button {
 	font-size: 15px;
 }
 
-.posts > button:first-of-type {
+.post__navbar .button:first-of-type {
 	background-color: #4caf50;
+	justify-content: space-around;
 	border: none;
 	color: white;
 	padding: 15px 32px;
-	text-align: center;
+
+	/* text-align: center; */
 	text-decoration: none;
-	display: inline-block;
+	width: 15%;
+	display: flex;
 	font-size: 16px;
 	margin: 4px 2px;
 	cursor: pointer;
+	border-radius: 5px;
 }
 
 /* Search bar */
