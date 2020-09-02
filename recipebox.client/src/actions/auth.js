@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { setAlert } from './alert';
-import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from './types';
+import {
+	REGISTER_SUCCESS,
+	REGISTER_FAIL,
+	USER_LOADED,
+	AUTH_ERROR,
+	LOGIN_SUCCESS,
+	LOGIN_FAIL,
+	LOGOUT,
+	PASSWORD_RESET_SUCCESS,
+	PASSWORD_RESET_FAIL
+} from './types';
 import setAuthToken from '../utils/setAuthToken';
 
 // Load User
@@ -101,4 +111,40 @@ export const login = ({ email, password }) => async (dispatch) => {
 // Logout
 export const logout = () => (dispatch) => {
 	dispatch({ type: LOGOUT });
+};
+
+// Reset password
+export const resetPassword = ({ token, email, newpassword, confirmpassword }) => async (dispatch) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	};
+
+	const body = JSON.stringify({ token, email, newpassword, confirmpassword });
+
+	try {
+		// if (newpassword !== confirmpassword) return res.statusText('Passwords do not match');
+
+		const res = await axios.post('api/auth/resetPassword', body, config);
+
+		dispatch({
+			type: PASSWORD_RESET_SUCCESS,
+			payload: res.data
+		});
+
+		dispatch(loadUser());
+	} catch (err) {
+		const errors = err.response.data;
+
+		console.log(errors);
+
+		if (errors) {
+			errors.forEach((error) => dispatch(setAlert(error.description, 'danger ')));
+		}
+
+		dispatch({
+			type: PASSWORD_RESET_FAIL
+		});
+	}
 };

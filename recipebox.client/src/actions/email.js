@@ -3,7 +3,7 @@ import { setAlert } from './alert';
 import { PASSWORD_RESET_EMAIL_SUCCESS, PASSWORD_RESET_EMAIL_FAIL } from './types';
 
 // Send password reset link
-export const passwordReset = (email) => async (dispatch) => {
+export const sendPasswordResetLink = (email) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'

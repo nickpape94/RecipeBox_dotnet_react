@@ -70,10 +70,11 @@ namespace RecipeBox.API.Services
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = Encoding.UTF8.GetBytes(token);
+
             var validToken = WebEncoders.Base64UrlEncode(encodedToken);
-            // Console.WriteLine(validToken);
-            // validToken = HttpUtility.UrlEncode(validToken);
-            string url = $"localhost:5000/api/auth/resetpassword?email={email}&token={validToken}";
+            // string url = $"localhost:5000/api/auth/resetpassword?email={email}&token={validToken}";
+
+            string url = $"localhost:3000/reset-password?email={email}&token={validToken}";
 
             await SendEmailAsync(email, "Password reset", $"<p>Hi {user.UserName}, You recently requested to reset your password</p> <br> <p>Please follow the link below to reset your password</p> <br> <a href='{url}'>Reset Password</a> <br> <p>If this wasn't you, please ignore this email</p> <br> <p>Regards, RecipeBox</p>");
 

@@ -1,10 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import { setAlert } from '../../actions/alert';
-import { passwordReset } from '../../actions/email';
+import { sendPasswordResetLink } from '../../actions/email';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const PasswordReset = ({ passwordReset }) => {
+const PasswordReset = ({ sendPasswordResetLink }) => {
 	const [ formData, setFormData ] = useState({
 		email: ''
 	});
@@ -17,7 +17,7 @@ const PasswordReset = ({ passwordReset }) => {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		passwordReset(email);
+		sendPasswordResetLink(email);
 	};
 
 	return (
@@ -43,11 +43,11 @@ const PasswordReset = ({ passwordReset }) => {
 };
 
 PasswordReset.propTypes = {
-	passwordReset: PropTypes.func.isRequired
+	sendPasswordResetLink: PropTypes.func.isRequired
 };
 
 // const mapStateToProps = (state) => ({
 
 // })
 
-export default connect(null, { passwordReset })(PasswordReset);
+export default connect(null, { sendPasswordResetLink })(PasswordReset);

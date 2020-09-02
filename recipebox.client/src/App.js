@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
+import PasswordReset from './components/auth/PasswordReset';
 import Login from './components/auth/Login';
-import PasswordReset from './components/email/PasswordReset';
+import ForgotPassword from './components/email/ForgotPassword';
 import EmailConfirmed from './components/email/EmailConfirmed';
+
 import Posts from './components/posts/Posts';
 import Alert from './components/layout/Alert';
 
@@ -38,8 +40,14 @@ const App = () => {
 							<Route exact path='/register' component={Register} />
 							<Route exact path='/login' component={Login} />
 							<Route exact path='/posts' component={Posts} />
-							<Route exact path='/password-reset' component={PasswordReset} />
+							<Route exact path='/password-reset' component={ForgotPassword} />
 							<Route exact path='/email-confirmed' component={EmailConfirmed} />
+							<Route exact path='/reset-password' component={PasswordReset} />
+							{/* <Route
+								exact
+								path='reset-password?email={email}&token={validToken}'
+								component={PasswordReset}
+							/> */}
 						</Switch>
 					</section>
 				</Fragment>
