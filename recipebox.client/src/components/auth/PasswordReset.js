@@ -7,11 +7,11 @@ import PropTypes from 'prop-types';
 
 const PasswordReset = ({ setAlert, resetPassword, isAuthenticated }) => {
 	const [ formData, setFormData ] = useState({
-		newPassword: '',
-		confirmPassword: ''
+		password: '',
+		password2: ''
 	});
 
-	const { newPassword, confirmPassword } = formData;
+	const { password, password2 } = formData;
 
 	const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -23,11 +23,10 @@ const PasswordReset = ({ setAlert, resetPassword, isAuthenticated }) => {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		if (newPassword !== confirmPassword) {
+		if (password !== password2) {
 			setAlert('Passwords do not match', 'danger');
 		} else {
-			resetPassword({ token, email, newPassword, confirmPassword });
-			setAlert('Password has been updated.', 'success');
+			resetPassword({ token, email, password });
 		}
 	};
 
@@ -43,8 +42,8 @@ const PasswordReset = ({ setAlert, resetPassword, isAuthenticated }) => {
 					<input
 						type='password'
 						placeholder='Password'
-						name='newPassword'
-						value={newPassword}
+						name='password'
+						value={password}
 						onChange={(e) => onChange(e)}
 					/>
 				</div>
@@ -52,8 +51,8 @@ const PasswordReset = ({ setAlert, resetPassword, isAuthenticated }) => {
 					<input
 						type='password'
 						placeholder='Confirm Password'
-						name='confirmPassword'
-						value={confirmPassword}
+						name='password2'
+						value={password2}
 						onChange={(e) => onChange(e)}
 					/>
 				</div>

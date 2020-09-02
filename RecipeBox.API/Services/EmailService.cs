@@ -98,17 +98,12 @@ namespace RecipeBox.API.Services
                     Message = "No user associated with this email"
                 };
 
-            if (passwordForResetDto.NewPassword != passwordForResetDto.ConfirmPassword)
-                return new UserManagerResponse
-                {
-                    IsSuccess = false,
-                    Message = "Passwords do not match"
-                };
+            
 
             var decodedToken = WebEncoders.Base64UrlDecode(passwordForResetDto.Token);
             string normalToken = Encoding.UTF8.GetString(decodedToken);
 
-            var result = await _userManager.ResetPasswordAsync(user, normalToken, passwordForResetDto.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(user, normalToken, passwordForResetDto.Password);
 
             if (result.Succeeded)
                 return new UserManagerResponse

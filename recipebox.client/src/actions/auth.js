@@ -62,7 +62,7 @@ export const register = ({ username, email, password }) => async (dispatch) => {
 	} catch (err) {
 		const errors = err.response.data;
 
-		console.log(errors);
+		// console.log(errors);
 
 		if (errors) {
 			errors.forEach((error) => dispatch(setAlert(error.description, 'danger ')));
@@ -108,20 +108,15 @@ export const login = ({ email, password }) => async (dispatch) => {
 	}
 };
 
-// Logout
-export const logout = () => (dispatch) => {
-	dispatch({ type: LOGOUT });
-};
-
 // Reset password
-export const resetPassword = ({ token, email, newpassword, confirmpassword }) => async (dispatch) => {
+export const resetPassword = ({ token, email, password }) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
 		}
 	};
 
-	const body = JSON.stringify({ token, email, newpassword, confirmpassword });
+	const body = JSON.stringify({ token, email, password });
 
 	try {
 		// if (newpassword !== confirmpassword) return res.statusText('Passwords do not match');
@@ -133,18 +128,25 @@ export const resetPassword = ({ token, email, newpassword, confirmpassword }) =>
 			payload: res.data
 		});
 
+		dispatch(setAlert('Password has been updated.', 'success'));
+
 		dispatch(loadUser());
 	} catch (err) {
-		const errors = err.response.data;
+		const errors = err.response.data.errors;
 
-		console.log(errors);
+		// console.log(errors);
 
 		if (errors) {
-			errors.forEach((error) => dispatch(setAlert(error.description, 'danger ')));
+			errors.forEach((error) => dispatch(setAlert(error, 'danger ')));
 		}
 
 		dispatch({
 			type: PASSWORD_RESET_FAIL
 		});
 	}
+};
+
+// Logout
+export const logout = () => (dispatch) => {
+	dispatch({ type: LOGOUT });
 };
