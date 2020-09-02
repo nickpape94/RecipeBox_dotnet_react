@@ -1,7 +1,8 @@
 import { PASSWORD_RESET_EMAIL_FAIL, PASSWORD_RESET_EMAIL_SUCCESS } from '../actions/types';
 
 const initialState = {
-	loading: true
+	loading: true,
+	error: {}
 };
 
 export default function(state = initialState, action) {
@@ -17,7 +18,8 @@ export default function(state = initialState, action) {
 		case PASSWORD_RESET_EMAIL_FAIL:
 			return {
 				...state,
-				loading: false
+				loading: false,
+				error: payload
 			};
 		default:
 			return state;

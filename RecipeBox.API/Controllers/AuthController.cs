@@ -91,7 +91,7 @@ namespace RecipeBox.API.Controllers
             {
                 // Need to come back to this to return an HTML page!
                 // return Ok("Thanks for confirming your email");
-                return Redirect("http://localhost:3000/email-confirmed");
+                return Redirect($"http://localhost:3000/email-confirmed?userid={userId}&token={token}");
             }
 
             return BadRequest(result);

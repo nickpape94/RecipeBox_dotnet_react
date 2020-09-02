@@ -21,8 +21,7 @@ export const passwordReset = (email) => async (dispatch) => {
 		});
 
 		dispatch(
-			setAlert('An email containing reset instructions has been delivered to your address. ', 'success'),
-			'success'
+			setAlert('An email containing reset instructions has been delivered to your address. ', 'success', 10000)
 		);
 	} catch (err) {
 		dispatch({
