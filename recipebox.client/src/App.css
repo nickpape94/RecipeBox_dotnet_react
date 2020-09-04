@@ -52,6 +52,10 @@ img {
 	padding: 1px 4px;
 }
 
+.star-color {
+	color: rgb(85, 84, 80);
+}
+
 /* .rating-list span {
 	flex-direction: column-reverse;
 	display: flex;
@@ -585,6 +589,14 @@ button {
 .card__header .ratings {
 	justify-content: space-between;
 	margin-left: auto;
+	/* border-style: none;
+	background-color: rgb(145, 145, 114);
+	border-radius: 5px;
+	width: 27%;
+	padding-left: 5px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	float: right; */
 }
 
 .card__header .checked {
