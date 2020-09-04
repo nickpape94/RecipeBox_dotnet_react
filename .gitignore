@@ -4,3 +4,4 @@ obj
 *.db
 appsettings.json
 node_modules/
+coveragereport
