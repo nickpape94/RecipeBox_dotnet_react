@@ -439,7 +439,8 @@ button {
 	margin: 0 auto;
 	max-width: 1500px;
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	/* grid-template-columns: repeat(auto-fill, minmax(20%, 40%)); */
+	grid-template-columns: 50% 25% 25%;
 	font-family: sans-serif;
 	column-gap: 10px;
 	background-color: rgb(163, 209, 223);
@@ -448,6 +449,18 @@ button {
 
 .post__submit {
 	margin: auto;
+	justify-content: right;
+	width: 23%;
+	/* display: inline-block; */
+	/* margin-right: 0.0001px; */
+}
+.post__dropdown {
+	/* margin: auto; */
+	/* float: right; */
+	/* margin-top: 40%; */
+	margin-top: 10px;
+	position: relative;
+	width: 1000px;
 }
 
 .post__navbar .post__submit .button:hover {
@@ -480,15 +493,17 @@ button {
 /* Search bar */
 .search__wrapper {
 	line-height: 1.5;
-	/* max-width: 60%; */
-	width: 550px;
+	max-width: 100%;
+	width: 1050px;
 	padding: 15px;
+	margin-right: 10px;
 	/* border-radius: 5px; */
 	/* margin-top: 0.5px; */
 	display: flex;
 	background: rgba(172, 155, 155, 0.6);
 	justify-content: space-between;
 	position: relative;
+	float: left;
 }
 
 .search__wrapper > input:first-of-type {
@@ -522,7 +537,7 @@ button {
 
 /* Dropdown */
 .dropbtn {
-	background-color: #9bdb9d;
+	background-color: #ced6b7;
 	justify-content: space-around;
 	border: none;
 	color: rgb(10, 10, 10);
@@ -536,6 +551,8 @@ button {
 	margin: 4px 2px;
 	cursor: pointer;
 	border-radius: 5px;
+	float: left;
+	justify-content: start;
 }
 
 /* The container <div> - needed to position the dropdown content */

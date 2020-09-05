@@ -26,11 +26,10 @@ const Posts = ({ getPosts, post: { posts, loading }, auth }) => {
 						<i className='fas fa-search' />
 					</div>
 				</div>
-
-				<div className='post__submit'>
-					<div class='dropdown'>
-						<button class='dropbtn'>Sort Recipes By:</button>
-						<div class='dropdown-content'>
+				<div className='post__dropdown'>
+					<div className='dropdown'>
+						<button className='dropbtn'>Sort Recipes By:</button>
+						<div className='dropdown-content'>
 							<Link to='!#'>Highest Rated</Link>
 							<Link to='!#'>Oldest</Link>
 							<Link to='!#'>Newest</Link>
@@ -38,6 +37,19 @@ const Posts = ({ getPosts, post: { posts, loading }, auth }) => {
 						</div>
 					</div>
 				</div>
+
+				{/* <div className='post__dropdown'>
+						<div class='dropdown'>
+							<button class='dropbtn'>Sort Recipes By:</button>
+							<div class='dropdown-content'>
+								<Link to='!#'>Highest Rated</Link>
+								<Link to='!#'>Oldest</Link>
+								<Link to='!#'>Newest</Link>
+								<Link to='!#'>Most Discussed</Link>
+							</div>
+						</div>
+					</div> */}
+
 				<div className='post__submit'>
 					{auth.isAuthenticated && (
 						<Link to='!#'>
