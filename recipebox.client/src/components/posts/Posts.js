@@ -23,9 +23,15 @@ const Posts = ({ getPosts, post: { posts, loading }, auth }) => {
 				<div className='search__wrapper'>
 					<input type='text' className='input' placeholder='Search for a recipe' />
 					<div className='searchbtn'>
-						<i class='fas fa-search' />
+						<i className='fas fa-search' />
 					</div>
 				</div>
+				<div className='dropdown-content'>
+					<a href='#home'>Home</a>
+					<a href='#about'>About</a>
+					<a href='#contact'>Contact</a>
+				</div>
+
 				{auth.isAuthenticated && (
 					<Link to='!#'>
 						<div className='button'>Submit a Recipe</div>
