@@ -439,8 +439,8 @@ button {
 	margin: 0 auto;
 	max-width: 1500px;
 	display: grid;
-	/* grid-template-columns: repeat(auto-fill, minmax(20%, 40%)); */
-	grid-template-columns: 50% 25% 25%;
+	grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+	/* grid-template-columns: 700px 350px 400px; */
 	font-family: sans-serif;
 	column-gap: 10px;
 	background-color: rgb(163, 209, 223);
@@ -450,14 +450,14 @@ button {
 .post__submit {
 	margin: auto;
 	justify-content: right;
-	width: 23%;
+	width: 5%;
 	/* display: inline-block; */
 	/* margin-right: 0.0001px; */
 }
 .post__dropdown {
-	/* margin: auto; */
-	/* float: right; */
-	/* margin-top: 40%; */
+	/* margin: auto; 
+	float: right;
+	margin-top: 40%;  */
 	margin-top: 10px;
 	position: relative;
 	width: 1000px;
