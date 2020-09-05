@@ -21,27 +21,35 @@ const Posts = ({ getPosts, post: { posts, loading }, auth }) => {
 		<Fragment>
 			<div className='post__navbar'>
 				<div className='search__wrapper'>
-					<input type='text' className='input' placeholder='Search for a recipe' />
+					<input type='text' className='input' placeholder='Search for a recipe or cuisine...' />
 					<div className='searchbtn'>
 						<i className='fas fa-search' />
 					</div>
 				</div>
-				<div className='dropdown-content'>
-					<a href='#home'>Home</a>
-					<a href='#about'>About</a>
-					<a href='#contact'>Contact</a>
-				</div>
 
-				{auth.isAuthenticated && (
-					<Link to='!#'>
-						<div className='button'>Submit a Recipe</div>
-					</Link>
-				)}
-				{!auth.isAuthenticated && (
-					<Link to='login'>
-						<div className='button'>Submit a Recipe</div>
-					</Link>
-				)}
+				<div className='post__submit'>
+					<div class='dropdown'>
+						<button class='dropbtn'>Sort Recipes By:</button>
+						<div class='dropdown-content'>
+							<Link to='!#'>Highest Rated</Link>
+							<Link to='!#'>Oldest</Link>
+							<Link to='!#'>Newest</Link>
+							<Link to='!#'>Most Discussed</Link>
+						</div>
+					</div>
+				</div>
+				<div className='post__submit'>
+					{auth.isAuthenticated && (
+						<Link to='!#'>
+							<div className='button'>Submit a Recipe</div>
+						</Link>
+					)}
+					{!auth.isAuthenticated && (
+						<Link to='login'>
+							<div className='button'>Submit a Recipe</div>
+						</Link>
+					)}
+				</div>
 			</div>
 			<div className='cards'>
 				{posts.map((post) => (

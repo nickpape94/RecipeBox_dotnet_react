@@ -291,31 +291,6 @@ button {
 	font: inherit;
 }
 
-.form .social-input {
-	display: flex;
-}
-
-.form .social-input i {
-	padding: 0.5rem;
-	width: 4rem;
-}
-
-.form .social-input i.fa-twitter {
-	color: #38a1f3;
-}
-.form .social-input i.fa-facebook {
-	color: #3b5998;
-}
-.form .social-input i.fa-instagram {
-	color: #3f729b;
-}
-.form .social-input i.fa-youtube {
-	color: #c4302b;
-}
-.form .social-input i.fa-linkedin {
-	color: #0077b5;
-}
-
 .table th,
 .table td {
 	padding: 1rem;
@@ -459,57 +434,24 @@ button {
 	margin: 0.5rem 0;
 }
 
-.profile-github {
-	grid-area: github;
-}
-
-.profile-github .repo {
-	display: flex;
-}
-
-.profile-github .repo > div:first-child {
-	flex: 7;
-	flex-basis: 70%;
-}
-
-.profile-github > div:last-child {
-	flex: 3;
-	flex-basis: 20%;
-}
-
 /* Posts search box, create ands filter */
 .post__navbar {
-	/* margin: 0 auto;
-	align-items: center;
+	margin: 0 auto;
+	max-width: 1500px;
 	display: grid;
-	color: purple;
-	max-width: 1500px;
-	width: 1450px;
-	grid-area: 20px;
-	justify-content: space-around;
-	grid-template-columns: repeat(auto-fill);
-	line-height: 5.5;
-	font-size: 0.9em;
-	padding: 10px;
-	background: rgba(221, 212, 212, 0.623);
-	padding-bottom: 5px;
-	margin-bottom: 10px; */
-	max-width: 1500px;
-	width: 1450px;
-	line-height: 0.8;
-	margin-top: 5px;
-	margin-bottom: 15px;
-	padding: 10px;
-	border-radius: 5px;
-	padding: 8px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	color: #bdb8b8;
-	background: rgb(193, 221, 240);
-	font-size: 0.8em;
+	grid-template-columns: repeat(3, 1fr);
+	font-family: sans-serif;
+	column-gap: 10px;
+	background-color: rgb(163, 209, 223);
+	margin-bottom: 8px;
+}
 
-	margin-left: 100px;
+.post__submit {
+	margin: auto;
+}
+
+.post__navbar .post__submit .button:hover {
+	background-color: #3e8e41;
 }
 
 .posts > input {
@@ -537,13 +479,12 @@ button {
 
 /* Search bar */
 .search__wrapper {
-	grid-template-columns: repeat(auto-fill, minmax(1500px, 3fr));
 	line-height: 1.5;
 	/* max-width: 60%; */
 	width: 550px;
 	padding: 15px;
-	border-radius: 5px;
-	margin-top: 0.5px;
+	/* border-radius: 5px; */
+	/* margin-top: 0.5px; */
 	display: flex;
 	background: rgba(172, 155, 155, 0.6);
 	justify-content: space-between;
@@ -567,6 +508,10 @@ button {
 	cursor: pointer;
 }
 
+.searchbtn:hover {
+	background-color: #8cc48e;
+}
+
 .searchbtn .fas {
 	position: absolute;
 	top: 50%;
@@ -577,34 +522,40 @@ button {
 
 /* Dropdown */
 .dropbtn {
-	background-color: #3498db;
-	color: white;
-	padding: 16px;
-	font-size: 16px;
+	background-color: #9bdb9d;
+	justify-content: space-around;
 	border: none;
+	color: rgb(10, 10, 10);
+	padding: 15px 32px;
+	position: relative;
+	text-align: center;
+	text-decoration: none;
+	width: 200px;
+	display: flex;
+	font-size: 16px;
+	margin: 4px 2px;
 	cursor: pointer;
+	border-radius: 5px;
 }
 
-.dropbtn:hover,
-.dropbtn:focus {
-	background-color: #2980b9;
-}
-
+/* The container <div> - needed to position the dropdown content */
 .dropdown {
 	position: relative;
 	display: inline-block;
 }
 
+/* Dropdown Content (Hidden by Default) */
 .dropdown-content {
 	display: none;
 	position: absolute;
 	background-color: #f1f1f1;
 	min-width: 160px;
-	overflow: auto;
-	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+	/* box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); */
 	z-index: 1;
 }
 
+/* Links inside the dropdown */
 .dropdown-content a {
 	color: black;
 	padding: 12px 16px;
@@ -612,8 +563,19 @@ button {
 	display: block;
 }
 
-.dropdown a:hover {
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
 	background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+	background-color: #3e8e41;
 }
 
 /* Cards */
@@ -861,10 +823,6 @@ button {
 	.profile img {
 		width: 200px;
 		margin: auto;
-	}
-
-	.profile-grid {
-		grid-template-areas: 'top' 'about' 'exp' 'edu' 'github';
 	}
 
 	.profile-about .skills {
