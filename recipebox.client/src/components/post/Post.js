@@ -29,27 +29,21 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 					<i id='heart' className='fas fa-heart' />
 				</a>
 			</div>
-			<div className='recipe-grid my-1'>
-				{/* <div className="profile-top bg-primary p-2">
-                    <img className="square-img my-1"
-                        src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200" alt="" />
-
-                    <h1 className="large">John Doe</h1>
-
-                </div>  */}
-				<div className='recipe-pics2'>
+			<div className='post-grid my-1'>
+				<div className='post-top'>
+					<h1 className='text-dark'>{post.nameOfDish}</h1>
 					<img
 						className='recipe'
 						src='https://www.thespruceeats.com/thmb/5EJU2Kz4m7N3i2tTZe1G_wyzoVc=/1500x844/smart/filters:no_upscale()/classic-southern-fried-chicken-3056867-11_preview-5b106156119fa80036c19a9e.jpeg'
 					/>
 				</div>
 
-				<div className='profile-about bg-light p-2'>
+				<div className='post-about bg-light p-2'>
 					<h2 className='text-primary'>Description</h2>
 					<p>{post.description}</p>
 					<div className='line' />
 
-					<div className='skills'>
+					<div className='info'>
 						<div className='p-1'>
 							<i className='far fa-clock' /> Prep - {post.prepTime}
 						</div>
@@ -61,7 +55,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 						</div>
 					</div>
 				</div>
-				<div className='profile-exp bg-white p-2'>
+				<div className='post-ingredients bg-white p-2'>
 					<h2 className='text-primary'>Ingredients</h2>
 					<div>
 						<div className='p'>
@@ -90,7 +84,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 						</div>
 					</div>
 				</div>
-				<div className='profile-edu bg-white p-2'>
+				<div className='post-method bg-white p-2'>
 					<h2 className='text-primary'>Method</h2>
 					<div>
 						<div className='p'>1: Cook</div>
@@ -105,18 +99,20 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 						<div className='p'>3: Cook</div>
 					</div>
 				</div>
-			</div>
-			<h1>Published by:</h1>
-			<Link to='/profile.html'>
-				<h2>{post.author}</h2>
-				<div>
-					{post.userPhotoUrl ? (
-						<img className='icon-b' src={post.userPhotoUrl} />
-					) : (
-						<i className='fas fa-user fa-3x icon-a' />
-					)}
+				<div className='post-footer'>
+					<h1>Published by:</h1>
+					<Link to='/profile.html'>
+						<h2>{post.author}</h2>
+						<div>
+							{post.userPhotoUrl ? (
+								<img className='icon-b' src={post.userPhotoUrl} />
+							) : (
+								<i className='fas fa-user fa-3x icon-a' />
+							)}
+						</div>
+					</Link>
 				</div>
-			</Link>
+			</div>
 		</Fragment>
 	);
 };

@@ -363,77 +363,6 @@ button {
 	margin-bottom: 1rem;
 }
 
-/* Profile Page */
-.profile-grid {
-	display: grid;
-	grid-template-areas: 'top top' 'about about' 'exp edu' 'github github';
-	grid-gap: 1rem;
-}
-
-.profile-top {
-	grid-area: top;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-}
-
-.profile-top img {
-	width: 250px;
-}
-
-.profile-top .icons a {
-	color: #fff;
-	margin: 0 0.3rem;
-}
-
-.profile-top .icons a:hover {
-	color: var(--dark-color);
-}
-
-.profile-about {
-	grid-area: about;
-	text-align: center;
-}
-
-.profile-about .skills {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-}
-
-.profile-exp {
-	grid-area: exp;
-}
-
-.profile-edu {
-	grid-area: edu;
-}
-
-.profile-exp h2,
-.profile-edu h2 {
-	margin-bottom: 1rem;
-}
-
-.profile-exp > div,
-.profile-edu > div {
-	margin-bottom: 1rem;
-	padding-bottom: 1rem;
-	border-bottom: #ccc 1px dotted;
-}
-
-.profile-exp > div:last-child,
-.profile-edu > div:last-child {
-	border: 0;
-}
-
-.profile-exp p,
-.profile-edu p {
-	margin: 0.5rem 0;
-}
-
 /* Posts search box, create ands filter */
 .post__navbar {
 	margin: 0 auto;
@@ -594,7 +523,7 @@ button {
 	background-color: #3e8e41;
 }
 
-/* Cards */
+/* Posts, post Cards */
 .cards {
 	margin: 0 auto;
 	max-width: 1500px;
@@ -705,6 +634,83 @@ button {
 	text-decoration: underline;
 }
 
+/* Post detailed */
+.post-grid {
+	display: grid;
+	grid-template-areas: 'top top' 'about about' 'ingredients method' 'footer footer';
+	grid-gap: 1rem;
+	margin: 0 auto;
+	max-width: 1500px;
+}
+
+.post-top {
+	grid-area: top;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.profile-top img {
+	width: 250px;
+}
+
+.profile-top .icons a {
+	color: #fff;
+	margin: 0 0.3rem;
+}
+
+.profile-top .icons a:hover {
+	color: var(--dark-color);
+}
+
+.post-about {
+	grid-area: about;
+	text-align: center;
+}
+
+.post-about .info {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.post-ingredients {
+	grid-area: ingredients;
+}
+
+.post-method {
+	grid-area: method;
+}
+
+.post-ingredients h2,
+.post-method h2 {
+	margin-bottom: 1rem;
+}
+
+.post-ingredients > div,
+.post-method > div {
+	margin-bottom: 1rem;
+	padding-bottom: 1rem;
+	border-bottom: #ccc 1px dotted;
+}
+
+.post-ingredients > div:last-child,
+.post-method > div:last-child {
+	border: 0;
+}
+
+.post-ingredients p,
+.post-method p {
+	margin: 0.5rem 0;
+}
+
+.post-footer {
+	grid-area: footer;
+}
+
 /* Font awesome */
 .icon-a {
 	background: white;
@@ -725,7 +731,7 @@ button {
 }
 
 /* Posts Page */
-.post-form .post-form-header {
+/* .post-form .post-form-header {
 	background: var(--primary-color);
 	padding: 0.5rem;
 }
@@ -739,8 +745,6 @@ button {
 	padding: 0.5rem;
 	column-gap: 2px;
 	padding-left: 2.7%;
-	/* resize: both; */
-	/* border: #0077b5; */
 }
 
 .post .border {
@@ -762,9 +766,6 @@ button {
 	grid-template-columns: repeat(4, 1fr);
 	height: 25%;
 	width: 429%;
-	/* align-items: center; */
-	/* grid-area: center; */
-	/* margin-right: 100%; */
 }
 
 .post .comment-count {
@@ -779,7 +780,7 @@ button {
 	color: rgba(5, 13, 14, 0.575);
 	font-size: 0.8rem;
 	margin-bottom: 0.5rem;
-}
+} */
 
 /* Mobile Styles */
 @media (max-width: 700px) {
@@ -841,7 +842,7 @@ button {
 		margin: auto;
 	}
 
-	.profile-about .skills {
+	.post-about .info {
 		flex-direction: column;
 	}
 
