@@ -101,6 +101,10 @@ img {
 	color: var(--dark-color);
 }
 
+.text-red {
+	color: var(--danger-color);
+}
+
 /* Padding */
 .p {
 	padding: 0.5rem;
@@ -723,6 +727,15 @@ button {
 
 .post-header .favourites {
 	float: right;
+	vertical-align: middle;
+	/* border-style: ridge; */
+}
+
+.post-header .favourites p:first-of-type {
+	float: right;
+	vertical-align: middle;
+	text-align: center;
+	background-color: pink;
 }
 
 /* Font awesome */

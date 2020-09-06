@@ -27,7 +27,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 					Back To Recipes
 				</Link> */}
 					<a href='/!#'>
-						<i className='fas fa-heart fa-2x' />
+						<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
 					</a>
 				</div>
 			</div>
@@ -93,7 +93,10 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 						<div className='p'>1: Cook</div>
 						<div className='p'>2: Cook</div>
 						<div className='p'>3: Cook</div>
-						<div className='p'>4: Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook </div>
+						<div className='p'>
+							4: Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook
+							Cook Cook Cook Cook Cook Cook Cook Cook Cook {' '}
+						</div>
 						<div className='p'>1: Cook</div>
 						<div className='p'>2: Cook</div>
 						<div className='p'>3: Cook</div>
