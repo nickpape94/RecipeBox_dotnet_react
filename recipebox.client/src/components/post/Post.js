@@ -18,17 +18,20 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 		<Spinner />
 	) : (
 		<Fragment>
-			<Link to='/posts' className='btn'>
-				Back To Posts
-			</Link>
-			<div className='favorites'>
-				{/* <Link href='recipes.html' className='btn'>
+			<div className='post-header'>
+				<Link to='/posts' className='btn'>
+					Back To Posts
+				</Link>
+				<div className='favourites'>
+					{/* <Link href='recipes.html' className='btn'>
 					Back To Recipes
 				</Link> */}
-				<a href='#' id='fav'>
-					<i id='heart' className='fas fa-heart' />
-				</a>
+					<a href='/!#'>
+						<i className='fas fa-heart fa-2x' />
+					</a>
+				</div>
 			</div>
+
 			<div className='post-grid my-1'>
 				<div className='post-top'>
 					<h1 className='text-dark'>{post.nameOfDish}</h1>
@@ -100,15 +103,15 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 					</div>
 				</div>
 				<div className='post-footer'>
-					<h1>Published by:</h1>
+					<h1 className='text-primary'>Published by:</h1>
 					<Link to='/profile.html'>
-						<h2>{post.author}</h2>
-						<div>
+						<div className='text-dark'>
 							{post.userPhotoUrl ? (
 								<img className='icon-b' src={post.userPhotoUrl} />
 							) : (
-								<i className='fas fa-user fa-3x icon-a' />
+								<i class='far fa-user-circle fa-3x ' />
 							)}
+							<h2>{post.author}</h2>
 						</div>
 					</Link>
 				</div>

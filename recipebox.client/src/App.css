@@ -637,10 +637,18 @@ button {
 /* Post detailed */
 .post-grid {
 	display: grid;
-	grid-template-areas: 'top top' 'about about' 'ingredients method' 'footer footer';
+	grid-template-areas: 'header header' 'top top' 'about about' 'ingredients method' 'footer footer';
 	grid-gap: 1rem;
 	margin: 0 auto;
 	max-width: 1500px;
+}
+
+.post-header {
+	justify-content: space-around;
+	/* align-items: center; */
+	/* text-align: center; */
+	max-width: 1500px;
+	margin: 0 auto;
 }
 
 .post-top {
@@ -709,6 +717,12 @@ button {
 
 .post-footer {
 	grid-area: footer;
+	text-align: center;
+	align-items: center;
+}
+
+.post-header .favourites {
+	float: right;
 }
 
 /* Font awesome */
