@@ -7,7 +7,7 @@ import PasswordReset from './components/auth/PasswordReset';
 import Login from './components/auth/Login';
 import ForgotPassword from './components/email/ForgotPassword';
 import EmailConfirmed from './components/email/EmailConfirmed';
-
+import Post from './components/post/Post';
 import Posts from './components/posts/Posts';
 import Alert from './components/layout/Alert';
 
@@ -40,6 +40,7 @@ const App = () => {
 							<Route exact path='/register' component={Register} />
 							<Route exact path='/login' component={Login} />
 							<Route exact path='/posts' component={Posts} />
+							<Route exact path='/posts/:id' component={Post} />
 							<Route exact path='/password-reset' component={ForgotPassword} />
 							<Route exact path='/email-confirmed' component={EmailConfirmed} />
 							<Route exact path='/reset-password' component={PasswordReset} />

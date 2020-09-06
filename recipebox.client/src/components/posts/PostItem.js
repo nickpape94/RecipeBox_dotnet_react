@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 import { connect } from 'react-redux';
+import { getPost } from '../../actions/post';
 import { Card } from 'react-bootstrap';
 
 // var userImage = !post.postPhoto ? <img src="https://www.pinpng.com/pngs/m/341-3415688_no-avatar-png-transparent-png.png"></img> : <img></img>
@@ -29,7 +30,7 @@ const PostItem = ({
 	}
 }) => (
 	<div className='card'>
-		<Link to='#!'>
+		<Link to={`/posts/${postId}`}>
 			<img
 				src={
 					mainPhoto ? (
@@ -44,7 +45,7 @@ const PostItem = ({
 		</Link>
 		<div className='card__content'>
 			<div className='card__header'>
-				<Link to='#!' className='card__link'>
+				<Link to={`/posts/${postId}`} className='card__link'>
 					<h2>{nameOfDish}</h2>
 				</Link>
 				<div className='ratings'>
@@ -216,4 +217,4 @@ const mapStateToProps = (state) => ({
 	auth: state.auth
 });
 
-export default connect(mapStateToProps, {})(PostItem);
+export default connect(mapStateToProps, { getPost })(PostItem);

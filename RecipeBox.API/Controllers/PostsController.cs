@@ -86,6 +86,16 @@ namespace RecipeBox.API.Controllers
 
             var average = calculateAverageRatings.GetAverageRating(id).Result;
             post.AverageRating = average;
+
+            post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+                
+            // Assign author of the post
+            var author = await _recipeRepo.GetUser(post.UserId);
+            post.Author = author.UserName;
+
+            // Assign users avatar to the post
+            var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
+            if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
             
             var postFromRepo = _mapper.Map<PostsForDetailedDto>(post);
 

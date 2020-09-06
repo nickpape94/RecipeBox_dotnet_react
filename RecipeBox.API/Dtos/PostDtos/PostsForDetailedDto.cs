@@ -16,6 +16,8 @@ namespace RecipeBox.API.Dtos.PostDtos
         public string CookingTime { get; set; }
         public string Feeds { get; set; }
         public string Cuisine { get; set; }
+        public string Author { get; set; }
+        public string UserPhotoUrl { get; set; }
         public ICollection<CommentsForReturnedDto> Comments { get; set; }
         public ICollection<RatingsForReturnedDto> Ratings { get; set; }
         public double AverageRating { get; set; }
