@@ -24,10 +24,11 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 
 	// Get user Id
 	const userId = user && user.id;
+	// console.log(typeof userId);
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		createPost({ nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine, userId });
+		createPost(userId, { nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine });
 	};
 
 	return (

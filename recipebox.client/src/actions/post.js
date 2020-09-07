@@ -55,17 +55,10 @@ export const getPost = (postId) => async (dispatch) => {
 };
 
 // Create a post
-export const createPost = ({
-	nameOfDish,
-	description,
-	ingredients,
-	method,
-	prepTime,
-	cookingTime,
-	feeds,
-	cuisine,
-	userId
-}) => async (dispatch) => {
+export const createPost = (
+	userId,
+	{ nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine }
+) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json',
@@ -85,7 +78,7 @@ export const createPost = ({
 	});
 
 	try {
-		const res = await axios.post(`/api/users/${userId}/posts`, config, body);
+		const res = await axios.post(`/api/users/${userId}/posts`, body, config);
 
 		console.log(res.data);
 
@@ -94,12 +87,12 @@ export const createPost = ({
 			payload: res.data
 		});
 	} catch (err) {
-		// const errors = err.response.data;
+		const errors = err.response.data.errors;
 
-		console.log(err);
+		console.log(errors);
 
 		// if (errors) {
-		// 	errors.foreach((error) => dispatch(setAlert(error.description, 'danger')));
+		// 	errors.errors.foreach((error) => dispatch(setAlert(error, 'danger')));
 		// }
 
 		dispatch({
