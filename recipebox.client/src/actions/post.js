@@ -54,7 +54,7 @@ export const getPost = (postId) => async (dispatch) => {
 	}
 };
 
-// Submit a post
+// Create a post
 export const createPost = ({
 	nameOfDish,
 	description,
@@ -68,7 +68,8 @@ export const createPost = ({
 }) => async (dispatch) => {
 	const config = {
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.token}`
 		}
 	};
 
@@ -84,20 +85,22 @@ export const createPost = ({
 	});
 
 	try {
-		const res = await axios.post(`/api/users/${userId}/posts`);
+		const res = await axios.post(`/api/users/${userId}/posts`, config, body);
+
+		console.log(res.data);
 
 		dispatch({
 			type: POST_SUBMIT_SUCCESS,
 			payload: res.data
 		});
 	} catch (err) {
-		const errors = err.response.data;
+		// const errors = err.response.data;
 
-		console.log(errors);
+		console.log(err);
 
-		if (errors) {
-			errors.foreach((error) => dispatch(setAlert(error.description, 'danger')));
-		}
+		// if (errors) {
+		// 	errors.foreach((error) => dispatch(setAlert(error.description, 'danger')));
+		// }
 
 		dispatch({
 			type: POST_SUBMIT_FAIL

@@ -749,6 +749,26 @@ button {
 	background-color: pink;
 }
 
+/* Post submission form */
+.form input[type='preptime'],
+.form input[type='cookingtime'],
+.form input[type='feeds'] {
+	display: inline-block;
+	padding: 0.5rem;
+	font-size: 1.2rem;
+	border: 1px solid #ccc;
+	margin-right: 5px;
+}
+
+.form input[type = nameOfDish] {
+	display: inline-block;
+	padding: 0.5rem;
+	font-size: 1.2rem;
+	border: 1px solid #ccc;
+	margin-right: 5px;
+	width: 100%;
+}
+
 /* Font awesome */
 .icon-a {
 	background: white;
