@@ -2,15 +2,15 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+using MimeKit;
 using RecipeBox.API.Data;
 using RecipeBox.API.Dtos.AuthDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 
 namespace RecipeBox.API.Services
 {
@@ -18,8 +18,10 @@ namespace RecipeBox.API.Services
     {
         private readonly IRecipeRepository _recipeRepo;
         private readonly UserManager<User> _userManager;
-        public EmailService(IRecipeRepository recipeRepo, UserManager<User> userManager)
+        private readonly IConfiguration _config;
+        public EmailService(IRecipeRepository recipeRepo, UserManager<User> userManager, IConfiguration config)
         {
+            _config = config;
             _userManager = userManager;
             _recipeRepo = recipeRepo;
             
@@ -120,15 +122,43 @@ namespace RecipeBox.API.Services
             };
         }
 
+        // public async Task SendEmailAsync(string toEmail, string subject, string content)
+        // {
+        //     var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+        //     // Console.WriteLine(apiKey);
+        //     var client = new SendGridClient(apiKey);
+        //     var from = new EmailAddress("recipeboxbot@gmail.com", "RecipeBox");
+        //     var to = new EmailAddress(toEmail);
+        //     var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
+        //     var response = await client.SendEmailAsync(msg);
+        // }
+        
         public async Task SendEmailAsync(string toEmail, string subject, string content)
         {
-            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
-            // Console.WriteLine(apiKey);
-            var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("recipeboxbot@gmail.com", "RecipeBox");
-            var to = new EmailAddress(toEmail);
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
-            var response = await client.SendEmailAsync(msg);
+            // Console.WriteLine( _config.GetSection("MailKitSettings:Password").Value);
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Recipe Box", "recipeboxbot@gmail.com"));
+
+            message.To.Add(MailboxAddress.Parse(toEmail));
+
+            message.Subject = subject;
+
+            message.Body = new TextPart("plain"){
+                Text = content
+            };
+
+            using(var client = new SmtpClient()){
+
+                client.Connect("smtp.gmail.com", 587, false);
+
+                client.Authenticate("recipeboxbot@gmail.com",  _config.GetSection("MailKitSettings:Password").Value);
+
+                client.Send(message);
+
+                client.Disconnect(true);
+            }
+
+           
         }
     }
 }

@@ -48,6 +48,10 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 
 					<div className='info'>
 						<div className='p-1'>
+							<i className='fas fa-utensils' />
+							{' ' + post.cuisine}
+						</div>
+						<div className='p-1'>
 							<i className='far fa-clock' /> Prep - {post.prepTime}
 						</div>
 						<div className='p-1'>
@@ -62,7 +66,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 					<h2 className='text-primary'>Ingredients</h2>
 					<div>
 						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient Ingredient Ingredient
+							<i className='fas fa-angle-right' /> Ingredient
 						</div>
 						<div className='p'>
 							<i className='fas fa-angle-right' /> Ingredient
@@ -106,17 +110,24 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 					</div>
 				</div>
 				<div className='post-footer'>
-					<h1 className='text-primary'>Published by:</h1>
-					<Link to='/profile.html'>
-						<div className='text-dark'>
-							{post.userPhotoUrl ? (
-								<img className='icon-b' src={post.userPhotoUrl} />
-							) : (
-								<i class='far fa-user-circle fa-3x ' />
-							)}
-							<h2>{post.author}</h2>
-						</div>
-					</Link>
+					<div>
+						<h1 className='text-primary'>
+							Published by:{' '}
+							<Link to='/profile.html'>
+								<div className='text-dark'>
+									{post.userPhotoUrl ? (
+										<img className='icon-b' src={post.userPhotoUrl} />
+									) : (
+										<i class='far fa-user-circle fa-3x ' />
+									)}
+									<h2>{post.author}</h2>
+								</div>
+							</Link>
+						</h1>
+					</div>
+					<button className='comments'>
+						<i class='fas fa-comments fa-3x text-primary comments'>{'  ' + post.comments.length}</i>
+					</button>
 				</div>
 			</div>
 		</Fragment>

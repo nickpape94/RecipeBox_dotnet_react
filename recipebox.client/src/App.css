@@ -722,13 +722,24 @@ button {
 .post-footer {
 	grid-area: footer;
 	text-align: center;
-	align-items: center;
+	/* align-items: center; */
+	justify-content: space-between;
+	display: flex;
+}
+
+/* .post-footer li:hover,
+.rating-list li:hover ~ li {
+	color: #e4cd4e;
+} */
+
+.comments {
+	margin: auto;
+	float: right;
 }
 
 .post-header .favourites {
 	float: right;
 	vertical-align: middle;
-	/* border-style: ridge; */
 }
 
 .post-header .favourites p:first-of-type {
