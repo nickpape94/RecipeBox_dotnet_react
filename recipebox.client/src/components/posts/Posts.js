@@ -52,7 +52,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth }) => {
 
 				<div className='post__submit'>
 					{auth.isAuthenticated && (
-						<Link to='!#'>
+						<Link to='submit-post'>
 							<div className='button'>Submit a Recipe</div>
 						</Link>
 					)}

@@ -50,7 +50,9 @@ namespace RecipeBox.Tests
         {
             // Arrange
             var post = GetFakePostList().SingleOrDefault(x => x.PostId == 1);
-            _repoMock.Setup(repo => repo.GetPost(1)).ReturnsAsync(post);
+            var user = GetFakeUserList().SingleOrDefault(x => x.Id == post.UserId);
+            _repoMock.Setup(x => x.GetPost(1)).ReturnsAsync(post);
+            _repoMock.Setup(x => x.GetUser(user.Id)).ReturnsAsync(user);
             
             // Act
             var result = _postsController.GetPost(1).Result;

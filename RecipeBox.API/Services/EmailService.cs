@@ -133,7 +133,7 @@ namespace RecipeBox.API.Services
         //     var response = await client.SendEmailAsync(msg);
         // }
         
-        public async Task SendEmailAsync(string toEmail, string subject, string content)
+        public Task SendEmailAsync(string toEmail, string subject, string content)
         {
             // Console.WriteLine( _config.GetSection("MailKitSettings:Password").Value);
             var message = new MimeMessage();
@@ -158,7 +158,7 @@ namespace RecipeBox.API.Services
                 client.Disconnect(true);
             }
 
-           
+            return Task.CompletedTask;
         }
     }
 }

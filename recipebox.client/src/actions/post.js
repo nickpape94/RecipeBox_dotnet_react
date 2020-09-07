@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { setAlert } from './alert';
-import { GET_POSTS, POST_ERROR, GET_POST } from './types';
+import { GET_POSTS, POST_ERROR, GET_POST, POST_SUBMIT_SUCCESS, POST_SUBMIT_FAIL } from './types';
 
 // Get posts
 export const getPosts = () => async (dispatch) => {
@@ -50,6 +50,57 @@ export const getPost = (postId) => async (dispatch) => {
 		dispatch({
 			type: POST_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+// Submit a post
+export const createPost = ({
+	nameOfDish,
+	description,
+	ingredients,
+	method,
+	prepTime,
+	cookingTime,
+	feeds,
+	cuisine,
+	userId
+}) => async (dispatch) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	};
+
+	const body = JSON.stringify({
+		nameOfDish,
+		description,
+		ingredients,
+		method,
+		prepTime,
+		cookingTime,
+		feeds,
+		cuisine
+	});
+
+	try {
+		const res = await axios.post(`/api/users/${userId}/posts`);
+
+		dispatch({
+			type: POST_SUBMIT_SUCCESS,
+			payload: res.data
+		});
+	} catch (err) {
+		const errors = err.response.data;
+
+		console.log(errors);
+
+		if (errors) {
+			errors.foreach((error) => dispatch(setAlert(error.description, 'danger')));
+		}
+
+		dispatch({
+			type: POST_SUBMIT_FAIL
 		});
 	}
 };

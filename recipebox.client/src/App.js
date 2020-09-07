@@ -9,6 +9,7 @@ import ForgotPassword from './components/email/ForgotPassword';
 import EmailConfirmed from './components/email/EmailConfirmed';
 import Post from './components/post/Post';
 import Posts from './components/posts/Posts';
+import PostForm from './components/post/PostForm';
 import Alert from './components/layout/Alert';
 
 //Redux
@@ -44,6 +45,7 @@ const App = () => {
 							<Route exact path='/password-reset' component={ForgotPassword} />
 							<Route exact path='/email-confirmed' component={EmailConfirmed} />
 							<Route exact path='/reset-password' component={PasswordReset} />
+							<Route exact path='/submit-post' component={PostForm} />
 							{/* <Route
 								exact
 								path='reset-password?email={email}&token={validToken}'
