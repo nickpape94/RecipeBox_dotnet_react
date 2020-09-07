@@ -91,9 +91,11 @@ export const createPost = (
 
 		console.log(errors);
 
-		// if (errors) {
-		// 	errors.errors.foreach((error) => dispatch(setAlert(error, 'danger')));
-		// }
+		if (errors) {
+			Object.keys(errors).forEach((key) => {
+				dispatch(setAlert(errors[key], 'danger', 7000));
+			});
+		}
 
 		dispatch({
 			type: POST_SUBMIT_FAIL

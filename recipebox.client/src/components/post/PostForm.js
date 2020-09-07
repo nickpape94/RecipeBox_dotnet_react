@@ -45,6 +45,7 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 						placeholder='Select Cuisine'
 						name='cuisine'
 						value={cuisine}
+						required
 						onChange={(e) => onChange(e)}
 					>
 						<option value=''>* Select Cuisine</option>
@@ -78,6 +79,7 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 						placeholder='Name of Dish'
 						name='nameOfDish'
 						value={nameOfDish}
+						required
 						onChange={(e) => onChange(e)}
 					/>
 				</div>
@@ -89,6 +91,7 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 						type='description'
 						name='description'
 						value={description}
+						required
 						onChange={(e) => onChange(e)}
 					/>
 				</div>
@@ -100,6 +103,7 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 						type='ingredients'
 						name='ingredients'
 						value={ingredients}
+						required
 						onChange={(e) => onChange(e)}
 					/>
 					<small className='form-text'>
@@ -114,6 +118,7 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 						type='method'
 						name='method'
 						value={method}
+						required
 						onChange={(e) => onChange(e)}
 					/>
 				</div>
@@ -123,6 +128,7 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 						placeholder='Prep time'
 						name='prepTime'
 						value={prepTime}
+						required
 						onChange={(e) => onChange(e)}
 					/>
 				</span>
@@ -132,11 +138,19 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 						placeholder='Cooking time'
 						name='cookingTime'
 						value={cookingTime}
+						required
 						onChange={(e) => onChange(e)}
 					/>
 				</span>
 				<span className='form-group'>
-					<input type='feeds' placeholder='Feeds' name='feeds' value={feeds} onChange={(e) => onChange(e)} />
+					<input
+						type='feeds'
+						placeholder='Feeds'
+						name='feeds'
+						value={feeds}
+						required
+						onChange={(e) => onChange(e)}
+					/>
 				</span>
 				<div className='form-group' action='/upload' method='Post' encType='multipart/form-data'>
 					Select image to upload:

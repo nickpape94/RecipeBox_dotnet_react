@@ -758,6 +758,13 @@ button {
 	font-size: 1.2rem;
 	border: 1px solid #ccc;
 	margin-right: 5px;
+	margin-bottom: 5px;
+
+	/* display: block;
+	width: 100%;
+	padding: 0.4rem;
+	font-size: 1.2rem;
+	border: 1px solid #ccc; */
 }
 
 .form input[type = nameOfDish] {
