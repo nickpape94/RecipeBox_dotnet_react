@@ -6,7 +6,7 @@ import { createPost } from '../../actions/post';
 import PropTypes from 'prop-types';
 import { getUser } from '../../actions/user';
 
-const PostForm = ({ setAlert, createPost, auth: { user } }) => {
+const PostForm = ({ createPost, auth: { user }, history }) => {
 	const [ formData, setFormData ] = useState({
 		nameOfDish: '',
 		description: '',
@@ -24,11 +24,19 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 
 	// Get user Id
 	const userId = user && user.id;
-	// console.log(typeof userId);
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		createPost(userId, { nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine });
+		createPost(userId, history, {
+			nameOfDish,
+			description,
+			ingredients,
+			method,
+			prepTime,
+			cookingTime,
+			feeds,
+			cuisine
+		});
 	};
 
 	return (
@@ -160,6 +168,7 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 
 				<input type='submit' className='btn btn-primary' value='Submit' />
 			</form>
+			{/* {postSubmitted && <Redirect to='/posts' />} */}
 		</Fragment>
 	);
 };
@@ -167,10 +176,12 @@ const PostForm = ({ setAlert, createPost, auth: { user } }) => {
 PostForm.propTypes = {
 	createPost: PropTypes.func.isRequired,
 	auth: PropTypes.object.isRequired
+	// postSubmitted: PropTypes.bool
 };
 
 const mapStateToProps = (state) => ({
 	auth: state.auth
+	// postSubmitted: state.post.postSubmitted
 });
 
 export default connect(mapStateToProps, { setAlert, createPost })(PostForm);

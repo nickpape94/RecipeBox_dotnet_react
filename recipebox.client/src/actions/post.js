@@ -57,6 +57,7 @@ export const getPost = (postId) => async (dispatch) => {
 // Create a post
 export const createPost = (
 	userId,
+	history,
 	{ nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine }
 ) => async (dispatch) => {
 	const config = {
@@ -86,10 +87,12 @@ export const createPost = (
 			type: POST_SUBMIT_SUCCESS,
 			payload: res.data
 		});
+
+		history.push('/add-photos');
 	} catch (err) {
 		const errors = err.response.data.errors;
 
-		console.log(errors);
+		// console.log(errors);
 
 		if (errors) {
 			Object.keys(errors).forEach((key) => {

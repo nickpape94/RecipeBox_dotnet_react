@@ -10,6 +10,7 @@ import EmailConfirmed from './components/email/EmailConfirmed';
 import Post from './components/post/Post';
 import Posts from './components/posts/Posts';
 import PostForm from './components/post/PostForm';
+import PhotosToPost from './components/post/PhotosToPost';
 import Alert from './components/layout/Alert';
 
 //Redux
@@ -46,6 +47,7 @@ const App = () => {
 							<Route exact path='/email-confirmed' component={EmailConfirmed} />
 							<Route exact path='/reset-password' component={PasswordReset} />
 							<Route exact path='/submit-post' component={PostForm} />
+							<Route exact path='/add-photos' component={PhotosToPost} />
 							{/* <Route
 								exact
 								path='reset-password?email={email}&token={validToken}'

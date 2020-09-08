@@ -5,6 +5,7 @@ const initialState = {
 	post: null,
 	loading: true,
 	error: {}
+	// postSubmitted: false
 };
 
 export default function(state = initialState, action) {
@@ -28,6 +29,7 @@ export default function(state = initialState, action) {
 				...state,
 				loading: false,
 				posts: [ payload, ...state.posts ]
+				// postSubmitted: true
 			};
 		case POST_SUBMIT_FAIL:
 		case POST_ERROR:
