@@ -47,7 +47,7 @@ const App = () => {
 							<Route exact path='/email-confirmed' component={EmailConfirmed} />
 							<Route exact path='/reset-password' component={PasswordReset} />
 							<Route exact path='/submit-post' component={PostForm} />
-							<Route exact path='/add-photos/post/:postId' component={PhotosToPost} />
+							<Route exact path='/post/add-photos' component={PhotosToPost} />
 
 							{/* <Route
 								exact

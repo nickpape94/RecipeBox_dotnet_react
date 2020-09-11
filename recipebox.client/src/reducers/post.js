@@ -28,7 +28,8 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				loading: false,
-				posts: [ payload, ...state.posts ]
+				posts: [ payload, ...state.posts ],
+				post: payload
 				// postSubmitted: true
 			};
 		case POST_SUBMIT_FAIL:

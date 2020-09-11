@@ -81,18 +81,18 @@ export const createPost = (
 	try {
 		const res = await axios.post(`/api/users/${userId}/posts`, body, config);
 
-		// console.log(res.data.postId);
+		console.log(res.data.postId);
 
 		dispatch({
 			type: POST_SUBMIT_SUCCESS,
 			payload: res.data
 		});
 
-		history.push(`/add-photos/post/${res.data.postId}`);
+		// history.push(`/add-photos/post/${res.data.postId}`);
+		history.push('post/add-photos');
 	} catch (err) {
+		// console.log(err);
 		const errors = err.response.data.errors;
-
-		// console.log(errors);
 
 		if (errors) {
 			Object.keys(errors).forEach((key) => {

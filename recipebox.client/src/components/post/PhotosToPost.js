@@ -7,22 +7,30 @@ import { getPost } from '../../actions/post';
 import { getUser } from '../../actions/user';
 import Spinner from '../layout/Spinner';
 
-const PhotosToPost = ({ getPost, post: { post }, match, auth: { loading, isAuthenticated, user } }) => {
+const PhotosToPost = ({ getPost, post: { post }, auth: { loading, isAuthenticated, user } }) => {
+	// const [state={notLoaded:true}, setState] = useState(null);
 	useEffect(
 		() => {
-			getPost(match.params.postId);
+			if (post !== null) {
+				getPost(post.postId);
+			} else {
+				// return <Redirect to={`/posts`} />;
+				console.log('post is null');
+			}
+
+			// setState(post);
 		},
 		[ getPost ]
 	);
 
-	const idOfPost = post && post.userId;
+	const userIdOfPost = post && post.userId;
 	const idOfLoggedInUser = user && user.id;
 
 	if (loading) {
 		return <Spinner />;
 	}
-	if (idOfPost !== idOfLoggedInUser && isAuthenticated === true) {
-		console.log('id of post:' + idOfPost);
+	if (userIdOfPost !== idOfLoggedInUser || post === null) {
+		console.log('user id of the post:' + userIdOfPost);
 		console.log('id of logged in user:' + idOfLoggedInUser);
 		console.log('loading status: ' + loading);
 		console.log('auth status: ' + isAuthenticated);
@@ -30,17 +38,17 @@ const PhotosToPost = ({ getPost, post: { post }, match, auth: { loading, isAuthe
 	}
 	// const id = [ post && post.userId, auth.user && auth.user.id ];
 	// console.log(id);
-	console.log('id of post:' + idOfPost);
+	console.log('user id of the post:' + userIdOfPost);
 	console.log('id of logged in user:' + idOfLoggedInUser);
 	console.log('loading status: ' + loading);
 	console.log('auth status: ' + isAuthenticated);
-	// {idOfPost !== idOfLoggedInUser && <Redirect to='/posts' />}
+	// {userIdOfPost !== idOfLoggedInUser && <Redirect to='/posts' />}
 	return (
 		<Fragment>
 			<h1>somethinf</h1>
-			<h1>{idOfPost}</h1>
+			<h1>{userIdOfPost}</h1>
 			<h1>{idOfLoggedInUser}</h1>
-			{/* {idOfPost !== idOfLoggedInUser && <Redirect to='/posts' />} */}
+			{/* {userIdOfPost !== idOfLoggedInUser && <Redirect to='/posts' />} */}
 		</Fragment>
 	);
 };
