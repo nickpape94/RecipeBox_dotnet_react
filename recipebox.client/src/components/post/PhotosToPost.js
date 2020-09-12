@@ -5,23 +5,16 @@ import { connect } from 'react-redux';
 import { addRecipePhotos } from '../../actions/photo';
 import { getPost } from '../../actions/post';
 import { getUser } from '../../actions/user';
+import { Form } from 'react-bootstrap';
 import Spinner from '../layout/Spinner';
 
-const PhotosToPost = ({ getPost, post: { post }, auth: { loading, isAuthenticated, user } }) => {
+const PhotosToPost = ({ getPost, post: { post }, auth: { loading, user } }) => {
 	// const [state={notLoaded:true}, setState] = useState(null);
-	useEffect(
-		() => {
-			if (post !== null) {
-				getPost(post.postId);
-			} else {
-				// return <Redirect to={`/posts`} />;
-				console.log('post is null');
-			}
-
-			// setState(post);
-		},
-		[ getPost ]
-	);
+	useEffect(() => {
+		if (post !== null) {
+			getPost(post.postId);
+		}
+	}, []);
 
 	const userIdOfPost = post && post.userId;
 	const idOfLoggedInUser = user && user.id;
@@ -29,26 +22,37 @@ const PhotosToPost = ({ getPost, post: { post }, auth: { loading, isAuthenticate
 	if (loading) {
 		return <Spinner />;
 	}
-	if (userIdOfPost !== idOfLoggedInUser || post === null) {
-		console.log('user id of the post:' + userIdOfPost);
-		console.log('id of logged in user:' + idOfLoggedInUser);
-		console.log('loading status: ' + loading);
-		console.log('auth status: ' + isAuthenticated);
-		return <Redirect to={`/posts`} />;
-	}
-	// const id = [ post && post.userId, auth.user && auth.user.id ];
-	// console.log(id);
-	console.log('user id of the post:' + userIdOfPost);
-	console.log('id of logged in user:' + idOfLoggedInUser);
-	console.log('loading status: ' + loading);
-	console.log('auth status: ' + isAuthenticated);
-	// {userIdOfPost !== idOfLoggedInUser && <Redirect to='/posts' />}
+	// if (userIdOfPost !== idOfLoggedInUser || post === null) {
+	// 	return <Redirect to={`/posts`} />;
+	// }
+
 	return (
 		<Fragment>
-			<h1>somethinf</h1>
-			<h1>{userIdOfPost}</h1>
-			<h1>{idOfLoggedInUser}</h1>
-			{/* {userIdOfPost !== idOfLoggedInUser && <Redirect to='/posts' />} */}
+			<div className='container'>
+				{/* <div className='display-4 text-center mb-4'>
+					<h1>File Upload</h1>
+					<h1>{userIdOfPost}</h1>
+					<h1>{idOfLoggedInUser}</h1>
+				</div> */}
+
+				<Form>
+					<div className='mb-3'>
+						<Form.File id='formcheck-api-custom' custom>
+							<Form.File.Input isValid />
+							<Form.File.Label data-browse='Button text'>Custom file input</Form.File.Label>
+							<Form.Control.Feedback type='valid'>You did it!</Form.Control.Feedback>
+						</Form.File>
+					</div>
+					<div className='mb-3'>
+						<Form.File id='formcheck-api-regular'>
+							<Form.File.Label>Regular file input</Form.File.Label>
+							<Form.File.Input />
+						</Form.File>
+					</div>
+				</Form>
+
+				{/* {userIdOfPost !== idOfLoggedInUser && <Redirect to='/posts' />} */}
+			</div>
 		</Fragment>
 	);
 };

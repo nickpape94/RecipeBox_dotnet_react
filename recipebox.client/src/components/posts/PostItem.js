@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 import { connect } from 'react-redux';
 import { getPost } from '../../actions/post';
-import { Card } from 'react-bootstrap';
 
 // var userImage = !post.postPhoto ? <img src="https://www.pinpng.com/pngs/m/341-3415688_no-avatar-png-transparent-png.png"></img> : <img></img>
 // var mainPhoto = post.postPhoto.filter((x) => x.isMain == true);
