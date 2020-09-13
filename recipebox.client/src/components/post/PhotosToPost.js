@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -31,18 +31,26 @@ const PhotosToPost = ({ getPost, post: { post }, auth: { loading, user } }) => {
 				<i class='fas fa-upload fa-2x text-primary' /> <h3>Share Photos Of Your Recipe For Others To See</h3>
 			</h2>
 			<form className='container'>
-				{/* <div className='display-4 text-center mb-4'>
-					<h1>File Upload</h1>
-					<h1>{userIdOfPost}</h1>
-					<h1>{idOfLoggedInUser}</h1>
-				</div> */}
-
-				<div className='custom-file'>
-					<input type='file' className='custom-file-input' id='customFile' multiple />
+				<div className='image-upload-wrap'>
+					<input
+						className='file-upload-input'
+						type='file'
+						onchange='readURL(this);'
+						accept='image/*'
+						multiple
+					/>
+					<div className='drag-text'>
+						<h3>Drag and drop a file or select add Image</h3>
+					</div>
 				</div>
-				<label className='custom-file-label' for='customFile'>
-					Choose file(s)
-				</label>
+				<div className='file-upload-content'>
+					<img className='file-upload-image' src='#' alt='your image' />
+					<div className='image-title-wrap'>
+						<button type='button' onclick='removeUpload()' className='remove-image'>
+							Remove <span className='image-title'>Uploaded Image</span>
+						</button>
+					</div>
+				</div>
 
 				<div className='my-1 text-center'>
 					<input type='submit' className='btn btn-success' value='Upload' />
