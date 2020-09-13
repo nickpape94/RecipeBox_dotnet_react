@@ -31,25 +31,20 @@ const PhotosToPost = ({ getPost, post: { post }, auth: { loading, user } }) => {
 				<i class='fas fa-upload fa-2x text-primary' /> <h3>Share Photos Of Your Recipe For Others To See</h3>
 			</h2>
 			<form className='container'>
-				<div className='image-upload-wrap'>
-					<input
-						className='file-upload-input'
-						type='file'
-						onchange='readURL(this);'
-						accept='image/*'
-						multiple
-					/>
-					<div className='drag-text'>
-						<h3>Drag and drop a file or select add Image</h3>
+				<div className='my-2 text-center'>
+					<div className='row'>
+						<div className='col-md-6'>
+							<input
+								type='file'
+								className='form-control'
+								id='images'
+								name='images[]'
+								onchange='preview_images();'
+								multiple
+							/>
+						</div>
 					</div>
-				</div>
-				<div className='file-upload-content'>
-					<img className='file-upload-image' src='#' alt='your image' />
-					<div className='image-title-wrap'>
-						<button type='button' onclick='removeUpload()' className='remove-image'>
-							Remove <span className='image-title'>Uploaded Image</span>
-						</button>
-					</div>
+					<div className='row' id='image_preview' />
 				</div>
 
 				<div className='my-1 text-center'>
