@@ -160,13 +160,9 @@ const PostForm = ({ createPost, auth: { user }, history }) => {
 						onChange={(e) => onChange(e)}
 					/>
 				</span>
-				<div className='form-group' action='/upload' method='Post' encType='multipart/form-data'>
-					Select image to upload:
-					<input type='file' name='fileToUpload' id='fileToUpload' />
-					{/* <input type="submit" value="Upload Image" name="submit"> */}
+				<div className='form-group'>
+					<input type='submit' className='btn btn-primary' value='Submit' />
 				</div>
-
-				<input type='submit' className='btn btn-primary' value='Submit' />
 			</form>
 			{/* {postSubmitted && <Redirect to='/posts' />} */}
 		</Fragment>

@@ -1,11 +1,10 @@
 import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { addRecipePhotos } from '../../actions/photo';
 import { getPost } from '../../actions/post';
 import { getUser } from '../../actions/user';
-import { Form } from 'react-bootstrap';
 import Spinner from '../layout/Spinner';
 
 const PhotosToPost = ({ getPost, post: { post }, auth: { loading, user } }) => {
@@ -28,31 +27,30 @@ const PhotosToPost = ({ getPost, post: { post }, auth: { loading, user } }) => {
 
 	return (
 		<Fragment>
-			<div className='container'>
+			<h2 className='text-center lead m-1'>
+				<i class='fas fa-upload fa-2x text-primary' /> <h3>Share Photos Of Your Recipe For Others To See</h3>
+			</h2>
+			<form className='container'>
 				{/* <div className='display-4 text-center mb-4'>
 					<h1>File Upload</h1>
 					<h1>{userIdOfPost}</h1>
 					<h1>{idOfLoggedInUser}</h1>
 				</div> */}
 
-				<Form>
-					<div className='mb-3'>
-						<Form.File id='formcheck-api-custom' custom>
-							<Form.File.Input isValid />
-							<Form.File.Label data-browse='Button text'>Custom file input</Form.File.Label>
-							<Form.Control.Feedback type='valid'>You did it!</Form.Control.Feedback>
-						</Form.File>
-					</div>
-					<div className='mb-3'>
-						<Form.File id='formcheck-api-regular'>
-							<Form.File.Label>Regular file input</Form.File.Label>
-							<Form.File.Input />
-						</Form.File>
-					</div>
-				</Form>
+				<div className='custom-file'>
+					<input type='file' className='custom-file-input' id='customFile' multiple />
+				</div>
+				<label className='custom-file-label' for='customFile'>
+					Choose file(s)
+				</label>
 
-				{/* {userIdOfPost !== idOfLoggedInUser && <Redirect to='/posts' />} */}
-			</div>
+				<div className='my-1 text-center'>
+					<input type='submit' className='btn btn-success' value='Upload' />
+				</div>
+				<div className='lnk m-1 text-center a:hover'>
+					<Link to='/posts'>Continue without uploading any photos</Link>
+				</div>
+			</form>
 		</Fragment>
 	);
 };

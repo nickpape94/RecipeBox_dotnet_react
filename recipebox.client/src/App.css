@@ -93,6 +93,13 @@ img {
 	text-align: center;
 }
 
+.text-right {
+	text-align: right;
+}
+.text-left {
+	text-align: left;
+}
+
 .text-primary {
 	color: var(--primary-color);
 }
@@ -161,7 +168,7 @@ img {
 	display: inline-block;
 	background: var(--light-color);
 	color: #333;
-	padding: 0.4rem 1.3rem;
+	padding: 0.6rem 1.8rem;
 	font-size: 1rem;
 	border: none;
 	cursor: pointer;
@@ -237,6 +244,7 @@ img {
 	border: #ccc solid 1px;
 }
 
+.lnk:hover,
 .btn:hover {
 	opacity: 0.8;
 }
@@ -767,13 +775,31 @@ button {
 	border: 1px solid #ccc; */
 }
 
-.form input[type = nameOfDish] {
+.form input[type ='nameOfDish'] {
 	display: inline-block;
 	padding: 0.5rem;
 	font-size: 1.2rem;
 	border: 1px solid #ccc;
 	margin-right: 5px;
 	width: 100%;
+}
+
+.custom-file {
+	display: inline-block;
+	padding: 0.7rem;
+	font-size: .2rem;
+	border: 1px solid #ccc;
+	margin-right: 5px;
+	width: 100%;
+}
+
+.custom-file-input {
+	align-items: flex-end;
+	background-color: purple;
+}
+
+.file-upload-button {
+	background-color: purple;
 }
 
 /* Font awesome */
