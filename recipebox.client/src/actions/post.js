@@ -81,8 +81,6 @@ export const createPost = (
 	try {
 		const res = await axios.post(`/api/users/${userId}/posts`, body, config);
 
-		console.log(res.data.postId);
-
 		dispatch({
 			type: POST_SUBMIT_SUCCESS,
 			payload: res.data
