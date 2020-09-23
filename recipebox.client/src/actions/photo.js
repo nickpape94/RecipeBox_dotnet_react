@@ -12,6 +12,7 @@ export const addRecipePhotos = (postId, history, formData) => async (dispatch) =
 
 	try {
 		// First get post, check to see if the post belongs to currently logged in user, if true proceed, else redirect to posts. (try using match.params.id and equaste to userId)
+
 		const res = await axios.post(`/api/posts/${postId}/photos`, formData, config);
 
 		dispatch({
@@ -19,7 +20,9 @@ export const addRecipePhotos = (postId, history, formData) => async (dispatch) =
 			payload: res.data
 		});
 
-		history.push(`/api/posts/${postId}`);
+		return res.data;
+
+		// history.push(`/posts/${postId}`);
 	} catch (err) {
 		const errors = err.response.data;
 
