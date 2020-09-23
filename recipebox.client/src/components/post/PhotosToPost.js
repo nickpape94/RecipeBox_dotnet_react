@@ -17,6 +17,7 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 
 	const [ file, setFile ] = useState('');
 	const [ filename, setFilename ] = useState('Choose File(s)');
+	const [ fileUrl, setFileUrl ] = useState('');
 	const [ uploadedFile, setUploadedFile ] = useState({});
 
 	const { postPhotos } = file;
@@ -36,13 +37,16 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 	// 	return <Redirect to={`/posts`} />;
 	// }
 
+	console.log(fileUrl);
+
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		const formData = new FormData();
 		formData.append('file', file);
 		const response = await addRecipePhotos(post.postId, history, formData);
-		console.log(response);
-		console.log('url ' + response.url);
+		setFileUrl(response.url);
+		// console.log(response);
+		// console.log('url ' + response.url);
 	};
 
 	return (
@@ -80,8 +84,8 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 			{uploadedFile ? (
 				<div className='row mt-5'>
 					<div className='col-md-6 m-auto'>
-						<h3 className='text-center'>{uploadedFile.fileName}</h3>
-						<img style={{ width: '100%' }} src={uploadedFile.filePath} alt='' />
+						{/* <h3 className='text-center'>{uploadedFile.fileName}</h3> */}
+						<img style={{ width: '100%' }} src={fileUrl} alt='' />
 					</div>
 				</div>
 			) : null}
