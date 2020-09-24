@@ -21,8 +21,8 @@ const thumb = {
 	border: '1px solid #eaeaea',
 	marginBottom: 8,
 	marginRight: 8,
-	width: 100,
-	height: 100,
+	width: 300,
+	height: 300,
 	padding: 4,
 	boxSizing: 'border-box'
 };
@@ -78,6 +78,12 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 		[ files ]
 	);
 
+	// const filepath = acceptedFiles.map((file) => (
+	// 	<li key={file.path}>
+	// 		{file.path} - {file.size} bytes
+	// 	</li>
+	// ));
+
 	const { postPhotos } = files;
 
 	const onChange = (e) => {
@@ -112,11 +118,14 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 				<i className='fas fa-upload fa-2x text-primary' />{' '}
 				<h3>Share Photos Of Your Recipe For Others To See</h3>
 			</div>
-			<div className='boxxed my-2 text-center'>
+			<div className='my-2 text-center'>
 				<section className='container'>
 					<div {...getRootProps({ className: 'dropzone' })}>
 						<input {...getInputProps()} />
 						<p>Drag 'n' drop some files heres</p>
+						{/* <button className='button' onClick={open}>
+							Open Files
+						</button> */}
 					</div>
 					<aside style={thumbsContainer}>{thumbs}</aside>
 				</section>
