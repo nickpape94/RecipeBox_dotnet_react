@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -12,7 +12,8 @@ const thumbsContainer = {
 	display: 'flex',
 	flexDirection: 'row',
 	flexWrap: 'wrap',
-	marginTop: 16
+	marginTop: 16,
+	justifyContent: 'center'
 };
 
 const thumb = {
@@ -39,6 +40,34 @@ const img = {
 	height: '100%'
 };
 
+const baseStyle = {
+	flex: 1,
+	display: 'flex',
+	flexDirection: 'column',
+	alignItems: 'center',
+	padding: '20px',
+	borderWidth: 2,
+	borderRadius: 2,
+	borderColor: '#eeeeee',
+	borderStyle: 'dashed',
+	backgroundColor: '#fafafa',
+	color: '#bdbdbd',
+	outline: 'none',
+	transition: 'border .24s ease-in-out'
+};
+
+const activeStyle = {
+	borderColor: '#2196f3'
+};
+
+const acceptStyle = {
+	borderColor: '#00e676'
+};
+
+const rejectStyle = {
+	borderColor: '#ff1744'
+};
+
 const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, history }) => {
 	// const [state={notLoaded:true}, setState] = useState(null);
 	useEffect(() => {
@@ -49,7 +78,7 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 
 	const [ files, setFiles ] = useState([]);
 	const [ fileUrl, setFileUrl ] = useState('');
-	const { getRootProps, getInputProps } = useDropzone({
+	const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject, acceptedFiles, open } = useDropzone({
 		accept: 'image/*',
 		onDrop: (acceptedFiles) => {
 			setFiles(
@@ -61,6 +90,16 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 			);
 		}
 	});
+
+	const style = useMemo(
+		() => ({
+			...baseStyle,
+			...(isDragActive ? activeStyle : {}),
+			...(isDragAccept ? acceptStyle : {}),
+			...(isDragReject ? rejectStyle : {})
+		}),
+		[ isDragActive, isDragReject ]
+	);
 
 	const thumbs = files.map((file) => (
 		<div style={thumb} key={file.name}>
@@ -120,12 +159,10 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 			</div>
 			<div className='my-2 text-center'>
 				<section className='container'>
-					<div {...getRootProps({ className: 'dropzone' })}>
+					<div {...getRootProps({ style })}>
 						<input {...getInputProps()} />
 						<p>Drag 'n' drop some files heres</p>
-						{/* <button className='button' onClick={open}>
-							Open Files
-						</button> */}
+						<button className='button my-1 btn btn-primary'>Open Files</button>
 					</div>
 					<aside style={thumbsContainer}>{thumbs}</aside>
 				</section>

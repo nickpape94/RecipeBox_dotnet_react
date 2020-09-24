@@ -28,9 +28,17 @@
 	margin-top: -1px;
 }
 
-/* .boxxed .p {
-	margin: 0;
-} */
+.thumbsContainer {
+}
+
+.thumb {
+}
+
+.thumbInner {
+}
+
+.thumbImg {
+}
 
 body {
 	font-family: 'Raleway', sans-serif;
