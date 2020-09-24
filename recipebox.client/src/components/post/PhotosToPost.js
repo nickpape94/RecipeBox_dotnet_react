@@ -7,66 +7,16 @@ import { getPost } from '../../actions/post';
 import { getUser } from '../../actions/user';
 import Spinner from '../layout/Spinner';
 import { useDropzone } from 'react-dropzone';
-
-const thumbsContainer = {
-	display: 'flex',
-	flexDirection: 'row',
-	flexWrap: 'wrap',
-	marginTop: 16,
-	justifyContent: 'center'
-};
-
-const thumb = {
-	display: 'inline-flex',
-	borderRadius: 2,
-	border: '1px solid #eaeaea',
-	marginBottom: 8,
-	marginRight: 8,
-	width: 300,
-	height: 300,
-	padding: 4,
-	boxSizing: 'border-box'
-};
-
-const thumbInner = {
-	display: 'flex',
-	minWidth: 0,
-	overflow: 'hidden'
-};
-
-const img = {
-	display: 'block',
-	width: 'auto',
-	height: '100%'
-};
-
-const baseStyle = {
-	flex: 1,
-	display: 'flex',
-	flexDirection: 'column',
-	alignItems: 'center',
-	padding: '20px',
-	borderWidth: 2,
-	borderRadius: 2,
-	borderColor: '#eeeeee',
-	borderStyle: 'dashed',
-	backgroundColor: '#fafafa',
-	color: '#bdbdbd',
-	outline: 'none',
-	transition: 'border .24s ease-in-out'
-};
-
-const activeStyle = {
-	borderColor: '#2196f3'
-};
-
-const acceptStyle = {
-	borderColor: '#00e676'
-};
-
-const rejectStyle = {
-	borderColor: '#ff1744'
-};
+import {
+	thumbsContainer,
+	thumb,
+	thumbInner,
+	img,
+	baseStyle,
+	activeStyle,
+	acceptStyle,
+	rejectStyle
+} from '../layout/PhotoUploadStyles';
 
 const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, history }) => {
 	// const [state={notLoaded:true}, setState] = useState(null);
@@ -90,6 +40,8 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 			);
 		}
 	});
+
+	files.length = Math.min(files.length, 6);
 
 	const style = useMemo(
 		() => ({
@@ -117,16 +69,10 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 		[ files ]
 	);
 
-	// const filepath = acceptedFiles.map((file) => (
-	// 	<li key={file.path}>
-	// 		{file.path} - {file.size} bytes
-	// 	</li>
-	// ));
-
 	const { postPhotos } = files;
 
 	const onChange = (e) => {
-		setFiles(e.target.files[0]);
+		setFiles(e.target.files);
 	};
 
 	const userIdOfPost = post && post.userId;
@@ -145,8 +91,9 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 		e.preventDefault();
 		const formData = new FormData();
 		formData.append('file', files);
-		const response = await addRecipePhotos(post.postId, history, formData);
-		setFileUrl(response.url);
+		addRecipePhotos(post.postId, history, formData);
+		// const response = await addRecipePhotos(post.postId, history, formData);
+		// setFileUrl(response.url);
 		// console.log(response);
 		// console.log('url ' + response.url);
 	};
@@ -156,12 +103,13 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 			<div className='text-center lead m-1'>
 				<i className='fas fa-upload fa-2x text-primary' />{' '}
 				<h3>Share Photos Of Your Recipe For Others To See</h3>
+				<small>(Maximum Of 6 Posts Per Post)</small>
 			</div>
 			<div className='my-2 text-center'>
 				<section className='container'>
 					<div {...getRootProps({ style })}>
 						<input {...getInputProps()} />
-						<p>Drag 'n' drop some files heres</p>
+						<p>Drag 'n' drop some files here</p>
 						<button className='button my-1 btn btn-primary'>Open Files</button>
 					</div>
 					<aside style={thumbsContainer}>{thumbs}</aside>
