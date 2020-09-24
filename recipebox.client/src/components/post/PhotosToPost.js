@@ -6,6 +6,38 @@ import { addRecipePhotos } from '../../actions/photo';
 import { getPost } from '../../actions/post';
 import { getUser } from '../../actions/user';
 import Spinner from '../layout/Spinner';
+import { useDropzone } from 'react-dropzone';
+
+const thumbsContainer = {
+	display: 'flex',
+	flexDirection: 'row',
+	flexWrap: 'wrap',
+	marginTop: 16
+};
+
+const thumb = {
+	display: 'inline-flex',
+	borderRadius: 2,
+	border: '1px solid #eaeaea',
+	marginBottom: 8,
+	marginRight: 8,
+	width: 100,
+	height: 100,
+	padding: 4,
+	boxSizing: 'border-box'
+};
+
+const thumbInner = {
+	display: 'flex',
+	minWidth: 0,
+	overflow: 'hidden'
+};
+
+const img = {
+	display: 'block',
+	width: 'auto',
+	height: '100%'
+};
 
 const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, history }) => {
 	// const [state={notLoaded:true}, setState] = useState(null);
@@ -15,16 +47,41 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 		}
 	}, []);
 
-	const [ file, setFile ] = useState('');
-	const [ filename, setFilename ] = useState('Choose File(s)');
+	const [ files, setFiles ] = useState([]);
 	const [ fileUrl, setFileUrl ] = useState('');
-	const [ uploadedFile, setUploadedFile ] = useState({});
+	const { getRootProps, getInputProps } = useDropzone({
+		accept: 'image/*',
+		onDrop: (acceptedFiles) => {
+			setFiles(
+				acceptedFiles.map((file) =>
+					Object.assign(file, {
+						preview: URL.createObjectURL(file)
+					})
+				)
+			);
+		}
+	});
 
-	const { postPhotos } = file;
+	const thumbs = files.map((file) => (
+		<div style={thumb} key={file.name}>
+			<div style={thumbInner}>
+				<img src={file.preview} style={img} />
+			</div>
+		</div>
+	));
+
+	useEffect(
+		() => () => {
+			// Make sure to revoke the data uris to avoid memory leaks
+			files.forEach((file) => URL.revokeObjectURL(file.preview));
+		},
+		[ files ]
+	);
+
+	const { postPhotos } = files;
 
 	const onChange = (e) => {
-		setFile(e.target.files[0]);
-		setFilename(e.target.files[0]);
+		setFiles(e.target.files[0]);
 	};
 
 	const userIdOfPost = post && post.userId;
@@ -42,7 +99,7 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		const formData = new FormData();
-		formData.append('file', file);
+		formData.append('file', files);
 		const response = await addRecipePhotos(post.postId, history, formData);
 		setFileUrl(response.url);
 		// console.log(response);
@@ -55,25 +112,16 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 				<i className='fas fa-upload fa-2x text-primary' />{' '}
 				<h3>Share Photos Of Your Recipe For Others To See</h3>
 			</div>
-			<form className='container' onSubmit={(e) => onSubmit(e)}>
-				<div className='my-2 text-center'>
-					<div className='row'>
-						<div className='col-md-6'>
-							<input
-								type='file'
-								className='form-control'
-								// id='images'
-								// name='images[]'
-								// name='files'
-								multiple
-								value={postPhotos}
-								onChange={(e) => onChange(e)}
-							/>
-						</div>
+			<div className='boxxed my-2 text-center'>
+				<section className='container'>
+					<div {...getRootProps({ className: 'dropzone' })}>
+						<input {...getInputProps()} />
+						<p>Drag 'n' drop some files heres</p>
 					</div>
-					<div className='row' id='image_preview' />
-				</div>
-
+					<aside style={thumbsContainer}>{thumbs}</aside>
+				</section>
+			</div>
+			<form className='container' onSubmit={(e) => onSubmit(e)}>
 				<div className='my-1 text-center'>
 					<input type='submit' className='upload_photo btn-success' value='Upload' />
 				</div>
@@ -81,14 +129,6 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 					<Link to='/posts'>Continue without uploading any photos</Link>
 				</div>
 			</form>
-			{uploadedFile ? (
-				<div className='row mt-5'>
-					<div className='col-md-6 m-auto'>
-						{/* <h3 className='text-center'>{uploadedFile.fileName}</h3> */}
-						<img style={{ width: '100%' }} src={fileUrl} alt='' />
-					</div>
-				</div>
-			) : null}
 		</Fragment>
 	);
 };

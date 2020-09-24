@@ -13,6 +13,25 @@
 	padding: 0;
 }
 
+.boxxed {
+	box-sizing: border-box;
+	border-radius: 5px;
+	border-style: solid;
+	border-color: black;
+	height: 500px;
+	margin: 0;
+	padding: 0;
+	background-color: rgba(231, 224, 238, 0.685);
+
+	overflow: auto;
+	padding-top: 1px;
+	margin-top: -1px;
+}
+
+/* .boxxed .p {
+	margin: 0;
+} */
+
 body {
 	font-family: 'Raleway', sans-serif;
 	font-size: 1rem;
