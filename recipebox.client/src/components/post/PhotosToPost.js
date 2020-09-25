@@ -95,19 +95,14 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 	// 	return <Redirect to={`/posts`} />;
 	// }
 
-	console.log(fileUrl);
-
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		const formData = new FormData();
 
 		for (let i = 0; i < files.length; i++) {
-			console.log(files[i]);
-			// console.log('my array file ' + Array.from(e.target.files));
+			const formData = new FormData();
 			formData.append('file', files[i]);
+			addRecipePhotos(post.postId, history, formData);
 		}
-
-		addRecipePhotos(post.postId, history, formData);
 	};
 
 	return (
