@@ -72,7 +72,17 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 	const { postPhotos } = files;
 
 	const onChange = (e) => {
+		e.preventDefault();
 		setFiles(e.target.files);
+
+		// const file_reader = new FileReader();
+		// let file = e.target.files[0];
+
+		// file_reader.onload = () => {
+		// 	setFiles([ ...files, { uploaded_file: file_reader.result } ]);
+		// };
+
+		// file_reader.readAsDataURL(file);
 	};
 
 	const userIdOfPost = post && post.userId;
@@ -90,12 +100,14 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		const formData = new FormData();
-		formData.append('file', files);
+
+		for (let i = 0; i < files.length; i++) {
+			console.log(files[i]);
+			// console.log('my array file ' + Array.from(e.target.files));
+			formData.append('file', files[i]);
+		}
+
 		addRecipePhotos(post.postId, history, formData);
-		// const response = await addRecipePhotos(post.postId, history, formData);
-		// setFileUrl(response.url);
-		// console.log(response);
-		// console.log('url ' + response.url);
 	};
 
 	return (
