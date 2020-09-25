@@ -323,6 +323,12 @@ img {
 	color: #fff;
 }
 
+.btn-success:disabled {
+	/* color: #cef1d7; */
+	background-color: #aed8b8;
+	pointer-events: none;
+}
+
 .btn-white,
 .bg-white,
 .badge-white,

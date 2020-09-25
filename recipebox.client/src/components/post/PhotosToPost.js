@@ -7,7 +7,7 @@ import { getPost } from '../../actions/post';
 import Spinner from '../layout/Spinner';
 import PhotoPreview from '../photo/PhotoPreview';
 
-const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, history }) => {
+const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, photo, history }) => {
 	// const [state={notLoaded:true}, setState] = useState(null);
 	useEffect(() => {
 		if (post !== null) {
@@ -16,6 +16,9 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 	}, []);
 
 	const [ files, setFiles ] = useState([]);
+	const [ uploading, hasUploaded ] = useState(true);
+
+	// const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
 	const userIdOfPost = post && post.userId;
 	const idOfLoggedInUser = user && user.id;
@@ -30,11 +33,13 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 	const onSubmit = async (e) => {
 		e.preventDefault();
 
-		for (let i = 0; i < files.length; i++) {
-			const formData = new FormData();
-			formData.append('file', files[i]);
-			addRecipePhotos(post.postId, history, formData);
-		}
+		// for (let i = 0; i < files.length; i++) {
+		// 	const formData = new FormData();
+		// 	formData.append('file', files[i]);
+		// 	addRecipePhotos(post.postId, history, formData);
+		// }
+		console.log('hi');
+		console.log(files.length);
 	};
 
 	return (
@@ -42,12 +47,16 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 			<div className='text-center lead m-1'>
 				<i className='fas fa-upload fa-2x text-primary' />{' '}
 				<h3>Share Photos Of Your Recipe For Others To See</h3>
-				<small>(Maximum Of 6 Posts Per Post)</small>
+				<small>(Maximum Of 6 Photos Per Post)</small>
 			</div>
 			<PhotoPreview files={files} setFiles={setFiles} />
 			<form className='container' onSubmit={(e) => onSubmit(e)}>
 				<div className='my-1 text-center'>
-					<input type='submit' className='upload_photo btn-success' value='Upload' />
+					{files.length === 0 ? (
+						<input type='submit' className='upload_photo btn-success' value='Upload' disabled />
+					) : (
+						<input type='submit' className='upload_photo btn-success' value='Upload' />
+					)}
 				</div>
 				<div className='lnk m-1 text-center a:hover'>
 					<Link to='/posts'>Continue without uploading any photos</Link>
