@@ -47,6 +47,12 @@ const PhotoPreview = ({ files, setFiles }) => {
 		</div>
 	));
 
+	const remove = (file) => {
+		const newFiles = [ ...files ];
+		newFiles.splice(file, 1);
+		setFiles(newFiles);
+	};
+
 	useEffect(
 		() => () => {
 			// Make sure to revoke the data uris to avoid memory leaks

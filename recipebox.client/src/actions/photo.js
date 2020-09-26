@@ -20,9 +20,9 @@ export const addRecipePhotos = (postId, history, formData) => async (dispatch) =
 			payload: res.data
 		});
 
-		return res.data;
+		// return res.data;
 
-		// history.push(`/posts/${postId}`);
+		history.push(`/posts/${postId}`);
 	} catch (err) {
 		const errors = err.response.data;
 

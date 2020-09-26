@@ -16,30 +16,31 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 	}, []);
 
 	const [ files, setFiles ] = useState([]);
-	const [ uploading, hasUploaded ] = useState(true);
+	const [ uploading, startedUploading ] = useState(false);
 
 	// const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
 	const userIdOfPost = post && post.userId;
 	const idOfLoggedInUser = user && user.id;
 
-	if (loading) {
+	if (loading || uploading) {
 		return <Spinner />;
 	}
-	// if (userIdOfPost !== idOfLoggedInUser || post === null) {
-	// 	return <Redirect to={`/posts`} />;
-	// }
+
+	if (userIdOfPost !== idOfLoggedInUser || post === null) {
+		return <Redirect to={`/posts`} />;
+	}
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
 
-		// for (let i = 0; i < files.length; i++) {
-		// 	const formData = new FormData();
-		// 	formData.append('file', files[i]);
-		// 	addRecipePhotos(post.postId, history, formData);
-		// }
-		console.log('hi');
-		console.log(files.length);
+		startedUploading(true);
+
+		for (let i = 0; i < files.length; i++) {
+			const formData = new FormData();
+			formData.append('file', files[i]);
+			addRecipePhotos(post.postId, history, formData);
+		}
 	};
 
 	return (
