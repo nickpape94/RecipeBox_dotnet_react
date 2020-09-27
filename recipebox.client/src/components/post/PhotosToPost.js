@@ -48,7 +48,7 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 			<div className='text-center lead m-1'>
 				<i className='fas fa-upload fa-2x text-primary' />{' '}
 				<h3>Share Photos Of Your Recipe For Others To See</h3>
-				<small>(Maximum Of 6 Photos Per Post)</small>
+				<small>(Please select the files in the order you would like them to be displayed)</small>
 			</div>
 			<PhotoPreview files={files} setFiles={setFiles} />
 			<form className='container' onSubmit={(e) => onSubmit(e)}>

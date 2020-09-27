@@ -27,9 +27,9 @@ export const addRecipePhotos = (postId, history, formData) => async (dispatch) =
 		const errors = err.response.data;
 
 		console.log(errors);
-		// if (errors) {
-		// 	errors.foreach((error) => dispatch(setAlert(error), 'danger'));
-		// }
+		if (errors) {
+			errors.foreach((error) => dispatch(setAlert(error), 'danger'));
+		}
 		dispatch({
 			type: RECIPE_PHOTO_UPLOAD_FAIL
 		});

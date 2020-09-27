@@ -13,6 +13,16 @@ import {
 } from '../layout/PhotoUploadStyles';
 
 const PhotoPreview = ({ files, setFiles }) => {
+	const removeFile = (file) => () => {
+		const newFiles = [ ...files ];
+		newFiles.splice(newFiles.indexOf(file), 1);
+		setFiles(newFiles);
+	};
+
+	const removeAll = () => {
+		setFiles([]);
+	};
+
 	const [ fileUrl, setFileUrl ] = useState('');
 	const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject, acceptedFiles, open } = useDropzone({
 		accept: 'image/*',
@@ -40,18 +50,15 @@ const PhotoPreview = ({ files, setFiles }) => {
 	);
 
 	const thumbs = files.map((file) => (
-		<div style={thumb} key={file.name}>
+		<div className='thumb-style' style={thumb} key={file.name}>
 			<div style={thumbInner}>
 				<img src={file.preview} style={img} />
+				<button onClick={removeFile(file)}>
+					<i class='fas fa-trash-alt fa-2x' />
+				</button>
 			</div>
 		</div>
 	));
-
-	const remove = (file) => {
-		const newFiles = [ ...files ];
-		newFiles.splice(file, 1);
-		setFiles(newFiles);
-	};
 
 	useEffect(
 		() => () => {
@@ -67,9 +74,15 @@ const PhotoPreview = ({ files, setFiles }) => {
 				<div {...getRootProps({ style })}>
 					<input {...getInputProps()} />
 					<p>Drag 'n' drop some files here</p>
+					<p>(Maximum of 6 photos)</p>
 					<button className='button my-1 btn btn-primary'>Open Files</button>
 				</div>
 				<aside style={thumbsContainer}>{thumbs}</aside>
+				{files.length > 0 && (
+					<button className='btn btn-danger' onClick={removeAll}>
+						Remove All
+					</button>
+				)}
 			</section>
 		</div>
 	);
