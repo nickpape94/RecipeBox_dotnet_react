@@ -54,7 +54,7 @@ const PhotoPreview = ({ files, setFiles }) => {
 			<div style={thumbInner}>
 				<img src={file.preview} style={img} />
 				<button onClick={removeFile(file)}>
-					<i class='fas fa-trash-alt fa-2x' />
+					<i className='fas fa-trash-alt fa-2x' />
 				</button>
 			</div>
 		</div>
