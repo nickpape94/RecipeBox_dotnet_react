@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import PostItem from '../posts/PostItem';
 import { getPost } from '../../actions/post';
+import PhotoItem from '../photo/PhotoItem';
+import AwesomeSlider from 'react-awesome-slider';
+import AwsSliderStyles from 'react-awesome-slider/dist/styles.css';
 
 const Post = ({ getPost, post: { post, loading }, match }) => {
 	useEffect(
@@ -35,13 +38,14 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 			<div className='post-grid my-1'>
 				<div className='post-top'>
 					<h1 className='text-dark'>{post.nameOfDish}</h1>
-					<img
-						className='recipe'
-						src='https://www.thespruceeats.com/thmb/5EJU2Kz4m7N3i2tTZe1G_wyzoVc=/1500x844/smart/filters:no_upscale()/classic-southern-fried-chicken-3056867-11_preview-5b106156119fa80036c19a9e.jpeg'
-					/>
+					{post.postPhoto.length > 0 && (
+						<AwesomeSlider cssModule={AwsSliderStyles}>
+							{post.postPhoto.map((photo) => <div key={photo.postPhotoId} data-src={photo.url} />)}
+						</AwesomeSlider>
+					)}
 				</div>
 
-				<div className='post-about bg-light p-2'>
+				<div className='post-about bg-light p-2 my-3'>
 					<h2 className='text-primary'>Description</h2>
 					<p>{post.description}</p>
 					<div className='line' />
@@ -118,7 +122,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 									{post.userPhotoUrl ? (
 										<img className='icon-b' src={post.userPhotoUrl} />
 									) : (
-										<i class='far fa-user-circle fa-3x ' />
+										<i className='far fa-user-circle fa-3x ' />
 									)}
 									<h2>{post.author}</h2>
 								</div>
@@ -126,7 +130,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 						</h1>
 					</div>
 					<button className='comments'>
-						<i class='fas fa-comments fa-3x text-primary comments'>{'  ' + post.comments.length}</i>
+						<i className='fas fa-comments fa-3x text-primary comments'>{'  ' + post.comments.length}</i>
 					</button>
 				</div>
 			</div>
