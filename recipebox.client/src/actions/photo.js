@@ -20,16 +20,11 @@ export const addRecipePhotos = (postId, history, formData) => async (dispatch) =
 			payload: res.data
 		});
 
-		setTimeout(() => history.push(`/posts/${postId}`), 4500);
+		setTimeout(() => history.push(`/posts/${postId}`), 1000);
 	} catch (err) {
-		const errors = err.response.data;
-
-		console.log(errors);
-		if (errors) {
-			errors.foreach((error) => dispatch(setAlert(error), 'danger'));
-		}
 		dispatch({
-			type: RECIPE_PHOTO_UPLOAD_FAIL
+			type: RECIPE_PHOTO_UPLOAD_FAIL,
+			payload: { msg: err.response.statusText, status: err.response.status }
 		});
 	}
 };

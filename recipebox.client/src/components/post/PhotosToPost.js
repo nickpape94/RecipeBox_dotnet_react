@@ -48,7 +48,7 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 			<div className='text-center lead m-1'>
 				<i className='fas fa-upload fa-2x text-primary' />{' '}
 				<h3>Share Photos Of Your Recipe For Others To See</h3>
-				<small>(Please select the files in the order you would like them to be displayed)</small>
+				{/* <small>(Please select the files in the order you would like them to be displayed)</small> */}
 			</div>
 			<PhotoPreview files={files} setFiles={setFiles} />
 			<form className='container' onSubmit={(e) => onSubmit(e)}>
@@ -60,7 +60,7 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 					)}
 				</div>
 				<div className='lnk m-1 text-center a:hover'>
-					<Link to='/posts'>Continue without uploading any photos</Link>
+					<Link to={`/posts/${post.postId}`}>Continue without uploading any photos</Link>
 				</div>
 			</form>
 		</Fragment>

@@ -68,49 +68,16 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 				<div className='post-ingredients bg-white p-2'>
 					<h2 className='text-primary'>Ingredients</h2>
 					<div>
-						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient
-						</div>
-						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient
-						</div>
-						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient
-						</div>
-						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient{' '}
-						</div>
-						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient
-						</div>
-						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient
-						</div>
-						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient
-						</div>
-						<div className='p'>
-							<i className='fas fa-angle-right' /> Ingredient
-						</div>
+						{post.ingredients.split(',').map((ingredient) => (
+							<div className='p'>
+								<i className='fas fa-angle-right' /> {ingredient}
+							</div>
+						))}
 					</div>
 				</div>
 				<div className='post-method bg-white p-2'>
 					<h2 className='text-primary'>Method</h2>
-					<div>
-						<div className='p'>1: Cook</div>
-						<div className='p'>2: Cook</div>
-						<div className='p'>3: Cook</div>
-						<div className='p'>
-							4: Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook Cook
-							Cook Cook Cook Cook Cook Cook Cook Cook Cook {' '}
-						</div>
-						<div className='p'>1: Cook</div>
-						<div className='p'>2: Cook</div>
-						<div className='p'>3: Cook</div>
-						<div className='p'>1: Cook</div>
-						<div className='p'>2: Cook</div>
-						<div className='p'>3: Cook</div>
-					</div>
+					<div>{[ ...post.method ]}</div>
 				</div>
 				<div className='post-footer'>
 					<div>

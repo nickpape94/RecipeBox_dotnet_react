@@ -129,6 +129,9 @@ const PostForm = ({ createPost, auth: { user }, history }) => {
 						required
 						onChange={(e) => onChange(e)}
 					/>
+					<small className='form-text'>Please leave a line and numerate each stage of the method (eg)</small>
+					<small className='form-text'>(1) Prepare marinade</small>
+					<small className='form-text'>(2) Let meat marinade for 5 hours</small>
 				</div>
 				<span className='form-group'>
 					<input

@@ -798,6 +798,8 @@ button {
 
 .post-method {
 	grid-area: method;
+	white-space: pre-wrap;
+	white-space: pre-line;
 }
 
 .post-ingredients h2,
