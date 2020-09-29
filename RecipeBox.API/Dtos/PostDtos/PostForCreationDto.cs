@@ -9,7 +9,7 @@ namespace RecipeBox.API.Dtos.PostDtos
         // public int PostId { get; set; }
         
         [Required]
-        [StringLength(60, MinimumLength = 3, ErrorMessage = "Name of dish must be longer than 3 characters.")]
+        [StringLength(60, MinimumLength = 3, ErrorMessage = "Name of dish must be between 3 and 60 characters long.")]
         public string NameOfDish { get; set; }
         
         [StringLength(500, MinimumLength = 5, ErrorMessage = "Description must be between 5 and 500 characters long.")]

@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import PostItem from '../posts/PostItem';
 import { getPost } from '../../actions/post';
-import PhotoItem from '../photo/PhotoItem';
 import AwesomeSlider from 'react-awesome-slider';
 import AwsSliderStyles from 'react-awesome-slider/dist/styles.css';
 
