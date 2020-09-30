@@ -69,7 +69,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 					<h2 className='text-primary'>Ingredients</h2>
 					<div>
 						{post.ingredients.split(',').map((ingredient) => (
-							<div className='p'>
+							<div className='p' key={ingredient}>
 								<i className='fas fa-angle-right' /> {ingredient}
 							</div>
 						))}

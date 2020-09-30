@@ -1,11 +1,12 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
+import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
 
-const Register = ({ setAlert, register, isAuthenticated }) => {
+const Register = ({ setAlert, register, isAuthenticated, history }) => {
 	const [ formData, setFormData ] = useState({
 		username: '',
 		email: '',
@@ -15,20 +16,37 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 
 	const { username, email, password, password2 } = formData;
 
+	const [ submitted, submitting ] = useState(false);
+
+	useEffect(
+		() => {
+			if (isAuthenticated) {
+				console.log('effect result:' + isAuthenticated);
+				// return <Redirect to='/posts' />;
+				history.push('/posts');
+			}
+		},
+		[ isAuthenticated ]
+	);
+
+	if (submitted) {
+		return <Spinner />;
+	}
+
 	const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
 	const onSubmit = async (e) => {
+		submitting(true);
 		e.preventDefault();
 		if (password !== password2) {
+			submitting(false);
 			setAlert('Passwords do not match', 'danger');
 		} else {
-			register({ username, email, password });
+			register({ username, email, password, submitting });
 		}
 	};
 
-	if (isAuthenticated) {
-		return <Redirect to='/posts' />;
-	}
+	// console.log(submitted);
 
 	return (
 		<Fragment>
@@ -73,7 +91,13 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 						onChange={(e) => onChange(e)}
 					/>
 				</div>
-				<input type='submit' className='btn btn-primary' value='Register' />
+				{username.length === 0 || email.length === 0 || password.length === 0 || password2.length === 0 ? (
+					<input type='submit' className='btn btn-primary' value='Register' disabled />
+				) : (
+					// console.log('btn disabled')
+					<input type='submit' className='btn btn-primary' value='Register' />
+					// console.log('btn enabled')
+				)}
 			</form>
 			<p className='my-1'>
 				Already have an account? <Link to='/login'>Sign In</Link>

@@ -329,6 +329,11 @@ img {
 	pointer-events: none;
 }
 
+.btn-primary:disabled {
+	background-color: #9adde7;
+	pointer-events: none;
+}
+
 .btn-white,
 .bg-white,
 .badge-white,
