@@ -1,8 +1,9 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
+import CommentItem from './CommentItem';
 import PostItem from '../posts/PostItem';
 import { getPost } from '../../actions/post';
 import AwesomeSlider from 'react-awesome-slider';
@@ -15,6 +16,12 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 		},
 		[ getPost, match.params.id ]
 	);
+
+	const [ requestComments, loadComments ] = useState(false);
+
+	// if (requestComments) {
+	// 	return <Redirect to='/posts' />;
+	// }
 
 	return loading || post === null ? (
 		<Spinner />
@@ -95,9 +102,17 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 							</Link>
 						</h1>
 					</div>
-					<button className='comments'>
-						<i className='fas fa-comments fa-3x text-primary comments'>{'  ' + post.comments.length}</i>
-					</button>
+					{!requestComments ? (
+						<button
+							className='comments'
+							onClick={() =>
+								post.comments.length > 0 ? loadComments(true) : console.log('No comments to load')}
+						>
+							<i className='fas fa-comments fa-3x text-primary comments'>{'  ' + post.comments.length}</i>
+						</button>
+					) : (
+						<CommentItem />
+					)}
 				</div>
 			</div>
 		</Fragment>

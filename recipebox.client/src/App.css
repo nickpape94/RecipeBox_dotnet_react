@@ -343,6 +343,7 @@ img {
 	border: #ccc solid 1px;
 }
 
+.comments:hover,
 .upload_photo:hover,
 .lnk:hover,
 .btn:hover {
@@ -845,6 +846,7 @@ button {
 .comments {
 	margin: auto;
 	float: right;
+	cursor: pointer;
 }
 
 .post-header .favourites {
