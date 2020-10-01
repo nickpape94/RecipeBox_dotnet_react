@@ -111,7 +111,11 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 							<i className='fas fa-comments fa-3x text-primary comments'>{'  ' + post.comments.length}</i>
 						</button>
 					) : (
-						<CommentItem />
+						<div>
+							{post.comments.map((comment) => (
+								<CommentItem key={comment.commentId} comment={comment} postId={post.postId} />
+							))}
+						</div>
 					)}
 				</div>
 			</div>
