@@ -96,6 +96,18 @@ namespace RecipeBox.API.Controllers
             // Assign users avatar to the post
             var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
             if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
+
+            // Assign commenters photos
+            foreach(var comment in post.Comments)
+            {
+                var commenterId = comment.CommenterId;
+                var commentersMainPhoto = await _recipeRepo.GetMainPhotoForUser(commenterId);
+
+                if (commentersMainPhoto != null )
+                {
+                    comment.UserPhotoUrl = commentersMainPhoto.Url;
+                }
+            }
             
             var postFromRepo = _mapper.Map<PostsForDetailedDto>(post);
 
@@ -175,11 +187,13 @@ namespace RecipeBox.API.Controllers
         [HttpPost("~/api/users/{userId}/posts/{postId}/comments")]
         public async Task<IActionResult> AddComment(int userId, int postId,  CommentForCreationDto commentForCreationDto)
         {
-            // Validate id of logged in user == userId
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            var userFromRepo = await _recipeRepo.GetUser(userId);
 
             // Assign commenter id to the comment creator
             commentForCreationDto.CommenterId = userId;
+            commentForCreationDto.Author = userFromRepo.UserName;
 
             // Get post from repo
             var postFromRepo = await _recipeRepo.GetPost(postId);

@@ -9,6 +9,8 @@ namespace RecipeBox.API.Dtos.CommentDtos
         [Required]
         [StringLength(300, MinimumLength = 6, ErrorMessage = "Comment must be between 6 and 300 characters long")]
         public string Text { get; set; }
+        public string Author { get; set; }
+        public string UserPhotoUrl { get; set; }
         public DateTime Created { get; set; }
         public User User { get; set; }
         public int CommenterId { get; set; }
