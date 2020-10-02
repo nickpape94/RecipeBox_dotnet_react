@@ -13,6 +13,22 @@
 	padding: 0;
 }
 
+.comment-grid {
+	display: grid;
+	/* height: 50px; */
+	grid-gap: 1rem;
+	/* width: 100%; */
+	margin: 0 auto;
+	max-width: 1500px;
+}
+
+.comment {
+	display: grid;
+	grid-template-columns: 1fr 4fr;
+	grid-gap: 2rem;
+	align-items: center;
+}
+
 /* .boxxed {
 	box-sizing: border-box;
 	border-radius: 5px;

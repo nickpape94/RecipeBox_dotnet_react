@@ -4,7 +4,7 @@ namespace RecipeBox.API.Helpers
     {
         private const int MaxPageSize = 50;
         public int PageNumber { get; set; } = 1;
-        private int pageSize = 10;
+        private int pageSize = 9;
         public int PageSize
         {
             get { return pageSize; }
