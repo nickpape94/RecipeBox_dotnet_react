@@ -5,6 +5,7 @@ import post from './post';
 import email from './email';
 import photo from './photo';
 import user from './user';
+import pagination from './pagination';
 
 export default combineReducers({
 	alert,
@@ -12,5 +13,6 @@ export default combineReducers({
 	post,
 	email,
 	photo,
-	user
+	user,
+	pagination
 });
