@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -10,11 +10,12 @@ import PageNavigation from './PageNavigation';
 import pagination from '../../reducers/pagination';
 
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
+	const [ pageNumber, setPageNumber ] = useState(1);
 	useEffect(
 		() => {
-			getPosts(1);
+			getPosts(pageNumber);
 		},
-		[ getPosts ]
+		[ getPosts, pageNumber ]
 	);
 
 	return loading ? (
@@ -65,7 +66,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					)}
 				</div>
 			</div>
-			<PageNavigation pagination={pagination} />
+			<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 			<div className='cards'>
 				{posts.map((post) => (
 					<PostItem
