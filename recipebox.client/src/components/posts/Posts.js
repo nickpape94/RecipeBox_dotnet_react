@@ -6,11 +6,13 @@ import { getPosts } from '../../actions/post';
 import { getUsers, getUser } from '../../actions/user';
 import Spinner from '../layout/Spinner';
 import PostItem from './PostItem';
+import PageNavigation from './PageNavigation';
+import pagination from '../../reducers/pagination';
 
-const Posts = ({ getPosts, post: { posts, loading }, auth }) => {
+const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	useEffect(
 		() => {
-			getPosts();
+			getPosts(1);
 		},
 		[ getPosts ]
 	);
@@ -63,6 +65,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth }) => {
 					)}
 				</div>
 			</div>
+			<PageNavigation pagination={pagination} />
 			<div className='cards'>
 				{posts.map((post) => (
 					<PostItem
@@ -79,12 +82,14 @@ const Posts = ({ getPosts, post: { posts, loading }, auth }) => {
 Posts.propTypes = {
 	getPosts: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
-	auth: PropTypes.object.isRequired
+	auth: PropTypes.object.isRequired,
+	pagination: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	post: state.post,
-	auth: state.auth
+	auth: state.auth,
+	pagination: state.pagination
 });
 
 export default connect(mapStateToProps, { getPosts })(Posts);

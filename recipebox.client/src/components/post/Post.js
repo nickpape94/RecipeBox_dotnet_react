@@ -87,7 +87,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 					<div>{[ ...post.method ]}</div>
 				</div>
 				<div className='post-footer'>
-					<div>
+					{/* <div>
 						<h1 className='text-primary'>
 							Published by:{' '}
 							<Link to='/profile.html'>
@@ -101,7 +101,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 								</div>
 							</Link>
 						</h1>
-					</div>
+					</div> */}
 					{!requestComments ? (
 						<button
 							className='comments'

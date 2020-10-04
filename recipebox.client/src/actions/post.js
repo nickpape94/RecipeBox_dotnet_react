@@ -1,11 +1,22 @@
 import axios from 'axios';
 import { setAlert } from './alert';
-import { GET_POSTS, POST_ERROR, GET_POST, POST_SUBMIT_SUCCESS, POST_SUBMIT_FAIL } from './types';
+import {
+	GET_POSTS,
+	POST_ERROR,
+	GET_POST,
+	POST_SUBMIT_SUCCESS,
+	POST_SUBMIT_FAIL,
+	GET_PAGINATION_HEADERS
+} from './types';
 
 // Get posts
-export const getPosts = () => async (dispatch) => {
+export const getPosts = (pageNumber) => async (dispatch) => {
 	try {
-		const res = await axios.get('/api/posts');
+		const res = await axios.get(`/api/posts?pageNumber=${pageNumber}`);
+
+		const resHeaders = JSON.parse(res.headers.pagination);
+		// console.log(resHeaders.currentPage);
+		// console.log(resHeaders);
 
 		const sortData = res.data.map((post) => ({
 			postId: post.postId,
@@ -27,6 +38,11 @@ export const getPosts = () => async (dispatch) => {
 		dispatch({
 			type: GET_POSTS,
 			payload: sortData
+		});
+
+		dispatch({
+			type: GET_PAGINATION_HEADERS,
+			payload: resHeaders
 		});
 	} catch (err) {
 		dispatch({

@@ -1,33 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Pagination from 'react-bootstrap-4-pagination';
-
-// import Pagination from 'react-bootstrap/Pagination';
 
 const PageNavigation = ({ pagination: { currentPage, itemsPerPage, totalItems, totalPages } }) => {
-	console.log(currentPage);
+	console.log(totalPages);
+	// const [ numPages, setNumPages ] = useState([]);
+	const numPages = [];
+	for (let i = 1; i <= totalPages; i++) {
+		numPages.push(i);
+	}
 
-	// let paginationConfig = {
-	// 	totalPages: totalPages,
-	// 	currentPage: currentPage,
-	// 	showMax: itemsPerPage,
-	// 	size: 'lg',
-	// 	threeDots: true,
-	// 	prevNext: true,
-	// 	borderColor: 'red',
-	// 	activeBorderColor: 'black',
-	// 	activeBgColor: 'grey',
-	// 	disabledBgColor: 'red',
-	// 	activeColor: 'red',
-	// 	color: 'purple',
-	// 	disabledColor: 'green',
-	// 	circle: true,
-	// 	shadow: true
-	// };
+	console.log(numPages);
 
 	return (
-		<div>
-			<h1>Hello</h1>
+		<div className='pagination'>
+			<ul>
+				<li>
+					<i className='fas fa-angle-double-left' />
+				</li>
+				<li>
+					<i className='fas fa-angle-left' />
+				</li>
+				{numPages.splice(currentPage - 1, 5).map(
+					(value, key) =>
+						key === 0 ? (
+							<li className='active' key={key}>
+								{value}
+							</li>
+						) : (
+							<li key={key}>{value}</li>
+						)
+				)}
+				<li>
+					<i className='fas fa-angle-right' />
+				</li>
+				<li>
+					<i className='fas fa-angle-double-right' />
+				</li>
+			</ul>
 		</div>
 	);
 };
