@@ -7,10 +7,15 @@ const PageNavigation = ({
 	setPageNumber
 }) => {
 	const numPages = [];
-	console.log(totalPages);
 	for (let i = 1; i <= totalPages; i++) {
 		numPages.push(i);
 	}
+
+	// console.log(currentPage);
+	// console.log(totalPages);
+	// if (currentPage === totalPages) {
+	// 	isLastPage(true);
+	// }
 
 	return (
 		<div className='pagination'>

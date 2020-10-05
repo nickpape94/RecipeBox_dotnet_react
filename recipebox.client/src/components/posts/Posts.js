@@ -11,12 +11,21 @@ import pagination from '../../reducers/pagination';
 
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
+	const [ lastPage, isLastPage ] = useState(false);
+
 	useEffect(
 		() => {
 			getPosts(pageNumber);
 		},
 		[ getPosts, pageNumber ]
 	);
+
+	// console.log(pagination.currentPage);
+	// console.log(pagination.totalPages);
+
+	// if (pagination.currentPage === pagination.totalPages) {
+	// 	isLastPage(true);
+	// }
 
 	return loading ? (
 		<Spinner />

@@ -722,14 +722,14 @@ button {
 	border-radius: 5px;
 }
 
-.pagination ul li:first-child,
+/* .pagination ul li:first-child,
 .pagination ul li:last-child,
 .pagination ul li:nth-child(2),
 .pagination ul li:nth-child(9) {
 	border-radius: 0;
 	border-top-left-radius: 20px;
 	border-bottom-right-radius: 20px;
-}
+} */
 
 .pagination ul li:hover,
 .pagination ul li.active {

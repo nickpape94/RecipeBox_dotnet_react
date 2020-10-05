@@ -45,6 +45,13 @@ namespace RecipeBox.API.Data
             return posts;
         }
 
+        public async Task<PagedList<Post>> GetPosts(PageParams pageParams)
+        {
+            var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
+
+            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
+        }
+
         public async Task<User> GetUser(int id)
         {
             var user = await _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts).Include(p => p.Favourites).FirstOrDefaultAsync(x => x.Id == id);
@@ -128,11 +135,6 @@ namespace RecipeBox.API.Data
             return await PagedList<User>.CreateAsync(users, pageParams.PageNumber, pageParams.PageSize);
         }
 
-        public async Task<PagedList<Post>> GetPosts(PageParams pageParams)
-        {
-            var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto);
-
-            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
-        }
+        
     }
 }

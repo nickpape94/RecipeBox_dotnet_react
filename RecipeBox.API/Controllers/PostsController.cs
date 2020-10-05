@@ -69,8 +69,6 @@ namespace RecipeBox.API.Controllers
 
             var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
 
-            postsFromRepo = postsFromRepo.OrderByDescending(x => x.Created);
-
             Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
 
             return Ok(postsFromRepo);
