@@ -11,21 +11,20 @@ const PageNavigation = ({
 		numPages.push(i);
 	}
 
-	// console.log(currentPage);
-	// console.log(totalPages);
-	// if (currentPage === totalPages) {
-	// 	isLastPage(true);
-	// }
-
 	return (
 		<div className='pagination'>
 			<ul>
-				<li onClick={() => setPageNumber(1)}>
-					<i className='fas fa-angle-double-left' />
-				</li>
-				<li onClick={() => pageNumber !== 1 && setPageNumber(pageNumber - 1)}>
-					<i className='fas fa-angle-left' />
-				</li>
+				{currentPage !== 1 && (
+					<li onClick={() => setPageNumber(1)}>
+						<i className='fas fa-angle-double-left' />
+					</li>
+				)}
+				{currentPage !== 1 && (
+					<li onClick={() => setPageNumber(pageNumber - 1)}>
+						<i className='fas fa-angle-left' />
+					</li>
+				)}
+
 				{numPages.splice(currentPage - 1, 5).map(
 					(value, key) =>
 						key === 0 ? (
@@ -38,12 +37,16 @@ const PageNavigation = ({
 							</li>
 						)
 				)}
-				<li onClick={() => pageNumber !== totalPages && setPageNumber(pageNumber + 1)}>
-					<i className='fas fa-angle-right' />
-				</li>
-				<li onClick={() => setPageNumber(totalPages)}>
-					<i className='fas fa-angle-double-right' />
-				</li>
+				{totalPages !== pageNumber && (
+					<li onClick={() => setPageNumber(pageNumber + 1)}>
+						<i className='fas fa-angle-right' />
+					</li>
+				)}
+				{totalPages !== pageNumber && (
+					<li onClick={() => setPageNumber(totalPages)}>
+						<i className='fas fa-angle-double-right' />
+					</li>
+				)}
 			</ul>
 		</div>
 	);

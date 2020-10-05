@@ -10,8 +10,10 @@ import {
 } from './types';
 
 // Get posts
-export const getPosts = (pageNumber) => async (dispatch) => {
+export const getPosts = (pageNumber, setLoadingPage) => async (dispatch) => {
 	try {
+		setLoadingPage(true);
+
 		const res = await axios.get(`/api/posts?pageNumber=${pageNumber}`);
 
 		const resHeaders = JSON.parse(res.headers.pagination);
@@ -44,6 +46,8 @@ export const getPosts = (pageNumber) => async (dispatch) => {
 			type: GET_PAGINATION_HEADERS,
 			payload: resHeaders
 		});
+
+		setLoadingPage(false);
 	} catch (err) {
 		dispatch({
 			type: POST_ERROR,
