@@ -46,15 +46,21 @@ namespace RecipeBox.API.Data
             return posts;
         }
 
-        public async Task<PagedList<Post>> GetPosts(PageParams pageParams)
+        public async Task<PagedList<Post>> GetPosts(PageParams pageParams, PostForSearchDto postForSearchDto)
         {
             var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
 
-            // if (postForSearch.OrderBy == "most discussed")
-            //     posts = posts.OrderByDescending(x => x.Comments.Count);
+            if (postForSearchDto.OrderBy == "most discussed")
+                posts = posts.OrderByDescending(x => x.Comments.Count);
             
-            // if (postForSearch.OrderBy == "oldest")
-            //     posts = posts.OrderByDescending(x => x.Created);
+            if (postForSearchDto.OrderBy == "oldest")
+                posts = posts.OrderBy(x => x.Created); 
+            
+            if (postForSearchDto.OrderBy == "newest")
+                posts = posts.OrderByDescending(x => x.Created);
+            
+            if (postForSearchDto.OrderBy == "highest rated")
+                posts = posts.OrderByDescending(x => x.AverageRating);
 
 
             return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
