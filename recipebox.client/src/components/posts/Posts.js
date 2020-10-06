@@ -72,7 +72,9 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					)}
 				</div>
 			</div>
-			<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+			<div className='pagination'>
+				<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+			</div>
 			<div className='cards'>
 				{posts.map((post) => (
 					<PostItem
@@ -82,7 +84,9 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					/>
 				))}
 			</div>
-			<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+			{/* <div className='pagination2'>
+				<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+			</div> */}
 		</Fragment>
 	);
 };

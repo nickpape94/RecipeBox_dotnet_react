@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, Prompt } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 import { createPost } from '../../actions/post';
 import PropTypes from 'prop-types';
@@ -20,13 +20,19 @@ const PostForm = ({ createPost, auth: { user }, history }) => {
 
 	const { cuisine, nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds } = formData;
 
-	const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+	const [ isDataChanged, setDataChanged ] = useState(false);
+
+	const onChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+		setDataChanged(true);
+	};
 
 	// Get user Id
 	const userId = user && user.id;
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
+		setDataChanged(false);
 		createPost(userId, history, {
 			nameOfDish,
 			description,
@@ -41,6 +47,7 @@ const PostForm = ({ createPost, auth: { user }, history }) => {
 
 	return (
 		<Fragment>
+			<Prompt when={isDataChanged} message='Are you sure you want to leave? All fields will be lost.' />;
 			<h1 className='large text-primary'>Create a Recipe</h1>
 			<p className='lead'>
 				<i className='fas fa-bacon' /> Share your delicious meals with the community!
@@ -164,7 +171,7 @@ const PostForm = ({ createPost, auth: { user }, history }) => {
 					/>
 				</span>
 				<div className='form-group'>
-					<input type='submit' className='btn btn-primary' value='Submit' />
+					<input type='submit' className='btn btn-primary' value='Next' />
 				</div>
 			</form>
 			{/* {postSubmitted && <Redirect to='/posts' />} */}

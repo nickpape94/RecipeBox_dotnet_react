@@ -1,3 +1,40 @@
+/* .pagination2 {
+	position: relative;
+	margin: 0 auto;
+	margin-top: -15px;
+	margin-bottom: 15px;
+	width: 480px;
+	height: auto;
+	padding: 15px 35px;
+	background: #fff;
+	border-radius: 50px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.125);
+	transform: translate(0, -500%);
+}
+
+.pagination2 ul {
+	display: flex;
+	text-align: center;
+}
+
+.pagination2 ul li {
+	width: 50px;
+	height: 40px;
+	line-height: 40px;
+	margin: 0 8px;
+	background: #fff;
+	color: #000;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.pagination2 ul li:hover,
+.pagination2 ul li.active {
+	background: #fd4141;
+	color: #fff;
+} */
+
 /* Global Styles */
 :root {
 	--primary-color: #17a2b8;
@@ -52,6 +89,7 @@ img {
 
 /* Utilities */
 .container {
+	/* transform: scale(0.7, 0.7) translate(0px, -21%); */
 	max-width: 2100px;
 	margin: auto;
 	overflow: hidden;
@@ -587,6 +625,7 @@ button {
 	font-family: sans-serif;
 	column-gap: 10px;
 	row-gap: 20px;
+	transform: scale(0.8, 0.8) translate(0px, -12%);
 }
 
 .card__info {
@@ -703,6 +742,7 @@ button {
 	background: #fff;
 	border-radius: 50px;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.125);
+	/* transform: translate(0, -400px); */
 }
 
 .pagination ul {
