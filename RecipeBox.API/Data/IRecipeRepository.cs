@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RecipeBox.API.Dtos.PostDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 
@@ -17,7 +18,7 @@ namespace RecipeBox.API.Data
         Task<Comment> GetComment(int commentId);
         Task<Post> GetPost(int id);
         Task<IEnumerable<Post>> GetPosts();
-        Task<PagedList<Post>> GetPosts(PageParams pageParams);
+        Task<PagedList<Post>> GetPosts(PageParams pageParams, PostForSearchDto postForSearch);
         Task<UserPhoto> GetUserPhoto(int photoId);
         Task<UserPhoto> GetMainPhotoForUser(int userId);
         Task<PostPhoto> GetPostPhoto(int photoId);

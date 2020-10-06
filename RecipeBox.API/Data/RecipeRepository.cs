@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using RecipeBox.API.Dtos.PostDtos;
 using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 
@@ -45,9 +46,16 @@ namespace RecipeBox.API.Data
             return posts;
         }
 
-        public async Task<PagedList<Post>> GetPosts(PageParams pageParams)
+        public async Task<PagedList<Post>> GetPosts(PageParams pageParams, PostForSearchDto postForSearch)
         {
             var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
+
+            if (postForSearch.OrderBy == "most discussed")
+                posts = posts.OrderByDescending(x => x.Comments.Count);
+            
+            if (postForSearch.OrderBy == "oldest")
+                posts = posts.OrderByDescending(x => x.Created);
+
 
             return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
         }
