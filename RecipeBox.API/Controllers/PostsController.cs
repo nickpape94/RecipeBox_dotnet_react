@@ -26,30 +26,13 @@ namespace RecipeBox.API.Controllers
             
         }
 
-        // Get all posts
-        // [AllowAnonymous]
-        // [HttpGet("~/api/posts")]
-        // public async Task<IActionResult> GetPosts()
-        // {
-        //     var posts = await _recipeRepo.GetPosts();
-        //     var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
-
-        //     foreach (var post in posts)
-        //     {
-        //         post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
-        //     }
-
-        //     var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
-
-        //     return Ok(postsFromRepo);
-        // }
         
         // Get all posts
         [AllowAnonymous]
         [HttpPost("~/api/posts")]
-        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams, [FromBody]string orderBy)
+        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams, PostForSearchDto postForSearchDto)
         {
-            var posts = await _recipeRepo.GetPosts(pageParams, orderBy);
+            var posts = await _recipeRepo.GetPosts(pageParams, postForSearchDto);
 
             foreach (var post in posts)
             {
@@ -66,27 +49,8 @@ namespace RecipeBox.API.Controllers
             return Ok(postsFromRepo);
         }
         
-        // Search posts
-        [AllowAnonymous]
-        [HttpPost("~/api/posts/search")]
-        public async Task<IActionResult> SearchPosts([FromQuery]PageParams pageParams, [FromBody]string searchParams)
-        {
-            var posts = await _recipeRepo.SearchPosts(pageParams, searchParams);
-
-            foreach (var post in posts)
-            {
-                // Assign users avatar to the post
-                var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
-                if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
-                
-            }
-
-            var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
-
-            Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
-
-            return Ok(postsFromRepo);
-        }
+        // [AllowAnonymous]
+        // [HttpGet("~/api/user/{userId}/posts")]
 
         // Get post by id
         [AllowAnonymous]

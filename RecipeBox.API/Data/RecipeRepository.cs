@@ -79,29 +79,9 @@ namespace RecipeBox.API.Data
             return posts;
         }
 
-        public async Task<PagedList<Post>> GetPosts(PageParams pageParams, string orderBy)
+        public async Task<PagedList<Post>> GetPosts(PageParams pageParams, PostForSearchDto postForSearchDto)
         {
-            var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
-
-            if (orderBy == "most discussed")
-                posts = posts.OrderByDescending(x => x.Comments.Count);
-            
-            if (orderBy == "oldest")
-                posts = posts.OrderBy(x => x.Created); 
-            
-            if (orderBy == "newest")
-                posts = posts.OrderByDescending(x => x.Created);
-            
-            if (orderBy == "highest rated")
-                posts = posts.OrderByDescending(x => x.AverageRating);
-            
-
-            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
-        }
-
-        public async Task<PagedList<Post>> SearchPosts(PageParams pageParams, string searchParams)
-        {
-            var searchQuery = searchParams.Trim().ToLower();
+            var searchQuery = postForSearchDto.SearchParams.Trim().ToLower();
 
             var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
 
@@ -110,6 +90,19 @@ namespace RecipeBox.API.Data
                 x.Cuisine.ToLower().Contains(searchQuery) ||
                 x.Author.ToLower().Contains(searchQuery) ||
                 x.Ingredients.ToLower().Contains(searchQuery));
+
+            if (postForSearchDto.OrderBy == "most discussed")
+                filteredPosts = filteredPosts.OrderByDescending(x => x.Comments.Count);
+            
+            if (postForSearchDto.OrderBy == "oldest")
+                filteredPosts = filteredPosts.OrderBy(x => x.Created); 
+            
+            if (postForSearchDto.OrderBy == "newest")
+                filteredPosts = filteredPosts.OrderByDescending(x => x.Created);
+            
+            if (postForSearchDto.OrderBy == "highest rated")
+                filteredPosts = filteredPosts.OrderByDescending(x => x.AverageRating);
+            
 
             return await PagedList<Post>.CreateAsync(filteredPosts, pageParams.PageNumber, pageParams.PageSize);
         }

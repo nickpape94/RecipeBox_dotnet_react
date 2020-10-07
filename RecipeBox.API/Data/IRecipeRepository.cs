@@ -18,8 +18,7 @@ namespace RecipeBox.API.Data
         Task<Comment> GetComment(int commentId);
         Task<Post> GetPost(int id);
         Task<IEnumerable<Post>> GetPosts();
-        Task<PagedList<Post>> GetPosts(PageParams pageParams, string orderBy);
-        Task<PagedList<Post>> SearchPosts(PageParams pageParams, string searchParams);
+        Task<PagedList<Post>> GetPosts(PageParams pageParams, PostForSearchDto postForSearchDto);
         Task<PagedList<Post>> SearchPostsByUser(PageParams pageParams, int userId);
         Task<UserPhoto> GetUserPhoto(int photoId);
         Task<UserPhoto> GetMainPhotoForUser(int userId);

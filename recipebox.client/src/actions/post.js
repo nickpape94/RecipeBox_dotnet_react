@@ -10,14 +10,14 @@ import {
 } from './types';
 
 // Get posts
-export const getPosts = (pageNumber, setLoadingPage, orderBy) => async (dispatch) => {
+export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy }) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
 		}
 	};
 
-	const body = JSON.stringify(orderBy);
+	const body = JSON.stringify({ searchParams, orderBy });
 	console.log(body);
 
 	try {

@@ -12,14 +12,18 @@ import pagination from '../../reducers/pagination';
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
-	const [ searchData, setSearchData ] = useState('');
-	const [ orderBy, setOrderBy ] = useState('oldest');
+	const [ sortData, setSortData ] = useState({
+		searchParams: 'american ',
+		orderBy: 'highest rated'
+	});
+
+	const { searchParams, orderBy } = sortData;
 
 	useEffect(
 		() => {
-			getPosts(pageNumber, setLoadingPage, orderBy, setOrderBy);
+			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
 		},
-		[ getPosts, pageNumber, orderBy, setOrderBy ]
+		[ getPosts, pageNumber, searchParams, orderBy ]
 	);
 
 	if (loadingPage) {
@@ -27,8 +31,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	}
 
 	const onChange = (e) => {
-		setSearchData({ [e.target.name]: e.target.value });
-		setOrderBy({ [e.target.name]: e.target.value });
+		setSortData({ ...sortData, [e.target.name]: e.target.value });
 	};
 
 	const onSearch = (e) => {
@@ -40,12 +43,12 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	) : (
 		<Fragment>
 			<div className='post__navbar'>
-				<div className='search__wrapper' onClick={() => console.log(searchData.searchRecipe)}>
+				<div className='search__wrapper' onClick={() => console.log(searchParams)}>
 					<input
 						type='text'
-						placeholder='Search for a recipe or cuisine...'
-						name='searchRecipe'
-						value={searchData.searchRecipe}
+						placeholder='Search by Cuisine, Ingredient, Author or Recipe..'
+						name='searchParams'
+						value={searchParams}
 						onChange={(e) => onChange(e)}
 					/>
 					<div className='searchbtn'>
@@ -60,7 +63,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 								name='filter'
 								type='text'
 								placeholder='Select Cuisine'
-								name='filter'
+								name='orderBy'
 								value={orderBy}
 								required
 								onChange={(e) => onChange(e)}

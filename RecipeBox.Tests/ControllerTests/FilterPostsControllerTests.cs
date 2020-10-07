@@ -32,93 +32,7 @@ namespace RecipeBox.Tests.ControllerTests
             _calculateAverageRatings = new CalculateAverageRatings(_repoMock.Object);
         }
 
-        [Fact]
-        public void SortPosts_ByMostDiscussed()
-        {
-            // Arrange
-            var postsFromRepo = GetFakePosts();
-            var postsSorted = postsFromRepo.OrderByDescending( r => r.Comments.Count);
-            
-            // Act
-            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
-
-            var result = _filterPostsController.Sort(new PostForSearchDto {
-                OrderBy = "most discussed"
-            }).Result;
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(postsSorted , okResult.Value);
-
-            // should return posts in order 2, 3, 1
-        }
         
-        [Fact]
-        public void SortPosts_ByOldest()
-        {
-            // Arrange
-            var postsFromRepo = GetFakePosts();
-            var postsSorted = postsFromRepo.OrderBy( r => r.Created);
-            
-            // Act
-            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
-
-            var result = _filterPostsController.Sort(new PostForSearchDto {
-                OrderBy = "oldest"
-            }).Result;
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(postsSorted , okResult.Value);
-
-        }
-        
-        [Fact]
-        public void SortPosts_ByNewest()
-        {
-            // Arrange
-            var postsFromRepo = GetFakePosts();
-            var postsSorted = postsFromRepo.OrderByDescending( r => r.Created);
-            
-            // Act
-            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
-
-            var result = _filterPostsController.Sort(new PostForSearchDto {
-                OrderBy = "newest"
-            }).Result;
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(postsSorted , okResult.Value);
-
-        }
-        
-        [Fact]
-        public void SortPosts_ByHighestRated()
-        {
-            // Arrange
-            var postsFromRepo = GetFakePosts();
-            var post1Ratings = Post1Ratings();
-            var post2Ratings = Post2Ratings();
-            var post3Ratings = Post3Ratings();
-
-            // var postsSorted = postsFromRepo.OrderByDescending( r => r.Created);
-            
-            // Act
-            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
-            _repoMock.Setup(x => x.GetRatings(1)).ReturnsAsync(post1Ratings);
-            _repoMock.Setup(x => x.GetRatings(2)).ReturnsAsync(post2Ratings);
-            _repoMock.Setup(x => x.GetRatings(3)).ReturnsAsync(post3Ratings);
-
-            var result = _filterPostsController.Sort(new PostForSearchDto {
-                OrderBy = "highest rated"
-            }).Result;
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            // Assert.Equal(postsSorted , okResult.Value);
-
-        }
 
         [Fact]
         public void SortPosts_ByUser_User_Has_No_Posts_Returns_NotFound()
@@ -157,45 +71,7 @@ namespace RecipeBox.Tests.ControllerTests
             Assert.Equal(filteredPosts ,okResult.Value);
         }
 
-        [Fact]
-        public void SearchPosts_ByName_OrCuisine_NoPostsMatch_Returns_NotFound()
-        {
-            // Arrange
-            var postsFromRepo = GetFakePosts();
-
-            // Act
-            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
-
-            var result = _filterPostsController.SearchPosts( new PostForSearchDto {
-                SearchParams = "qpworekdkrpirfv"
-            }).Result;
-            
-            // Assert
-            var okResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("No posts match the criteria", okResult.Value);
-
-        }
-
-        [Fact]
-        public void SearchPosts_ByName_OrCuisine_Gets_MatchingPosts_ReturnsOk()
-        {
-            // Arrange
-            var searchParam = "Italian";
-            var postsFromRepo = GetFakePosts();
-            var searchPostsByCuisine = postsFromRepo.Where(x => x.Cuisine == searchParam).OrderByDescending(x => x.Created);
-
-            // Act
-            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
-
-            var result = _filterPostsController.SearchPosts( new PostForSearchDto {
-                SearchParams = searchParam
-            }).Result;
-            
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(searchPostsByCuisine, okResult.Value);
-
-        }
+        
 
 
         private ICollection<Post> GetFakePosts()
