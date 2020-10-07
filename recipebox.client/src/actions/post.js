@@ -17,7 +17,7 @@ export const getPosts = (pageNumber, setLoadingPage, orderBy) => async (dispatch
 		}
 	};
 
-	const body = JSON.stringify({ orderBy });
+	const body = JSON.stringify(orderBy);
 	console.log(body);
 
 	try {

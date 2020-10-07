@@ -32,38 +32,16 @@ namespace RecipeBox.API.Data
             _context.Update(entity);
         }
 
-        public async Task<Post> GetPost(int id)
+        public async Task<bool> SaveAll()
         {
-            var post = await _context.Posts.Include(c => c.Comments).Include(p => p.PostPhoto).Include(r => r.Ratings).FirstOrDefaultAsync(x => x.PostId == id);
-
-            return post;
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<IEnumerable<Post>> GetPosts()
+        public async Task<PagedList<User>> GetUsers(PageParams pageParams)
         {
-            var posts = await _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).ToListAsync();
-            
-            return posts;
-        }
+            var users = _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts);
 
-        public async Task<PagedList<Post>> GetPosts(PageParams pageParams, PostForSearchDto postForSearchDto)
-        {
-            var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
-
-            if (postForSearchDto.OrderBy == "most discussed")
-                posts = posts.OrderByDescending(x => x.Comments.Count);
-            
-            if (postForSearchDto.OrderBy == "oldest")
-                posts = posts.OrderBy(x => x.Created); 
-            
-            if (postForSearchDto.OrderBy == "newest")
-                posts = posts.OrderByDescending(x => x.Created);
-            
-            if (postForSearchDto.OrderBy == "highest rated")
-                posts = posts.OrderByDescending(x => x.AverageRating);
-            
-
-            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
+            return await PagedList<User>.CreateAsync(users, pageParams.PageNumber, pageParams.PageSize);
         }
 
         public async Task<User> GetUser(int id)
@@ -80,17 +58,69 @@ namespace RecipeBox.API.Data
             return user;
         }
 
-        public async Task<bool> SaveAll()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
-
         public async Task<Comment> GetComment(int commentId)
         {
             var comment = await _context.Comments.FirstOrDefaultAsync(c => c.CommentId == commentId);
 
             return comment; 
         }
+
+        public async Task<Post> GetPost(int id)
+        {
+            var post = await _context.Posts.Include(c => c.Comments).Include(p => p.PostPhoto).Include(r => r.Ratings).FirstOrDefaultAsync(x => x.PostId == id);
+
+            return post;
+        }
+
+        public async Task<IEnumerable<Post>> GetPosts()
+        {
+            var posts = await _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).ToListAsync();
+            
+            return posts;
+        }
+
+        public async Task<PagedList<Post>> GetPosts(PageParams pageParams, string orderBy)
+        {
+            var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
+
+            if (orderBy == "most discussed")
+                posts = posts.OrderByDescending(x => x.Comments.Count);
+            
+            if (orderBy == "oldest")
+                posts = posts.OrderBy(x => x.Created); 
+            
+            if (orderBy == "newest")
+                posts = posts.OrderByDescending(x => x.Created);
+            
+            if (orderBy == "highest rated")
+                posts = posts.OrderByDescending(x => x.AverageRating);
+            
+
+            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
+        }
+
+        public async Task<PagedList<Post>> SearchPosts(PageParams pageParams, string searchParams)
+        {
+            var searchQuery = searchParams.Trim().ToLower();
+
+            var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
+
+            var filteredPosts = posts.Where(x => 
+                x.NameOfDish.ToLower().Contains(searchQuery) || 
+                x.Cuisine.ToLower().Contains(searchQuery) ||
+                x.Author.ToLower().Contains(searchQuery) ||
+                x.Ingredients.ToLower().Contains(searchQuery));
+
+            return await PagedList<Post>.CreateAsync(filteredPosts, pageParams.PageNumber, pageParams.PageSize);
+        }
+
+        public async Task<PagedList<Post>> SearchPostsByUser(PageParams pageParams, int userId)
+        {
+            var posts = _context.Posts.Where(x => x.UserId == userId).Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
+
+            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
+        }
+
 
         public async Task<UserPhoto> GetUserPhoto(int photoId)
         {
@@ -142,12 +172,7 @@ namespace RecipeBox.API.Data
             return rating;
         }
 
-        public async Task<PagedList<User>> GetUsers(PageParams pageParams)
-        {
-            var users = _context.Users.Include(p => p.UserPhotos).Include(p => p.Posts);
-
-            return await PagedList<User>.CreateAsync(users, pageParams.PageNumber, pageParams.PageSize);
-        }
+        
 
         
     }

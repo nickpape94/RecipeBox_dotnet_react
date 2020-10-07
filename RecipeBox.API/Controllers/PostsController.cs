@@ -47,9 +47,31 @@ namespace RecipeBox.API.Controllers
         // Get all posts
         [AllowAnonymous]
         [HttpPost("~/api/posts")]
-        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams, PostForSearchDto postForSearchDto)
+        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams, [FromBody]string orderBy)
         {
-            var posts = await _recipeRepo.GetPosts(pageParams, postForSearchDto);
+            var posts = await _recipeRepo.GetPosts(pageParams, orderBy);
+
+            foreach (var post in posts)
+            {
+                // Assign users avatar to the post
+                var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
+                if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
+                
+            }
+
+            var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
+
+            Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
+
+            return Ok(postsFromRepo);
+        }
+        
+        // Search posts
+        [AllowAnonymous]
+        [HttpPost("~/api/posts/search")]
+        public async Task<IActionResult> SearchPosts([FromQuery]PageParams pageParams, [FromBody]string searchParams)
+        {
+            var posts = await _recipeRepo.SearchPosts(pageParams, searchParams);
 
             foreach (var post in posts)
             {
@@ -73,12 +95,9 @@ namespace RecipeBox.API.Controllers
         {
             var post = await _recipeRepo.GetPost(id);
 
-          
-
             // Assign users avatar to the post
             var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
             if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
-
 
             // Assign commenters photos
             foreach(var comment in post.Comments)

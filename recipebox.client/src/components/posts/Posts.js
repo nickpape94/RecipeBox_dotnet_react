@@ -12,8 +12,8 @@ import pagination from '../../reducers/pagination';
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
-	const [ searchData, setSearchData ] = useState({ searchRecipe: '' });
-	const [ orderBy, setOrderBy ] = useState('newest');
+	const [ searchData, setSearchData ] = useState('');
+	const [ orderBy, setOrderBy ] = useState('oldest');
 
 	useEffect(
 		() => {
