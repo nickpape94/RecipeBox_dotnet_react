@@ -61,7 +61,7 @@ namespace RecipeBox.API.Data
             
             if (postForSearchDto.OrderBy == "highest rated")
                 posts = posts.OrderByDescending(x => x.AverageRating);
-
+            
 
             return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
         }

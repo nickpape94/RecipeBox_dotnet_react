@@ -12,25 +12,42 @@ import pagination from '../../reducers/pagination';
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
+	const [ searchData, setSearchData ] = useState({ searchRecipe: '' });
+	const [ orderBy, setOrderBy ] = useState('newest');
 
 	useEffect(
 		() => {
-			getPosts(pageNumber, setLoadingPage);
+			getPosts(pageNumber, setLoadingPage, orderBy, setOrderBy);
 		},
-		[ getPosts, pageNumber ]
+		[ getPosts, pageNumber, orderBy, setOrderBy ]
 	);
 
 	if (loadingPage) {
 		return <Spinner />;
 	}
 
+	const onChange = (e) => {
+		setSearchData({ [e.target.name]: e.target.value });
+		setOrderBy({ [e.target.name]: e.target.value });
+	};
+
+	const onSearch = (e) => {
+		e.preventDefault();
+	};
+
 	return loading ? (
 		<Spinner />
 	) : (
 		<Fragment>
 			<div className='post__navbar'>
-				<div className='search__wrapper'>
-					<input type='text' className='input' placeholder='Search for a recipe or cuisine...' />
+				<div className='search__wrapper' onClick={() => console.log(searchData.searchRecipe)}>
+					<input
+						type='text'
+						placeholder='Search for a recipe or cuisine...'
+						name='searchRecipe'
+						value={searchData.searchRecipe}
+						onChange={(e) => onChange(e)}
+					/>
 					<div className='searchbtn'>
 						<i className='fas fa-search' />
 					</div>
@@ -39,10 +56,21 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					<div className='dropdown'>
 						<button className='dropbtn'>Sort Recipes By:</button>
 						<div className='dropdown-content'>
-							<Link to='!#'>Highest Rated</Link>
-							<Link to='!#'>Oldest</Link>
-							<Link to='!#'>Newest</Link>
-							<Link to='!#'>Most Discussed</Link>
+							<select
+								name='filter'
+								type='text'
+								placeholder='Select Cuisine'
+								name='filter'
+								value={orderBy}
+								required
+								onChange={(e) => onChange(e)}
+							>
+								<option value=''>*Select option</option>
+								<option value='oldest'>Oldest</option>
+								<option value='newest'>Newest</option>
+								<option value='highest rated'>Highest rated</option>
+								<option value='most discussed'>Most discussed</option>
+							</select>
 						</div>
 					</div>
 				</div>

@@ -10,11 +10,20 @@ import {
 } from './types';
 
 // Get posts
-export const getPosts = (pageNumber, setLoadingPage) => async (dispatch) => {
+export const getPosts = (pageNumber, setLoadingPage, orderBy) => async (dispatch) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	};
+
+	const body = JSON.stringify({ orderBy });
+	console.log(body);
+
 	try {
 		setLoadingPage(true);
 
-		const res = await axios.get(`/api/posts?pageNumber=${pageNumber}`);
+		const res = await axios.post(`/api/posts?pageNumber=${pageNumber}`, body, config);
 
 		const resHeaders = JSON.parse(res.headers.pagination);
 		// console.log(resHeaders.currentPage);
@@ -49,10 +58,12 @@ export const getPosts = (pageNumber, setLoadingPage) => async (dispatch) => {
 
 		setLoadingPage(false);
 	} catch (err) {
-		dispatch({
-			type: POST_ERROR,
-			payload: { msg: err.response.statusText, status: err.response.status }
-		});
+		console.log(err);
+
+		// dispatch({
+		// 	type: POST_ERROR,
+		// 	payload: { msg: err.response.statusText, status: err.response.status }
+		// });
 	}
 };
 
