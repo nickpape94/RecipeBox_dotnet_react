@@ -13,8 +13,8 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ sortData, setSortData ] = useState({
-		searchParams: 'american ',
-		orderBy: 'highest rated'
+		searchParams: '',
+		orderBy: ''
 	});
 
 	const { searchParams, orderBy } = sortData;
@@ -23,7 +23,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		() => {
 			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
 		},
-		[ getPosts, pageNumber, searchParams, orderBy ]
+		[ getPosts, pageNumber ]
 	);
 
 	if (loadingPage) {
@@ -34,16 +34,19 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		setSortData({ ...sortData, [e.target.name]: e.target.value });
 	};
 
-	const onSearch = (e) => {
+	const onSubmit = async (e) => {
 		e.preventDefault();
+		getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
 	};
+
+	// console.log(searchParams, orderBy);
 
 	return loading ? (
 		<Spinner />
 	) : (
 		<Fragment>
 			<div className='post__navbar'>
-				<div className='search__wrapper' onClick={() => console.log(searchParams)}>
+				<form className='search__wrapper' onSubmit={(e) => onSubmit(e)}>
 					<input
 						type='text'
 						placeholder='Search by Cuisine, Ingredient, Author or Recipe..'
@@ -51,10 +54,10 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 						value={searchParams}
 						onChange={(e) => onChange(e)}
 					/>
-					<div className='searchbtn'>
+					<button type='submit' className='searchbtn'>
 						<i className='fas fa-search' />
-					</div>
-				</div>
+					</button>
+				</form>
 				<div className='post__dropdown'>
 					<div className='dropdown'>
 						<button className='dropbtn'>Sort Recipes By:</button>

@@ -18,7 +18,7 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy }) 
 	};
 
 	const body = JSON.stringify({ searchParams, orderBy });
-	console.log(body);
+	// console.log(body);
 
 	try {
 		setLoadingPage(true);
