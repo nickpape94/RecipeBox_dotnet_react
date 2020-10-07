@@ -23,7 +23,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		() => {
 			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
 		},
-		[ getPosts, pageNumber ]
+		[ getPosts, pageNumber, orderBy ]
 	);
 
 	if (loadingPage) {
