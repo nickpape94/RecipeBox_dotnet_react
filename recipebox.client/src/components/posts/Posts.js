@@ -12,11 +12,11 @@ import pagination from '../../reducers/pagination';
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
+	const [ searched, setSearch ] = useState(false);
 	const [ sortData, setSortData ] = useState({
 		searchParams: '',
 		orderBy: ''
 	});
-	const [ searched, hasSearched ] = useState(false);
 
 	const { searchParams, orderBy } = sortData;
 
@@ -31,13 +31,20 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		return <Spinner />;
 	}
 
+	if (searched) {
+		setPageNumber(1);
+		setSearch(false);
+	}
+
+	// console.log(searched);
+
 	const onChange = (e) => {
 		setSortData({ ...sortData, [e.target.name]: e.target.value });
 	};
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		hasSearched(true);
+		setSearch(true);
 		getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
 	};
 
@@ -106,10 +113,10 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					)}
 				</div>
 			</div>
-			{searched && searchParams && <h1>{`${pagination.totalItems} matching recipes`}</h1>}
-			<div className='pagination'>
-				<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
-			</div>
+			<h1>{`${pagination.totalItems} matching recipes`}</h1>
+
+			<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+
 			<div className='cards'>
 				{posts.map((post) => (
 					<PostItem

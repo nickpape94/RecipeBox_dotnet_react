@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const PageNavigation = ({
@@ -12,41 +12,47 @@ const PageNavigation = ({
 	}
 
 	return (
-		<ul>
-			{currentPage !== 1 && (
-				<li onClick={() => setPageNumber(1)}>
-					<i className='fas fa-angle-double-left' />
-				</li>
-			)}
-			{currentPage !== 1 && (
-				<li onClick={() => setPageNumber(pageNumber - 1)}>
-					<i className='fas fa-angle-left' />
-				</li>
-			)}
+		<Fragment>
+			{totalItems > 9 && (
+				<div className='pagination'>
+					<ul>
+						{currentPage !== 1 && (
+							<li onClick={() => setPageNumber(1)}>
+								<i className='fas fa-angle-double-left' />
+							</li>
+						)}
+						{currentPage !== 1 && (
+							<li onClick={() => setPageNumber(pageNumber - 1)}>
+								<i className='fas fa-angle-left' />
+							</li>
+						)}
 
-			{numPages.splice(currentPage - 1, 5).map(
-				(value, key) =>
-					key === 0 ? (
-						<li className='active' key={key}>
-							{value}
-						</li>
-					) : (
-						<li onClick={() => setPageNumber(value)} key={key}>
-							{value}
-						</li>
-					)
+						{numPages.splice(currentPage - 1, 5).map(
+							(value, key) =>
+								key === 0 ? (
+									<li className='active' key={key}>
+										{value}
+									</li>
+								) : (
+									<li onClick={() => setPageNumber(value)} key={key}>
+										{value}
+									</li>
+								)
+						)}
+						{totalPages !== pageNumber && (
+							<li onClick={() => setPageNumber(pageNumber + 1)}>
+								<i className='fas fa-angle-right' />
+							</li>
+						)}
+						{totalPages !== pageNumber && (
+							<li onClick={() => setPageNumber(totalPages)}>
+								<i className='fas fa-angle-double-right' />
+							</li>
+						)}
+					</ul>
+				</div>
 			)}
-			{totalPages !== pageNumber && (
-				<li onClick={() => setPageNumber(pageNumber + 1)}>
-					<i className='fas fa-angle-right' />
-				</li>
-			)}
-			{totalPages !== pageNumber && (
-				<li onClick={() => setPageNumber(totalPages)}>
-					<i className='fas fa-angle-double-right' />
-				</li>
-			)}
-		</ul>
+		</Fragment>
 	);
 };
 
