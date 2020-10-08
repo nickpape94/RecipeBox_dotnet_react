@@ -16,6 +16,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		searchParams: '',
 		orderBy: ''
 	});
+	const [ searched, hasSearched ] = useState(false);
 
 	const { searchParams, orderBy } = sortData;
 
@@ -36,10 +37,9 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
+		hasSearched(true);
 		getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
 	};
-
-	// console.log(searchParams, orderBy);
 
 	return loading ? (
 		<Spinner />
@@ -106,6 +106,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					)}
 				</div>
 			</div>
+			{searched && searchParams && <h1>{`${pagination.totalItems} matching recipes`}</h1>}
 			<div className='pagination'>
 				<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 			</div>

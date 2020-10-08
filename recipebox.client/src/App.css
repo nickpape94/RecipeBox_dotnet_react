@@ -783,7 +783,7 @@ button {
 	grid-template-areas: 'header header' 'top top' 'about about' 'ingredients method' 'footer footer';
 	grid-gap: 1rem;
 	margin: 0 auto;
-	max-width: 1500px;
+	max-width: 1000px;
 }
 
 .post-header {
