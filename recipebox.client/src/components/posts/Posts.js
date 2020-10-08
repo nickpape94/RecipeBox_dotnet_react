@@ -13,6 +13,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ searched, setSearch ] = useState(false);
+	const [ searchQuery, setSearchQuery ] = useState('');
 	const [ sortData, setSortData ] = useState({
 		searchParams: '',
 		orderBy: ''
@@ -31,12 +32,14 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		return <Spinner />;
 	}
 
+	// Go to page 1 if a search is made
 	if (searched) {
 		setPageNumber(1);
 		setSearch(false);
 	}
 
-	// console.log(searched);
+	// console.log(filterQuery);
+	// console.log(orderBy);
 
 	const onChange = (e) => {
 		setSortData({ ...sortData, [e.target.name]: e.target.value });
@@ -45,6 +48,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		setSearch(true);
+		setSearchQuery(searchParams);
 		getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
 	};
 
@@ -113,7 +117,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					)}
 				</div>
 			</div>
-			<h1>{`${pagination.totalItems} matching recipes`}</h1>
+			{searchQuery.length > 0 && <h1>{`${pagination.totalItems} matching results for "${searchQuery}"`}</h1>}
 
 			<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 
