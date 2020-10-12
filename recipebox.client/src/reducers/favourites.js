@@ -1,4 +1,4 @@
-import { GET_USER_FAVOURITES } from '../actions/types';
+import { GET_USER_FAVOURITES, USER_ERROR } from '../actions/types';
 
 const initialState = {
 	favourites: [],
@@ -14,6 +14,12 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				favourites: payload,
+				favouritesLoading: false
+			};
+		case USER_ERROR:
+			return {
+				...state,
+				error: payload,
 				favouritesLoading: false
 			};
 		default:

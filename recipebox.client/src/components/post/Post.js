@@ -29,7 +29,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 		<Fragment>
 			<div className='post-header'>
 				<Link to='/posts' className='btn'>
-					Back To Posts
+					<i className='fas fa-arrow-circle-left' /> Back To Posts
 				</Link>
 				<div className='favourites'>
 					{/* <Link href='recipes.html' className='btn'>

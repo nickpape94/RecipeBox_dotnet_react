@@ -13,6 +13,8 @@ import PostForm from './components/post/PostForm';
 import PhotosToPost from './components/post/PhotosToPost';
 import Alert from './components/layout/Alert';
 import UserProfile from './components/user/UserProfile';
+import UserFavourites from './components/user/UserFavourites';
+import UserPosts from './components/user/UserPosts';
 
 //Redux
 import { Provider } from 'react-redux';
@@ -21,6 +23,8 @@ import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
 import './App.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import Container from 'react-bootstrap/Container';
 
 if (localStorage.token) {
 	setAuthToken(localStorage.token);
@@ -50,6 +54,8 @@ const App = () => {
 							<Route exact path='/submit-post' component={PostForm} />
 							<Route exact path='/post/add-photos' component={PhotosToPost} />
 							<Route exact path='/users/:id' component={UserProfile} />
+							<Route exact path='/users/:id/posts' component={UserPosts} />
+							<Route exact path='/users/:id/favourites' component={UserFavourites} />
 							{/* <Route
 								exact
 								path='reset-password?email={email}&token={validToken}'
