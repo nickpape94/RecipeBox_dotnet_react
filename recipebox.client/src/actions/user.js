@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_USERS, GET_USER, USER_ERROR } from './types';
+import { GET_USERS, GET_USER, USER_ERROR, GET_USER_FAVOURITES } from './types';
 
 // Get users
 export const getUsers = () => async (dispatch) => {
@@ -22,7 +22,7 @@ export const getUsers = () => async (dispatch) => {
 export const getUser = (id) => async (dispatch) => {
 	try {
 		const res = await axios.get(`/api/users/${id}`);
-		const favourites = await axios.get(`api/favourites/userId/id`);
+		const favourites = await axios.get(`/api/favourites/userId/${id}`);
 
 		dispatch({
 			type: GET_USER,
@@ -30,7 +30,7 @@ export const getUser = (id) => async (dispatch) => {
 		});
 
 		dispatch({
-			type: USER_FAVOURITES,
+			type: GET_USER_FAVOURITES,
 			payload: favourites.data
 		});
 	} catch (err) {
