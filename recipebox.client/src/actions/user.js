@@ -22,10 +22,16 @@ export const getUsers = () => async (dispatch) => {
 export const getUser = (id) => async (dispatch) => {
 	try {
 		const res = await axios.get(`/api/users/${id}`);
+		const favourites = await axios.get(`api/favourites/userId/id`);
 
 		dispatch({
 			type: GET_USER,
 			payload: res.data
+		});
+
+		dispatch({
+			type: USER_FAVOURITES,
+			payload: favourites.data
 		});
 	} catch (err) {
 		dispatch({

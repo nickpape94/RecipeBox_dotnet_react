@@ -12,6 +12,7 @@ import Posts from './components/posts/Posts';
 import PostForm from './components/post/PostForm';
 import PhotosToPost from './components/post/PhotosToPost';
 import Alert from './components/layout/Alert';
+import UserProfile from './components/user/UserProfile';
 
 //Redux
 import { Provider } from 'react-redux';
@@ -48,7 +49,7 @@ const App = () => {
 							<Route exact path='/reset-password' component={PasswordReset} />
 							<Route exact path='/submit-post' component={PostForm} />
 							<Route exact path='/post/add-photos' component={PhotosToPost} />
-
+							<Route exact path='/users/:id' component={UserProfile} />
 							{/* <Route
 								exact
 								path='reset-password?email={email}&token={validToken}'

@@ -189,14 +189,17 @@ const PostItem = ({
 			</div>
 
 			<div className='card__footer'>
-				<div>
-					{userPhotoUrl ? (
-						<img className='icon-b' src={userPhotoUrl} />
-					) : (
-						<i className='fas fa-user fa-3x icon-a' />
-					)}
-				</div>
-				<h3> {author}</h3>
+				<Link to={`/users/${userId}`}>
+					<div>
+						{userPhotoUrl ? (
+							<img className='icon-b' src={userPhotoUrl} />
+						) : (
+							<i className='fas fa-user fa-3x icon-a' />
+						)}
+					</div>
+					<h3> {author}</h3>
+				</Link>
+
 				<div>
 					<h4>
 						Posted on: <Moment format='DD/MM/YYYY'>{created}</Moment>
