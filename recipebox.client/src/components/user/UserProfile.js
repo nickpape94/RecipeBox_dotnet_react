@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getUser } from '../../actions/user';
 import Spinner from '../layout/Spinner';
+import Moment from 'react-moment';
 
 const UserProfile = ({ getUser, user: { user, loading }, match }) => {
 	useEffect(
@@ -45,18 +46,30 @@ const UserProfile = ({ getUser, user: { user, loading }, match }) => {
 								Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed doloremque nesciunt,
 								repellendus nostrum deleniti recusandae nobis neque modi perspiciatis similique?
 							</p>
+							<div className='line' />
+							<ul>
+								<li>
+									Member Since: <Moment format='DD/MM/YYYY'>{user.created}</Moment>{' '}
+								</li>
+								<li>
+									Last Online: <Moment format='DD/MM/YYYY'>{user.lastActive}</Moment>{' '}
+								</li>
+								<li>{user.posts.length} Recipes Submitted</li>
+							</ul>
+							{/* <div>
+								<small>Member Since {user.created}</small>
+							</div>
+							<div>
+								<small>Last Online {user.lastActive}</small>
+							</div> */}
 						</div>
-						{/* <div className='line' /> */}
-						<div className='profile-posts btn btn-dark my-4'>
-							<Link to={`/users/${user.id}/posts`} className='user-links'>
-								Browse {user.username.split(' ')[0]}'s Recipes
-							</Link>
-						</div>
-						<div className='profile-favourites btn btn-success'>
-							<Link to={`/users/${user.id}/favourites`} className='user-links'>
-								Browse {user.username.split(' ')[0]}'s Favourites
-							</Link>
-						</div>
+
+						<Link to={`/users/${user.id}/posts`} className='profile-posts btn btn-dark my-4'>
+							Browse {user.username.split(' ')[0]}'s Recipes
+						</Link>
+						<Link to={`/users/${user.id}/favourites`} className='profile-favourites btn btn-success'>
+							Browse {user.username.split(' ')[0]}'s Favourites
+						</Link>
 					</div>
 				</Fragment>
 			)}

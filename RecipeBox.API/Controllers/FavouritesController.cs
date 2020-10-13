@@ -58,7 +58,8 @@ namespace RecipeBox.API.Controllers
             var postForFavourite = new Favourite
             {
                 PostId = postFromRepo.PostId,
-                FavouriterId = userFromRepo.Id
+                FavouriterId = userFromRepo.Id,
+                Username = userFromRepo.UserName
             };
 
             // Check if post has already been favourited
