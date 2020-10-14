@@ -72,11 +72,24 @@ namespace RecipeBox.API.Data
             return post;
         }
 
-        public async Task<IEnumerable<Post>> GetPosts()
+        public async Task<PagedList<Post>> GetPosts(int userId, PageParams pageParams, PostForSearchDto postForSearchDto)
         {
-            var posts = await _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).ToListAsync();
+            var posts = _context.Posts.Where(x => x.UserId == userId).Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
+
+            if (postForSearchDto.OrderBy == "most discussed")
+                posts = posts.OrderByDescending(x => x.Comments.Count);
             
-            return posts;
+            if (postForSearchDto.OrderBy == "oldest")
+                posts = posts.OrderBy(x => x.Created); 
+            
+            if (postForSearchDto.OrderBy == "newest")
+                posts = posts.OrderByDescending(x => x.Created);
+            
+            if (postForSearchDto.OrderBy == "highest rated")
+                posts = posts.OrderByDescending(x => x.AverageRating);
+            
+
+            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
         }
 
         public async Task<PagedList<Post>> GetPosts(PageParams pageParams, PostForSearchDto postForSearchDto)
@@ -169,9 +182,9 @@ namespace RecipeBox.API.Data
 
         public async Task<Favourite> GetFavourite(int postId, int userId)
         {
-            var favouriteFromRepo = await _context.Favourites.FirstOrDefaultAsync(x => (x.FavouriterId == userId) && (x.PostId == postId));
+            var favourite = await _context.Favourites.FirstOrDefaultAsync(x => (x.FavouriterId == userId) && (x.PostId == postId));
 
-            return favouriteFromRepo;
+            return favourite;
         }
 
         public async Task<IEnumerable<Rating>> GetRatings(int postId)
