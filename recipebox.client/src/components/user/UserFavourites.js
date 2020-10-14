@@ -16,17 +16,22 @@ const UserFavourites = ({
 	match,
 	pagination
 }) => {
-	// const [ pageNumber, setPageNumber ] = useState(1);
-	// const [ loadingPage, setLoadingPage ] = useState(false);
-	// const [ searched, setSearch ] = useState(false);
-	// const [ searchQuery, setSearchQuery ] = useState('');
-	// const [ sortData, setSortData ] = useState('');
+	const [ pageNumber, setPageNumber ] = useState(1);
+	const [ loadingPage, setLoadingPage ] = useState(false);
+	const [ sortData, setSortData ] = useState({
+		orderBy: ''
+	});
+
+	const { orderBy } = sortData;
+
+	const userId = match.params.id;
+	// console.log(userId);
 
 	useEffect(
 		() => {
-			getFavourites(match.params.id);
+			getFavourites({ userId, pageNumber, setLoadingPage, orderBy });
 		},
-		[ getFavourites, match.params.id ]
+		[ getFavourites, userId, pageNumber, orderBy ]
 	);
 
 	useEffect(
@@ -36,9 +41,13 @@ const UserFavourites = ({
 		[ getUser, match.params.id ]
 	);
 
-	// if (loadingPage) {
-	// 	return <Spinner />;
-	// }
+	const onChange = (e) => {
+		setSortData({ ...sortData, [e.target.name]: e.target.value });
+	};
+
+	if (loadingPage) {
+		return <Spinner />;
+	}
 
 	return (
 		<Fragment>
@@ -65,13 +74,11 @@ const UserFavourites = ({
 					<div className='dropdown2 m-3'>
 						<select
 							className='test2'
-							// name='orderBy'
-							type='text'
-							placeholder='Select Cuisine'
 							name='orderBy'
-							// value={orderBy}
+							type='text'
+							value={orderBy}
 							required
-							// onChange={(e) => onChange(e)}
+							onChange={(e) => onChange(e)}
 						>
 							<option value=''>*Sort by</option>
 							<option value='newest'>Newest</option>
@@ -80,7 +87,7 @@ const UserFavourites = ({
 							<option value='most discussed'>Most discussed</option>
 						</select>
 					</div>
-					{/* <PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} /> */}
+					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 
 					<div className='cards'>
 						{favourites.map((post) => (
@@ -91,6 +98,8 @@ const UserFavourites = ({
 							/>
 						))}
 					</div>
+
+					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 				</Fragment>
 			)}
 		</Fragment>
@@ -101,12 +110,14 @@ UserFavourites.propTypes = {
 	getFavourites: PropTypes.func.isRequired,
 	getUser: PropTypes.func.isRequired,
 	favourites: PropTypes.object.isRequired,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	pagination: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	favourites: state.favourites,
-	user: state.user
+	user: state.user,
+	pagination: state.pagination
 });
 
 export default connect(mapStateToProps, { getFavourites, getUser })(UserFavourites);
