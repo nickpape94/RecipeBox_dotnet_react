@@ -1,10 +1,9 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect, Prompt } from 'react-router-dom';
+import { Prompt } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 import { createPost } from '../../actions/post';
 import PropTypes from 'prop-types';
-import { getUser } from '../../actions/user';
 
 const PostForm = ({ createPost, auth: { user }, history }) => {
 	const [ formData, setFormData ] = useState({

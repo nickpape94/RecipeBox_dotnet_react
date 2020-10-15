@@ -11,6 +11,7 @@ import PageNavigation from '../posts/PageNavigation';
 const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }, match, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
+	const [ userLoading, setUserLoading ] = useState(false);
 	const [ sortData, setSortData ] = useState({
 		searchParams: '',
 		orderBy: '',
@@ -23,12 +24,12 @@ const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }
 		() => {
 			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 		},
-		[ getPosts, orderBy, userId ]
+		[ getPosts, orderBy, userId, pageNumber ]
 	);
 
 	useEffect(
 		() => {
-			getUser(match.params.id);
+			getUser(match.params.id, setUserLoading);
 		},
 		[ getUser, match.params.id ]
 	);
@@ -37,7 +38,7 @@ const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }
 		setSortData({ ...sortData, [e.target.name]: e.target.value });
 	};
 
-	if (loadingPage) {
+	if (loadingPage || userLoading) {
 		return <Spinner />;
 	}
 

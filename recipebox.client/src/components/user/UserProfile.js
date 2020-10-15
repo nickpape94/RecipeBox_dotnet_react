@@ -7,15 +7,21 @@ import Spinner from '../layout/Spinner';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const UserProfile = ({ getUser, user: { user, loading }, match }) => {
+const UserProfile = ({ getUser, user: { user, loading }, match, history }) => {
+	const [ userLoading, setUserLoading ] = useState(false);
+
 	useEffect(
 		() => {
-			getUser(match.params.id);
+			getUser(match.params.id, setUserLoading);
 		},
 		[ getUser, match.params.id ]
 	);
 
 	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+
+	if (userLoading) {
+		return <Spinner />;
+	}
 
 	return (
 		<Fragment>

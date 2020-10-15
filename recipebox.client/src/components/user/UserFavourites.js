@@ -17,6 +17,7 @@ const UserFavourites = ({
 	pagination
 }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
+	const [ userLoading, setUserLoading ] = useState(false);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ sortData, setSortData ] = useState({
 		orderBy: ''
@@ -36,7 +37,7 @@ const UserFavourites = ({
 
 	useEffect(
 		() => {
-			getUser(userId);
+			getUser(userId, setUserLoading);
 		},
 		[ getUser, userId ]
 	);
@@ -45,7 +46,7 @@ const UserFavourites = ({
 		setSortData({ ...sortData, [e.target.name]: e.target.value });
 	};
 
-	if (loadingPage) {
+	if (loadingPage || userLoading) {
 		return <Spinner />;
 	}
 

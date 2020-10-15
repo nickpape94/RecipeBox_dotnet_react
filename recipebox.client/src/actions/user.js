@@ -19,14 +19,17 @@ export const getUsers = () => async (dispatch) => {
 };
 
 // Get user
-export const getUser = (id) => async (dispatch) => {
+export const getUser = (id, setUserLoading) => async (dispatch) => {
 	try {
+		setUserLoading(true);
 		const res = await axios.get(`/api/users/${id}`);
 
 		dispatch({
 			type: GET_USER,
 			payload: res.data
 		});
+
+		setUserLoading(false);
 	} catch (err) {
 		dispatch({
 			type: USER_ERROR,
