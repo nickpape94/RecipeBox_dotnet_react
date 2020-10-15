@@ -1,13 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getPosts } from '../../actions/post';
-import { getUsers, getUser } from '../../actions/user';
 import Spinner from '../layout/Spinner';
 import PostItem from './PostItem';
 import PageNavigation from './PageNavigation';
-import pagination from '../../reducers/pagination';
 
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
@@ -16,14 +14,15 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	const [ searchQuery, setSearchQuery ] = useState('');
 	const [ sortData, setSortData ] = useState({
 		searchParams: '',
-		orderBy: ''
+		orderBy: '',
+		userId: ''
 	});
 
-	const { searchParams, orderBy } = sortData;
+	const { searchParams, orderBy, userId } = sortData;
 
 	useEffect(
 		() => {
-			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
+			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 		},
 		[ getPosts, pageNumber, orderBy ]
 	);
@@ -38,9 +37,6 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		setSearch(false);
 	}
 
-	// console.log(filterQuery);
-	// console.log(orderBy);
-
 	const onChange = (e) => {
 		setSortData({ ...sortData, [e.target.name]: e.target.value });
 	};
@@ -49,7 +45,7 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		e.preventDefault();
 		setSearch(true);
 		setSearchQuery(searchParams);
-		getPosts({ pageNumber, setLoadingPage, searchParams, orderBy });
+		getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 	};
 
 	return loading ? (
@@ -69,41 +65,34 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 						<i className='fas fa-search' />
 					</button>
 				</form>
-				<div className='post__dropdown'>
-					<div className='dropdown'>
-						<button className='dropbtn'>Sort Recipes By:</button>
-						<div className='dropdown-content'>
-							<select
-								name='filter'
-								type='text'
-								placeholder='Select Cuisine'
-								name='orderBy'
-								value={orderBy}
-								required
-								onChange={(e) => onChange(e)}
-							>
-								<option value=''>*Select option</option>
-								<option value='oldest'>Oldest</option>
-								<option value='newest'>Newest</option>
-								<option value='highest rated'>Highest rated</option>
-								<option value='most discussed'>Most discussed</option>
-							</select>
-						</div>
-					</div>
+				<div className='dropdown2'>
+					<select
+						className='test2'
+						name='orderBy'
+						type='text'
+						value={orderBy}
+						required
+						onChange={(e) => onChange(e)}
+					>
+						<option value=''>*Sort by</option>
+						<option value='newest'>Newest</option>
+						<option value='oldest'>Oldest</option>
+						<option value='highest rated'>Highest rated</option>
+						<option value='most discussed'>Most discussed</option>
+					</select>
 				</div>
 
 				{/* <div className='post__dropdown'>
-						<div class='dropdown'>
-							<button class='dropbtn'>Sort Recipes By:</button>
-							<div class='dropdown-content'>
-								<Link to='!#'>Highest Rated</Link>
-								<Link to='!#'>Oldest</Link>
-								<Link to='!#'>Newest</Link>
-								<Link to='!#'>Most Discussed</Link>
-							</div>
+					<div class='dropdown'>
+						<button class='dropbtn'>Sort Recipes By:</button>
+						<div class='dropdown-content'>
+							<Link to='!#'>Highest Rated</Link>
+							<Link to='!#'>Oldest</Link>
+							<Link to='!#'>Newest</Link>
+							<Link to='!#'>Most Discussed</Link>
 						</div>
-					</div> */}
-
+					</div>
+				</div>{' '} */}
 				<div className='post__submit'>
 					{auth.isAuthenticated && (
 						<Link to='submit-post'>
@@ -117,7 +106,8 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					)}
 				</div>
 			</div>
-			{searchQuery.length > 0 && <h1>{`${pagination.totalItems} matching results for "${searchQuery}"`}</h1>}
+
+			{searchQuery.length > 0 && <strong>{`${pagination.totalItems} results for "${searchQuery}"`}</strong>}
 
 			<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 
@@ -130,6 +120,8 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 					/>
 				))}
 			</div>
+
+			<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 			{/* <div className='pagination2'>
 				<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 			</div> */}

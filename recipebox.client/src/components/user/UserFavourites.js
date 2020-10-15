@@ -36,9 +36,9 @@ const UserFavourites = ({
 
 	useEffect(
 		() => {
-			getUser(match.params.id);
+			getUser(userId);
 		},
-		[ getUser, match.params.id ]
+		[ getUser, userId ]
 	);
 
 	const onChange = (e) => {
@@ -90,13 +90,17 @@ const UserFavourites = ({
 					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 
 					<div className='cards'>
-						{favourites.map((post) => (
-							<PostItem
-								key={post.postId}
-								post={post}
-								// postPhoto={post.postPhoto.filter((photo) => photo.isMain == true)}
-							/>
-						))}
+						{favourites.length === 0 ? (
+							<h1>{user.username.split(' ')[0]} has no favourites yet</h1>
+						) : (
+							favourites.map((post) => (
+								<PostItem
+									key={post.postId}
+									post={post}
+									// postPhoto={post.postPhoto.filter((photo) => photo.isMain == true)}
+								/>
+							))
+						)}
 					</div>
 
 					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
