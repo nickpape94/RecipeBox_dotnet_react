@@ -9,16 +9,15 @@ import {
 	GET_PAGINATION_HEADERS
 } from './types';
 
-// Get posts
-export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy }) => async (dispatch) => {
+// Get all posts
+export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, userId }) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
 		}
 	};
 
-	const body = JSON.stringify({ searchParams, orderBy });
-	// console.log(body);
+	const body = JSON.stringify({ searchParams, orderBy, userId });
 
 	try {
 		setLoadingPage(true);

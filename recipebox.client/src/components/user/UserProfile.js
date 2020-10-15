@@ -1,10 +1,11 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getUser } from '../../actions/user';
 import Spinner from '../layout/Spinner';
 import Moment from 'react-moment';
+import moment from 'moment';
 
 const UserProfile = ({ getUser, user: { user, loading }, match }) => {
 	useEffect(
@@ -13,6 +14,8 @@ const UserProfile = ({ getUser, user: { user, loading }, match }) => {
 		},
 		[ getUser, match.params.id ]
 	);
+
+	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 
 	return (
 		<Fragment>
@@ -51,10 +54,15 @@ const UserProfile = ({ getUser, user: { user, loading }, match }) => {
 								<li>
 									Member Since: <Moment format='DD/MM/YYYY'>{user.created}</Moment>{' '}
 								</li>
-								<li>
-									Last Online: <Moment format='DD/MM/YYYY'>{user.lastActive}</Moment>{' '}
-								</li>
-								<li>{user.posts.length} Recipes Submitted</li>
+								{todaysDate === moment(user.lastActive).format('YYYYMMDD') ? (
+									<li>Last Online: Today </li>
+								) : (
+									<li>
+										Last Online: <Moment format='DD/MM/YYYY'>{user.lastActive}</Moment>{' '}
+									</li>
+								)}
+
+								{/* <li>{user.posts.length} Recipes Submitted</li> */}
 							</ul>
 							{/* <div>
 								<small>Member Since {user.created}</small>

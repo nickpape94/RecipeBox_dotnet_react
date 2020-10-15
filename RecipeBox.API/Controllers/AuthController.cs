@@ -108,6 +108,8 @@ namespace RecipeBox.API.Controllers
 
             if (result.Succeeded)
             {
+                user.LastActive = DateTime.Now;
+                await _recipeRepo.SaveAll();
                 var appUser = _mapper.Map<UserForListDto>(user);
 
                 return Ok(new {

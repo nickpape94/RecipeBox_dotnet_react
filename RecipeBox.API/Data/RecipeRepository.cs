@@ -72,25 +72,25 @@ namespace RecipeBox.API.Data
             return post;
         }
 
-        public async Task<PagedList<Post>> GetPosts(int userId, PageParams pageParams, PostForSearchDto postForSearchDto)
-        {
-            var posts = _context.Posts.Where(x => x.UserId == userId).Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
+        // public async Task<PagedList<Post>> GetPosts(int userId, PageParams pageParams, PostForSearchDto postForSearchDto)
+        // {
+        //     var posts = _context.Posts.Where(x => x.UserId == userId).Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
 
-            if (postForSearchDto.OrderBy == "most discussed")
-                posts = posts.OrderByDescending(x => x.Comments.Count);
+        //     if (postForSearchDto.OrderBy == "most discussed")
+        //         posts = posts.OrderByDescending(x => x.Comments.Count);
             
-            if (postForSearchDto.OrderBy == "oldest")
-                posts = posts.OrderBy(x => x.Created); 
+        //     if (postForSearchDto.OrderBy == "oldest")
+        //         posts = posts.OrderBy(x => x.Created); 
             
-            if (postForSearchDto.OrderBy == "newest")
-                posts = posts.OrderByDescending(x => x.Created);
+        //     if (postForSearchDto.OrderBy == "newest")
+        //         posts = posts.OrderByDescending(x => x.Created);
             
-            if (postForSearchDto.OrderBy == "highest rated")
-                posts = posts.OrderByDescending(x => x.AverageRating);
+        //     if (postForSearchDto.OrderBy == "highest rated")
+        //         posts = posts.OrderByDescending(x => x.AverageRating);
             
 
-            return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
-        }
+        //     return await PagedList<Post>.CreateAsync(posts, pageParams.PageNumber, pageParams.PageSize);
+        // }
 
         public async Task<PagedList<Post>> GetPosts(PageParams pageParams, PostForSearchDto postForSearchDto)
         {
@@ -104,6 +104,9 @@ namespace RecipeBox.API.Data
                 x.Author.ToLower().Contains(searchQuery) ||
                 x.Ingredients.ToLower().Contains(searchQuery));
 
+            if (postForSearchDto.UserId.Count() > 0)
+                filteredPosts = filteredPosts.Where(x => x.UserId == int.Parse(postForSearchDto.UserId));
+            
             if (postForSearchDto.OrderBy == "most discussed")
                 filteredPosts = filteredPosts.OrderByDescending(x => x.Comments.Count);
             

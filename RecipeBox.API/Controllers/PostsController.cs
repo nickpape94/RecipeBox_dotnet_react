@@ -50,24 +50,24 @@ namespace RecipeBox.API.Controllers
         }
         
         // Get posts by user id
-        [AllowAnonymous]
-        [HttpPost("~/api/user/{userId}/posts")]
-        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams, PostForSearchDto postForSearchDto, int userId)
-        {
-            var posts = await _recipeRepo.GetPosts(userId, pageParams, postForSearchDto);
+        // [AllowAnonymous]
+        // [HttpPost("~/api/user/{userId}/posts")]
+        // public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams, PostForSearchDto postForSearchDto, int userId)
+        // {
+        //     var posts = await _recipeRepo.GetPosts(userId, pageParams, postForSearchDto);
 
-            foreach(var post in posts) 
-            {
-                var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
-                if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
-            }
+        //     foreach(var post in posts) 
+        //     {
+        //         var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
+        //         if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
+        //     }
 
-            var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
+        //     var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
 
-            Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
+        //     Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
 
-            return Ok(postsFromRepo);
-        } 
+        //     return Ok(postsFromRepo);
+        // } 
 
         // Get post by id
         [AllowAnonymous]
