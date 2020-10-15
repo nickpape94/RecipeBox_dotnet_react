@@ -1,35 +1,30 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { getUser } from '../../actions/user';
+import { getPosts } from '../../actions/post';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import PostItem from '../posts/PostItem';
 import { Link } from 'react-router-dom';
 import PageNavigation from '../posts/PageNavigation';
 
-const UserPosts = ({ getUser, user: { user, loading }, match, pagination }) => {
+const UserPosts = ({ getPosts, post: { posts, loading }, user: { user }, match, pagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ sortData, setSortData ] = useState({
-		orderBy: ''
+		searchParams: '',
+		orderBy: '',
+		userId: match.params.id.toString()
 	});
 
-	const { orderBy } = sortData;
+	const { searchParams, orderBy, userId } = sortData;
 
-	const userId = match.params.id;
-
-	// useEffect(
-	// 	() => {
-	// 		getFavourites({ userId, pageNumber, setLoadingPage, orderBy });
-	// 	},
-	// 	[ getFavourites, userId, pageNumber, orderBy ]
-	// );
+	// const id = match.params.id;
 
 	useEffect(
 		() => {
-			getUser(userId);
+			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 		},
-		[ getUser, userId, orderBy ]
+		[ getPosts, orderBy, userId ]
 	);
 
 	const onChange = (e) => {
@@ -42,7 +37,7 @@ const UserPosts = ({ getUser, user: { user, loading }, match, pagination }) => {
 
 	return (
 		<Fragment>
-			{loading || user === null ? (
+			{loading ? (
 				<Spinner />
 			) : (
 				<Fragment>
@@ -59,7 +54,7 @@ const UserPosts = ({ getUser, user: { user, loading }, match, pagination }) => {
 						<h1 className='large text-primary m-3'>{user.username.split(' ')[0]}'s Posts</h1>
 					</div>
 
-					<Link to={`/users/${user.id}`} className='btn'>
+					<Link to={`/users/${posts[0].userId}`} className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To {user.username.split(' ')[0]}'s Profile
 					</Link>
 					<div className='dropdown2 m-3'>
@@ -81,13 +76,17 @@ const UserPosts = ({ getUser, user: { user, loading }, match, pagination }) => {
 					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 
 					<div className='cards'>
-						{user.posts.map((post) => (
-							<PostItem
-								key={post.postId}
-								post={post}
-								// postPhoto={post.postPhoto.filter((photo) => photo.isMain == true)}
-							/>
-						))}
+						{posts.length === 0 ? (
+							<h1>No Posts Submitted</h1>
+						) : (
+							posts.map((post) => (
+								<PostItem
+									key={post.postId}
+									post={post}
+									// postPhoto={post.postPhoto.filter((photo) => photo.isMain == true)}
+								/>
+							))
+						)}
 					</div>
 
 					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
@@ -98,14 +97,16 @@ const UserPosts = ({ getUser, user: { user, loading }, match, pagination }) => {
 };
 
 UserPosts.propTypes = {
-	getUser: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired,
-	pagination: PropTypes.object.isRequired
+	getPosts: PropTypes.func.isRequired,
+	post: PropTypes.object.isRequired,
+	pagination: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-	user: state.user,
-	pagination: state.pagination
+	pagination: state.pagination,
+	post: state.post,
+	user: state.user
 });
 
-export default connect(mapStateToProps, { getUser })(UserPosts);
+export default connect(mapStateToProps, { getPosts })(UserPosts);
