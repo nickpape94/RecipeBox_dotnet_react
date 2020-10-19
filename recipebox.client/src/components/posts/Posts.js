@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ import PostItem from './PostItem';
 import PageNavigation from './PageNavigation';
 
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
-	const [ pageNumber, setPageNumber ] = useState(1);
+	const [ pageNumber, setPageNumber ] = useState(pagination.currentPage !== null ? pagination.currentPage : 1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ searched, setSearch ] = useState(false);
 	const [ searchQuery, setSearchQuery ] = useState('');

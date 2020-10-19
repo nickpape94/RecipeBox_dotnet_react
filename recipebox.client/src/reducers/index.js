@@ -7,6 +7,7 @@ import photo from './photo';
 import user from './user';
 import pagination from './pagination';
 import favourites from './favourites';
+import profilePagination from './profilePagination';
 
 export default combineReducers({
 	alert,
@@ -16,5 +17,6 @@ export default combineReducers({
 	photo,
 	user,
 	pagination,
+	profilePagination,
 	favourites
 });

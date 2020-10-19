@@ -1,11 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 
-const PageNavigation = ({
-	pagination: { currentPage, itemsPerPage, totalItems, totalPages },
-	pageNumber,
-	setPageNumber
-}) => {
+const PageNavigation = ({ pagination: { currentPage, totalItems, totalPages }, pageNumber, setPageNumber }) => {
 	const numPages = [];
 	for (let i = 1; i <= totalPages; i++) {
 		numPages.push(i);
@@ -35,6 +31,7 @@ const PageNavigation = ({
 									</li>
 								) : (
 									<li onClick={() => setPageNumber(value)} key={key}>
+										{/* history.replace(`/posts/pageNumber/1`); */}
 										{value}
 									</li>
 								)

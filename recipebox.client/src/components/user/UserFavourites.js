@@ -14,7 +14,7 @@ const UserFavourites = ({
 	getUser,
 	user: { user, loading },
 	match,
-	pagination
+	profilePagination
 }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ userLoading, setUserLoading ] = useState(false);
@@ -88,7 +88,11 @@ const UserFavourites = ({
 							<option value='most discussed'>Most discussed</option>
 						</select>
 					</div>
-					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+					<PageNavigation
+						pagination={profilePagination}
+						pageNumber={pageNumber}
+						setPageNumber={setPageNumber}
+					/>
 
 					<div className='cards'>
 						{favourites.length === 0 ? (
@@ -104,7 +108,11 @@ const UserFavourites = ({
 						)}
 					</div>
 
-					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+					<PageNavigation
+						pagination={profilePagination}
+						pageNumber={pageNumber}
+						setPageNumber={setPageNumber}
+					/>
 				</Fragment>
 			)}
 		</Fragment>
@@ -116,13 +124,13 @@ UserFavourites.propTypes = {
 	getUser: PropTypes.func.isRequired,
 	favourites: PropTypes.object.isRequired,
 	user: PropTypes.object.isRequired,
-	pagination: PropTypes.object.isRequired
+	profilePagination: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	favourites: state.favourites,
 	user: state.user,
-	pagination: state.pagination
+	profilePagination: state.profilePagination
 });
 
 export default connect(mapStateToProps, { getFavourites, getUser })(UserFavourites);

@@ -29,9 +29,12 @@ const UserProfile = ({ getUser, user: { user, loading }, match, history }) => {
 				<Spinner />
 			) : (
 				<Fragment>
-					<Link to='/posts' className='btn btn-light my-1'>
+					{/* <Link to='/posts' className='btn btn-light my-1'>
 						<i className='fas fa-arrow-circle-left' /> Back To Posts
-					</Link>
+					</Link> */}
+					<button className='btn btn-light my-1' onClick={() => history.push('/posts')}>
+						<i className='fas fa-arrow-circle-left' /> Back To Posts
+					</button>
 
 					<div className='profile-grid'>
 						<div className='profile-top bg-primary p-2'>

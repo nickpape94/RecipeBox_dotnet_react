@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_USER_FAVOURITES, GET_PAGINATION_HEADERS, USER_ERROR } from './types';
+import { GET_USER_FAVOURITES, GET_PROFILE_PAGINATION_HEADERS, USER_ERROR } from './types';
 
 // Get user favourites
 export const getFavourites = ({ userId, pageNumber, setLoadingPage, orderBy }) => async (dispatch) => {
@@ -24,7 +24,7 @@ export const getFavourites = ({ userId, pageNumber, setLoadingPage, orderBy }) =
 		});
 
 		dispatch({
-			type: GET_PAGINATION_HEADERS,
+			type: GET_PROFILE_PAGINATION_HEADERS,
 			payload: resHeaders
 		});
 
