@@ -6,7 +6,8 @@ import {
 	GET_POST,
 	POST_SUBMIT_SUCCESS,
 	POST_SUBMIT_FAIL,
-	GET_PAGINATION_HEADERS
+	GET_PAGINATION_HEADERS,
+	GET_PROFILE_PAGINATION_HEADERS
 } from './types';
 
 // Get all posts
@@ -50,10 +51,19 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 			payload: sortData
 		});
 
-		dispatch({
-			type: GET_PAGINATION_HEADERS,
-			payload: resHeaders
-		});
+		if (userId === '') {
+			dispatch({
+				type: GET_PAGINATION_HEADERS,
+				payload: resHeaders
+			});
+		}
+
+		if (userId.length > 0) {
+			dispatch({
+				type: GET_PROFILE_PAGINATION_HEADERS,
+				payload: resHeaders
+			});
+		}
 
 		setLoadingPage(false);
 	} catch (err) {

@@ -8,7 +8,7 @@ import PostItem from '../posts/PostItem';
 import { Link } from 'react-router-dom';
 import PageNavigation from '../posts/PageNavigation';
 
-const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }, match, pagination }) => {
+const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }, match, profilePagination }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ userLoading, setUserLoading ] = useState(false);
@@ -80,7 +80,11 @@ const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }
 							<option value='most discussed'>Most discussed</option>
 						</select>
 					</div>
-					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+					<PageNavigation
+						pagination={profilePagination}
+						pageNumber={pageNumber}
+						setPageNumber={setPageNumber}
+					/>
 
 					<div className='cards'>
 						{posts.length === 0 ? (
@@ -96,7 +100,11 @@ const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }
 						)}
 					</div>
 
-					<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />
+					<PageNavigation
+						pagination={profilePagination}
+						pageNumber={pageNumber}
+						setPageNumber={setPageNumber}
+					/>
 				</Fragment>
 			)}
 		</Fragment>
@@ -107,12 +115,12 @@ UserPosts.propTypes = {
 	getPosts: PropTypes.func.isRequired,
 	getUser: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
-	pagination: PropTypes.object.isRequired,
+	profilePagination: PropTypes.object.isRequired,
 	user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-	pagination: state.pagination,
+	profilePagination: state.profilePagination,
 	post: state.post,
 	user: state.user
 });
