@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
 	GET_USER_FAVOURITES,
+	GET_USER_FAVOURITE,
 	GET_PROFILE_PAGINATION_HEADERS,
 	USER_ERROR,
 	POST_ERROR,
@@ -44,16 +45,40 @@ export const getFavourites = ({ userId, pageNumber, setLoadingPage, orderBy }) =
 	}
 };
 
-// Add post to favourites
-export const addToFavourites = ({ userId, postId }) => async (dispatch) => {
+// Check if post has already been favourited
+export const getFavourite = (userId, postId) => async (dispatch) => {
 	const config = {
 		headers: {
-			'Content-Type': 'application/json'
+			Authorization: `Bearer ${localStorage.token}`
 		}
 	};
 
 	try {
-		const res = await axios.post(`/api/favourites/userId/${userId}/postId/${postId}`, config);
+		const res = await axios.get(`/api/favourites/userId/${userId}/postId/${postId}`, config);
+
+		dispatch({
+			type: GET_USER_FAVOURITE,
+			payload: res.data
+		});
+	} catch (err) {
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+// Add post to favourites
+export const addToFavourites = (userId, postId) => async (dispatch) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	try {
+		const res = await axios.post(`/api/favourites/userId/${userId}/postId/${postId}`, null, config);
 
 		dispatch({
 			type: ADD_POST_TO_FAVOURITES,
@@ -68,7 +93,7 @@ export const addToFavourites = ({ userId, postId }) => async (dispatch) => {
 };
 
 // Delete post from favourites
-export const deleteFavourites = ({ userId, postId }) => async (dispatch) => {
+export const deleteFavourite = ({ userId, postId }) => async (dispatch) => {
 	try {
 		await axios.delete(`/api/favourites/userId/${userId}/postId/${postId}`);
 

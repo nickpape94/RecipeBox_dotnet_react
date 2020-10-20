@@ -6,7 +6,7 @@ import email from './email';
 import photo from './photo';
 import user from './user';
 import pagination from './pagination';
-import favourites from './favourites';
+import favourite from './favourite';
 import profilePagination from './profilePagination';
 
 export default combineReducers({
@@ -18,5 +18,5 @@ export default combineReducers({
 	user,
 	pagination,
 	profilePagination,
-	favourites
+	favourite
 });

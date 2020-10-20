@@ -6,15 +6,39 @@ import Spinner from '../layout/Spinner';
 import CommentItem from './CommentItem';
 import PostItem from '../posts/PostItem';
 import { getPost } from '../../actions/post';
+import { addToFavourites, deleteFavourite, getFavourite, getFavourites } from '../../actions/favourite';
 import AwesomeSlider from 'react-awesome-slider';
 import AwsSliderStyles from 'react-awesome-slider/dist/styles.css';
 
-const Post = ({ getPost, post: { post, loading }, match }) => {
+const Post = ({
+	addToFavourites,
+	deleteFavourite,
+	getFavourite,
+	getPost,
+	favourite,
+	post: { post, loading },
+	auth: { user },
+	match
+}) => {
+	const [ loadingFavourite, setLoadingFavourite ] = useState(false);
+
 	useEffect(
 		() => {
 			getPost(match.params.id);
 		},
 		[ getPost, match.params.id ]
+	);
+
+	useEffect(
+		() => {
+			if (user === null) {
+				setLoadingFavourite(true);
+			} else {
+				getFavourite(user.id, match.params.id);
+				setLoadingFavourite(false);
+			}
+		},
+		[ getFavourite, user, match.params.id ]
 	);
 
 	const [ requestComments, loadComments ] = useState(false);
@@ -23,7 +47,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 	// 	return <Redirect to='/posts' />;
 	// }
 
-	return loading || post === null ? (
+	return loading || post === null || user === null || loadingFavourite ? (
 		<Spinner />
 	) : (
 		<Fragment>
@@ -31,13 +55,17 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 				<Link to='/posts' className='btn'>
 					<i className='fas fa-arrow-circle-left' /> Back To Posts
 				</Link>
+				{/* {console.log(getFavourite(user.id, post.postId))} */}
+				{/* {console.log(user.id)}
+				{console.log(post.postId)}
+				{console.log(favourite)} */}
 				<div className='favourites'>
 					{/* <Link href='recipes.html' className='btn'>
 					Back To Recipes
 				</Link> */}
-					<a href='/!#'>
+					<button onClick={() => addToFavourites(user.id, post.postId)}>
 						<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
-					</a>
+					</button>
 				</div>
 			</div>
 
@@ -125,11 +153,16 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
 
 Post.propTypes = {
 	getPost: PropTypes.func.isRequired,
-	post: PropTypes.object.isRequired
+	getFavourite: PropTypes.func.isRequired,
+	post: PropTypes.object.isRequired,
+	auth: PropTypes.object.isRequired,
+	favourite: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-	post: state.post
+	post: state.post,
+	auth: state.auth,
+	favourite: state.favourite
 });
 
-export default connect(mapStateToProps, { getPost })(Post);
+export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, getFavourite })(Post);

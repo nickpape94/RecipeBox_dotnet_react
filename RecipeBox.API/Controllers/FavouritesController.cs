@@ -51,6 +51,22 @@ namespace RecipeBox.API.Controllers
             return Ok(favouritesFromRepo);
         }
 
+        // Check if post has already been favourited
+        [HttpGet("postId/{postId}")]
+        public async Task<IActionResult> Favourited(int userId, int postId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            var favouriteFromRepo = await _recipeRepo.GetFavourite(postId, userId);
+
+            if (favouriteFromRepo == null) return NotFound("Has not been favourited yet");
+
+            return Ok(favouriteFromRepo);
+            // if not null, return true
+            // else return false
+
+        }
+
 
         // Add post to favourites
         [HttpPost("postId/{postId}")]
@@ -80,7 +96,7 @@ namespace RecipeBox.API.Controllers
 
             if (await _recipeRepo.SaveAll())
             {
-                return Ok("Recipe added successfully");
+                return Ok(postForFavourite);
             }
 
             throw new Exception("Adding the post to favourites failed on save");

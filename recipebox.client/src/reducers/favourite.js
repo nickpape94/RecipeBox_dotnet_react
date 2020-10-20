@@ -1,5 +1,6 @@
 import {
 	GET_USER_FAVOURITES,
+	GET_USER_FAVOURITE,
 	USER_ERROR,
 	POST_ERROR,
 	ADD_POST_TO_FAVOURITES,
@@ -7,6 +8,7 @@ import {
 } from '../actions/types';
 
 const initialState = {
+	favourite: null,
 	favourites: [],
 	favouritesLoading: true,
 	error: {}
@@ -20,6 +22,12 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				favourites: payload,
+				favouritesLoading: false
+			};
+		case GET_USER_FAVOURITE:
+			return {
+				...state,
+				favourite: payload,
 				favouritesLoading: false
 			};
 		case ADD_POST_TO_FAVOURITES:
