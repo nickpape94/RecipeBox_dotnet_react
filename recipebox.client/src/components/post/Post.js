@@ -55,21 +55,19 @@ const Post = ({
 					{/* <Link href='recipes.html' className='btn'>
 					Back To Recipes
 				</Link> */}
-					{/* {console.log(error.status)} */}
 
-					{/* {favourite !== null &&
-						error.status === 404 &&
-						(favourite.postId !== post.postId && (
-							<button onClick={() => addToFavourites(user.id, post.postId)}>
-								<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
-							</button>
-						))} */}
-
-					{/* {favourite.postId === post.postId && (
+					{(favourite === null || favourite.postId !== post.postId) && (
 						<button onClick={() => addToFavourites(user.id, post.postId)}>
+							<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
+						</button>
+					)}
+
+					{favourite !== null &&
+					favourite.postId === post.postId && (
+						<button onClick={() => deleteFavourite(user.id, post.postId)}>
 							<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
 						</button>
-					)} */}
+					)}
 				</div>
 			</div>
 

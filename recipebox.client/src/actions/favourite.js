@@ -26,9 +26,26 @@ export const getFavourites = ({ userId, pageNumber, setLoadingPage, orderBy }) =
 
 		const resHeaders = JSON.parse(res.headers.pagination);
 
+		const sortData = res.data.map((post) => ({
+			postId: post.postId,
+			nameOfDish: post.nameOfDish,
+			description: post.description,
+			prepTime: post.prepTime,
+			cookingTime: post.cookingTime,
+			averageRating: post.averageRating,
+			cuisine: post.cuisine,
+			created: post.created,
+			ratings: post.ratings,
+			feeds: post.feeds,
+			userId: post.userId,
+			author: post.author,
+			userPhotoUrl: post.userPhotoUrl,
+			mainPhoto: post.postPhoto.filter((photo) => photo.isMain)[0]
+		}));
+
 		dispatch({
 			type: GET_USER_FAVOURITES,
-			payload: res.data
+			payload: sortData
 		});
 
 		dispatch({
@@ -45,7 +62,7 @@ export const getFavourites = ({ userId, pageNumber, setLoadingPage, orderBy }) =
 	}
 };
 
-// Check if post has already been favourited
+// Get favourite
 export const getFavourite = (userId, postId) => async (dispatch) => {
 	const config = {
 		headers: {
@@ -93,9 +110,15 @@ export const addToFavourites = (userId, postId) => async (dispatch) => {
 };
 
 // Delete post from favourites
-export const deleteFavourite = ({ userId, postId }) => async (dispatch) => {
+export const deleteFavourite = (userId, postId) => async (dispatch) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
 	try {
-		await axios.delete(`/api/favourites/userId/${userId}/postId/${postId}`);
+		await axios.delete(`/api/favourites/userId/${userId}/postId/${postId}`, config);
 
 		dispatch({
 			type: DELETE_POST_FROM_FAVOURITES,
