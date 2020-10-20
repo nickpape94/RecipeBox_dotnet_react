@@ -15,39 +15,35 @@ const Post = ({
 	deleteFavourite,
 	getFavourite,
 	getPost,
-	favourite,
+	favourite: { favourite, favouritesLoading, error },
 	post: { post, loading },
 	auth: { user },
 	match
 }) => {
-	const [ loadingFavourite, setLoadingFavourite ] = useState(false);
+	const [ loadingPage, setLoadingPage ] = useState(false);
+	const [ requestComments, loadComments ] = useState(false);
 
 	useEffect(
 		() => {
-			getPost(match.params.id);
+			getPost(match.params.id, setLoadingPage);
 		},
 		[ getPost, match.params.id ]
 	);
 
 	useEffect(
 		() => {
-			if (user === null) {
-				setLoadingFavourite(true);
-			} else {
+			if (user !== null) {
 				getFavourite(user.id, match.params.id);
-				setLoadingFavourite(false);
 			}
 		},
 		[ getFavourite, user, match.params.id ]
 	);
 
-	const [ requestComments, loadComments ] = useState(false);
+	if (loadingPage) {
+		return <Spinner />;
+	}
 
-	// if (requestComments) {
-	// 	return <Redirect to='/posts' />;
-	// }
-
-	return loading || post === null || user === null || loadingFavourite ? (
+	return loading || favouritesLoading || post === null || user === null ? (
 		<Spinner />
 	) : (
 		<Fragment>
@@ -55,17 +51,25 @@ const Post = ({
 				<Link to='/posts' className='btn'>
 					<i className='fas fa-arrow-circle-left' /> Back To Posts
 				</Link>
-				{/* {console.log(getFavourite(user.id, post.postId))} */}
-				{/* {console.log(user.id)}
-				{console.log(post.postId)}
-				{console.log(favourite)} */}
 				<div className='favourites'>
 					{/* <Link href='recipes.html' className='btn'>
 					Back To Recipes
 				</Link> */}
-					<button onClick={() => addToFavourites(user.id, post.postId)}>
-						<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
-					</button>
+					{/* {console.log(error.status)} */}
+
+					{/* {favourite !== null &&
+						error.status === 404 &&
+						(favourite.postId !== post.postId && (
+							<button onClick={() => addToFavourites(user.id, post.postId)}>
+								<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
+							</button>
+						))} */}
+
+					{/* {favourite.postId === post.postId && (
+						<button onClick={() => addToFavourites(user.id, post.postId)}>
+							<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
+						</button>
+					)} */}
 				</div>
 			</div>
 

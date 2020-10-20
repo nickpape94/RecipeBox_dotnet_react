@@ -62,8 +62,6 @@ namespace RecipeBox.API.Controllers
             if (favouriteFromRepo == null) return NotFound("Has not been favourited yet");
 
             return Ok(favouriteFromRepo);
-            // if not null, return true
-            // else return false
 
         }
 

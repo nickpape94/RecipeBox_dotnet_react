@@ -10,7 +10,7 @@ import PageNavigation from '../posts/PageNavigation';
 
 const UserFavourites = ({
 	getFavourites,
-	favourites: { favourites, favouritesLoading },
+	favourite: { favourites, favouritesLoading },
 	getUser,
 	user: { user, loading },
 	match,
@@ -122,13 +122,13 @@ const UserFavourites = ({
 UserFavourites.propTypes = {
 	getFavourites: PropTypes.func.isRequired,
 	getUser: PropTypes.func.isRequired,
-	favourites: PropTypes.object.isRequired,
+	favourite: PropTypes.object.isRequired,
 	user: PropTypes.object.isRequired,
 	profilePagination: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-	favourites: state.favourites,
+	favourite: state.favourite,
 	user: state.user,
 	profilePagination: state.profilePagination
 });

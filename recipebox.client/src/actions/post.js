@@ -77,14 +77,18 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 };
 
 // Get a post
-export const getPost = (postId) => async (dispatch) => {
-	const res = await axios.get(`/api/posts/${postId}`);
-
+export const getPost = (postId, setLoadingPage) => async (dispatch) => {
 	try {
+		setLoadingPage(true);
+
+		const res = await axios.get(`/api/posts/${postId}`);
+
 		dispatch({
 			type: GET_POST,
 			payload: res.data
 		});
+
+		setLoadingPage(false);
 	} catch (err) {
 		console.log(err);
 		dispatch({

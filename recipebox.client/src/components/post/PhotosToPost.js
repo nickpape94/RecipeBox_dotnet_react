@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useMemo } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -8,22 +8,22 @@ import Spinner from '../layout/Spinner';
 import PhotoPreview from '../photo/PhotoPreview';
 
 const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, photo, history }) => {
-	// const [state={notLoaded:true}, setState] = useState(null);
-	useEffect(() => {
-		if (post !== null) {
-			getPost(post.postId);
-		}
-	}, []);
-
+	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ files, setFiles ] = useState([]);
 	const [ uploading, startedUploading ] = useState(false);
 
-	// const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+	useEffect(() => {
+		if (post !== null) {
+			getPost(post.postId, setLoadingPage);
+		}
+	}, []);
 
 	const userIdOfPost = post && post.userId;
 	const idOfLoggedInUser = user && user.id;
 
-	if (loading || uploading) {
+	console.log(loadingPage);
+
+	if (loading || uploading || loadingPage) {
 		return <Spinner />;
 	}
 
