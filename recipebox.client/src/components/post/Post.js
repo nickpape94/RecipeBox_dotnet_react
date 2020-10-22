@@ -25,9 +25,11 @@ const Post = ({
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ requestComments, loadComments ] = useState(false);
 	// const [ isFavourited, toggleFavouriteStatus ] = useState(
-	// 	post && favouritesLoading === false && favourite !== null && favourite.postId === post.postId ? true : false
+	// 	user && (favourite === null || favourite.postId !== post.postId) ? false : true
 	// );
-	// const [ isFavourited, toggleFavouriteStatus ] = useState(false);
+	// const [ isFavourited, toggleFavouriteStatus ] = useState(false)
+	const [ isFavourited, setFavourited ] = useState(false);
+	// const [ notFavourited, setUnfavourited ] = useState(false);
 
 	useEffect(
 		() => {
@@ -45,13 +47,13 @@ const Post = ({
 	useEffect(
 		() => {
 			if (user !== null) {
-				getFavourite(user.id, match.params.id);
+				getFavourite(user.id, match.params.id, setFavourited);
 			}
 		},
 		[ getFavourite, user, match.params.id ]
 	);
 
-	if (loadingPage || favouritesLoading) {
+	if (loadingPage || (user !== null && favouritesLoading)) {
 		return <Spinner />;
 	}
 
@@ -63,14 +65,23 @@ const Post = ({
 				<Link to='/posts' className='btn'>
 					<i className='fas fa-arrow-circle-left' /> Back To Posts
 				</Link>
-				<div className='favourites'>
-					{/* {console.log(isFavourited)} */}
-					{/* {console.log(loadFavourite)} */}
-					{/* <Link href='recipes.html' className='btn'>
-					Back To Recipes
-				</Link> */}
+				{/* {console.log(`notfavourited = ${notFavourited}`)} */}
+				{console.log(`isFavourited = ${isFavourited}`)}
 
-					{user === null && (
+				<div className='favourites'>
+					{/* 1: Check user exists AND if favourite is either not null or has not been favourited  */}
+					{/* 2: Redirect user to login if not authenticated  */}
+					{/* 3: delete favourite  */}
+					{!isFavourited && user && (favourite === null || favourite.postId !== post.postId) ? (
+						<button
+							onClick={() => {
+								addToFavourites(user.id, post.postId);
+								setFavourited(true);
+							}}
+						>
+							<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
+						</button>
+					) : user === null ? (
 						<button
 							onClick={() => {
 								history.push('/login');
@@ -81,39 +92,19 @@ const Post = ({
 						>
 							<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
 						</button>
-					)}
-
-					{user && (favourite === null || favourite.postId !== post.postId) ? (
-						<button
-							onClick={() => {
-								addToFavourites(user.id, post.postId);
-								// toggleFavouriteStatus(false);
-							}}
-						>
-							<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
-						</button>
 					) : (
-						<button
-							onClick={() => {
-								deleteFavourite(user.id, post.postId);
-								// toggleFavouriteStatus(true);
-							}}
-						>
-							<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
-						</button>
+						isFavourited && (
+							<button
+								onClick={() => {
+									deleteFavourite(user.id, post.postId, setFavourited);
+									// toggleFavouriteStatus(false);
+									setFavourited(false);
+								}}
+							>
+								<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
+							</button>
+						)
 					)}
-
-					{/* {user &&
-					isFavourited && (
-						<button
-							onClick={() => {
-								deleteFavourite(user.id, post.postId);
-								toggleFavouriteStatus(true);
-							}}
-						>
-							<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
-						</button>
-					)} */}
 				</div>
 			</div>
 

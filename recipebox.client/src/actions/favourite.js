@@ -63,7 +63,7 @@ export const getFavourites = ({ userId, pageNumber, setLoadingPage, orderBy }) =
 };
 
 // Get favourite
-export const getFavourite = (userId, postId) => async (dispatch) => {
+export const getFavourite = (userId, postId, setFavourited) => async (dispatch) => {
 	const config = {
 		headers: {
 			Authorization: `Bearer ${localStorage.token}`
@@ -77,6 +77,8 @@ export const getFavourite = (userId, postId) => async (dispatch) => {
 			type: GET_USER_FAVOURITE,
 			payload: res.data
 		});
+
+		setFavourited(true);
 	} catch (err) {
 		dispatch({
 			type: POST_ERROR,
@@ -110,7 +112,7 @@ export const addToFavourites = (userId, postId) => async (dispatch) => {
 };
 
 // Delete post from favourites
-export const deleteFavourite = (userId, postId) => async (dispatch) => {
+export const deleteFavourite = (userId, postId, setFavourited) => async (dispatch) => {
 	const config = {
 		headers: {
 			Authorization: `Bearer ${localStorage.token}`
@@ -124,6 +126,8 @@ export const deleteFavourite = (userId, postId) => async (dispatch) => {
 			type: DELETE_POST_FROM_FAVOURITES,
 			payload: postId
 		});
+
+		setFavourited(false);
 	} catch (err) {
 		dispatch({
 			type: POST_ERROR,
