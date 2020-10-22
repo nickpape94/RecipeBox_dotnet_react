@@ -24,22 +24,11 @@ const Post = ({
 }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ requestComments, loadComments ] = useState(false);
-	// const [ isFavourited, toggleFavouriteStatus ] = useState(
-	// 	user && (favourite === null || favourite.postId !== post.postId) ? false : true
-	// );
-	// const [ isFavourited, toggleFavouriteStatus ] = useState(false)
 	const [ isFavourited, setFavourited ] = useState(false);
-	// const [ notFavourited, setUnfavourited ] = useState(false);
 
 	useEffect(
 		() => {
 			getPost(match.params.id, setLoadingPage);
-			// const result = favourite === null || favourite.postId !== post.postId ? false : true;
-			// const result = favourite && favourite.postId !== post.postId ? false : true;
-
-			// console.log(favourite);
-			// console.log(result);
-			// toggleFavouriteStatus(result);
 		},
 		[ getPost, match.params.id ]
 	);
@@ -65,21 +54,20 @@ const Post = ({
 				<Link to='/posts' className='btn'>
 					<i className='fas fa-arrow-circle-left' /> Back To Posts
 				</Link>
-				{/* {console.log(`notfavourited = ${notFavourited}`)} */}
-				{console.log(`isFavourited = ${isFavourited}`)}
 
 				<div className='favourites'>
 					{/* 1: Check user exists AND if favourite is either not null or has not been favourited  */}
 					{/* 2: Redirect user to login if not authenticated  */}
 					{/* 3: delete favourite  */}
-					{!isFavourited && user && (favourite === null || favourite.postId !== post.postId) ? (
+
+					{!isFavourited && user ? (
 						<button
 							onClick={() => {
-								addToFavourites(user.id, post.postId);
-								setFavourited(true);
+								addToFavourites(user.id, post.postId, setFavourited);
+								// setFavourited(true);
 							}}
 						>
-							<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
+							<i className='far fa-heart fa-2x text-red' /> <p>Add to favourites</p>
 						</button>
 					) : user === null ? (
 						<button
@@ -97,8 +85,6 @@ const Post = ({
 							<button
 								onClick={() => {
 									deleteFavourite(user.id, post.postId, setFavourited);
-									// toggleFavouriteStatus(false);
-									setFavourited(false);
 								}}
 							>
 								<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
@@ -204,4 +190,4 @@ const mapStateToProps = (state) => ({
 	favourite: state.favourite
 });
 
-export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, getFavourite })(withRouter(Post));
+export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, getFavourite })(Post);
