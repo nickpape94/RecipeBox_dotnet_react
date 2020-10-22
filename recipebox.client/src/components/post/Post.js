@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -7,6 +7,7 @@ import CommentItem from './CommentItem';
 import PostItem from '../posts/PostItem';
 import { getPost } from '../../actions/post';
 import { addToFavourites, deleteFavourite, getFavourite, getFavourites } from '../../actions/favourite';
+import { withRouter } from 'react-router';
 import AwesomeSlider from 'react-awesome-slider';
 import AwsSliderStyles from 'react-awesome-slider/dist/styles.css';
 
@@ -15,17 +16,28 @@ const Post = ({
 	deleteFavourite,
 	getFavourite,
 	getPost,
-	favourite: { favourite, favouritesLoading, error },
+	history,
+	favourite: { favourite, favouritesLoading },
 	post: { post, loading },
 	auth: { user },
 	match
 }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ requestComments, loadComments ] = useState(false);
+	// const [ isFavourited, toggleFavouriteStatus ] = useState(
+	// 	post && favouritesLoading === false && favourite !== null && favourite.postId === post.postId ? true : false
+	// );
+	// const [ isFavourited, toggleFavouriteStatus ] = useState(false);
 
 	useEffect(
 		() => {
 			getPost(match.params.id, setLoadingPage);
+			// const result = favourite === null || favourite.postId !== post.postId ? false : true;
+			// const result = favourite && favourite.postId !== post.postId ? false : true;
+
+			// console.log(favourite);
+			// console.log(result);
+			// toggleFavouriteStatus(result);
 		},
 		[ getPost, match.params.id ]
 	);
@@ -39,11 +51,11 @@ const Post = ({
 		[ getFavourite, user, match.params.id ]
 	);
 
-	if (loadingPage) {
+	if (loadingPage || favouritesLoading) {
 		return <Spinner />;
 	}
 
-	return loading || favouritesLoading || post === null || user === null ? (
+	return post === null ? (
 		<Spinner />
 	) : (
 		<Fragment>
@@ -52,22 +64,56 @@ const Post = ({
 					<i className='fas fa-arrow-circle-left' /> Back To Posts
 				</Link>
 				<div className='favourites'>
+					{/* {console.log(isFavourited)} */}
+					{/* {console.log(loadFavourite)} */}
 					{/* <Link href='recipes.html' className='btn'>
 					Back To Recipes
 				</Link> */}
 
-					{(favourite === null || favourite.postId !== post.postId) && (
-						<button onClick={() => addToFavourites(user.id, post.postId)}>
+					{user === null && (
+						<button
+							onClick={() => {
+								history.push('/login');
+								// console.log(history);
+								// addToFavourites(user.id, post.postId);
+								// toggleFavouriteStatus(false);
+							}}
+						>
 							<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
 						</button>
 					)}
 
-					{favourite !== null &&
-					favourite.postId === post.postId && (
-						<button onClick={() => deleteFavourite(user.id, post.postId)}>
+					{user && (favourite === null || favourite.postId !== post.postId) ? (
+						<button
+							onClick={() => {
+								addToFavourites(user.id, post.postId);
+								// toggleFavouriteStatus(false);
+							}}
+						>
+							<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
+						</button>
+					) : (
+						<button
+							onClick={() => {
+								deleteFavourite(user.id, post.postId);
+								// toggleFavouriteStatus(true);
+							}}
+						>
 							<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
 						</button>
 					)}
+
+					{/* {user &&
+					isFavourited && (
+						<button
+							onClick={() => {
+								deleteFavourite(user.id, post.postId);
+								toggleFavouriteStatus(true);
+							}}
+						>
+							<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
+						</button>
+					)} */}
 				</div>
 			</div>
 
@@ -167,4 +213,4 @@ const mapStateToProps = (state) => ({
 	favourite: state.favourite
 });
 
-export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, getFavourite })(Post);
+export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, getFavourite })(withRouter(Post));
