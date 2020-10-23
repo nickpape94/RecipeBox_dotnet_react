@@ -88,7 +88,7 @@ export const getFavourite = (userId, postId, setFavourited) => async (dispatch) 
 };
 
 // Add post to favourites
-export const addToFavourites = (userId, postId) => async (dispatch) => {
+export const addToFavourites = (userId, postId, setFavourited) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json',
@@ -103,6 +103,8 @@ export const addToFavourites = (userId, postId) => async (dispatch) => {
 			type: ADD_POST_TO_FAVOURITES,
 			payload: res.data
 		});
+
+		setFavourited(true);
 	} catch (err) {
 		dispatch({
 			type: POST_ERROR,

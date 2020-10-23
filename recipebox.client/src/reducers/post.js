@@ -1,4 +1,4 @@
-import { GET_POSTS, GET_POST, POST_ERROR, POST_SUBMIT_SUCCESS, POST_SUBMIT_FAIL } from '../actions/types';
+import { GET_POSTS, GET_POST, DELETE_POST, POST_ERROR, POST_SUBMIT_SUCCESS, POST_SUBMIT_FAIL } from '../actions/types';
 
 const initialState = {
 	posts: [],
@@ -31,6 +31,12 @@ export default function(state = initialState, action) {
 				posts: [ payload, ...state.posts ],
 				post: payload
 				// postSubmitted: true
+			};
+		case DELETE_POST:
+			return {
+				...state,
+				posts: state.posts.filter((post) => post.postId !== payload),
+				loading: false
 			};
 		case POST_SUBMIT_FAIL:
 		case POST_ERROR:

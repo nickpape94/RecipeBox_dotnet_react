@@ -4,6 +4,7 @@ import {
 	GET_POSTS,
 	POST_ERROR,
 	GET_POST,
+	DELETE_POST,
 	POST_SUBMIT_SUCCESS,
 	POST_SUBMIT_FAIL,
 	GET_PAGINATION_HEADERS,
@@ -144,6 +145,39 @@ export const createPost = (
 
 		dispatch({
 			type: POST_SUBMIT_FAIL
+		});
+	}
+};
+
+// Delete post
+export const deletePost = (id, postId, history, userId) => async (dispatch) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	try {
+		await axios.delete(`/api/users/${id}/posts/${postId}`, config);
+
+		dispatch({
+			type: DELETE_POST,
+			payload: postId
+		});
+
+		// if (userId === '') {
+		// 	history.push('/posts');
+		// }
+
+		// if (userId.length > 0) {
+		// 	history.push(`/users/${userId}/posts`);
+		// }
+	} catch (err) {
+		console.log(err);
+
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
 		});
 	}
 };

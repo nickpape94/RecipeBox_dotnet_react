@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import CommentItem from './CommentItem';
 import PostItem from '../posts/PostItem';
-import { getPost } from '../../actions/post';
+import { getPost, deletePost } from '../../actions/post';
 import { addToFavourites, deleteFavourite, getFavourite, getFavourites } from '../../actions/favourite';
 import { withRouter } from 'react-router';
 import AwesomeSlider from 'react-awesome-slider';
@@ -16,6 +16,7 @@ const Post = ({
 	deleteFavourite,
 	getFavourite,
 	getPost,
+	deletePost,
 	history,
 	favourite: { favourite, favouritesLoading },
 	post: { post, loading },
@@ -54,13 +55,8 @@ const Post = ({
 				<Link to='/posts' className='btn'>
 					<i className='fas fa-arrow-circle-left' /> Back To Posts
 				</Link>
-
 				<div className='favourites'>
-					{/* 1: Check user exists AND if favourite is either not null or has not been favourited  */}
-					{/* 2: Redirect user to login if not authenticated  */}
-					{/* 3: delete favourite  */}
-
-					{!isFavourited && user ? (
+					{!isFavourited && user && user.id !== post.userId ? (
 						<button
 							onClick={() => {
 								addToFavourites(user.id, post.postId, setFavourited);
@@ -90,6 +86,18 @@ const Post = ({
 								<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
 							</button>
 						)
+					)}
+				</div>
+				<div className='favourites'>
+					{user &&
+					user.id === post.userId && (
+						<button
+							onClick={(e) => {
+								deletePost(user.id, post.postId, history);
+							}}
+						>
+							Delete post
+						</button>
 					)}
 				</div>
 			</div>
@@ -179,6 +187,7 @@ const Post = ({
 Post.propTypes = {
 	getPost: PropTypes.func.isRequired,
 	getFavourite: PropTypes.func.isRequired,
+	deletePost: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	auth: PropTypes.object.isRequired,
 	favourite: PropTypes.object.isRequired
@@ -190,4 +199,4 @@ const mapStateToProps = (state) => ({
 	favourite: state.favourite
 });
 
-export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, getFavourite })(Post);
+export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, deletePost, getFavourite })(Post);
