@@ -3,15 +3,22 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
+import { withRouter } from 'react-router-dom';
 
-const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
+const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 	const authLinks = (
 		<ul>
 			<li>
 				<Link to='/posts'>Browse Recipes</Link>
 			</li>
 			<li>
-				<a onClick={logout} href='#!'>
+				<a
+					onClick={() => {
+						logout();
+						history.push('/');
+					}}
+					// href='#!'
+				>
 					<i className='fas fa-sign-out-alt' /> <span className='hide-sm'> Logout </span>
 				</a>
 			</li>
@@ -36,7 +43,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
 		<nav className='navbar bg-dark'>
 			<h1>
 				<Link to='/'>
-					<i className='fas fa-drumstick-bite' /> FoodieConnector
+					<i className='fas fa-drumstick-bite' /> Recipe Box
 				</Link>
 			</h1>
 			{!loading && <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>}
@@ -70,4 +77,4 @@ const mapStateToProps = (state) => ({
 	auth: state.auth
 });
 
-export default connect(mapStateToProps, { logout })(Navbar);
+export default connect(mapStateToProps, { logout })(withRouter(Navbar));

@@ -115,14 +115,6 @@ const Post = ({
 					{user &&
 					user.id === post.userId &&
 					confirmDeletion && (
-						// <button
-						// 	onClick={(e) => {
-						// 		setConfirmDeletion(true);
-						// 		// deletePost(user.id, post.postId, history);
-						// 	}}
-						// >
-						// 	Are you sure you want to delete this post?
-						// </button>
 						<div>
 							Are you sure you want to delete this post?
 							<span>
@@ -137,6 +129,11 @@ const Post = ({
 							</span>
 						</div>
 					)}
+				</div>
+
+				{/* Handling edit portion if authenticated */}
+				<div className='favourites'>
+					{user && user.id === post.userId && <Link to={`/posts/${post.postId}/edit`}>Edit Post</Link>}
 				</div>
 			</div>
 			<div className='post-grid my-1'>

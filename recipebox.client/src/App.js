@@ -15,6 +15,8 @@ import Alert from './components/layout/Alert';
 import UserProfile from './components/user/UserProfile';
 import UserFavourites from './components/user/UserFavourites';
 import UserPosts from './components/user/UserPosts';
+import EditPost from './components/post/EditPost';
+import PrivateRoute from './components/routing/PrivateRoute';
 
 //Redux
 import { Provider } from 'react-redux';
@@ -52,6 +54,7 @@ const App = () => {
 							<Route exact path='/email-confirmed' component={EmailConfirmed} />
 							<Route exact path='/reset-password' component={PasswordReset} />
 							<Route exact path='/submit-post' component={PostForm} />
+							<PrivateRoute exact path='/posts/:id/edit' component={EditPost} />
 							<Route exact path='/post/add-photos' component={PhotosToPost} />
 							<Route exact path='/users/:id' component={UserProfile} />
 							<Route exact path='/users/:id/posts' component={UserPosts} />
