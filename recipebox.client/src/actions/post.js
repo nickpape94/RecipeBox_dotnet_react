@@ -165,13 +165,19 @@ export const deletePost = (id, postId, history, userId) => async (dispatch) => {
 			payload: postId
 		});
 
-		// if (userId === '') {
+		// console.log(history.location.pathname);
+		// console.log(`/posts/${postId}`);
+
+		// if (history.location.pathname === `/posts/${postId}`) {
+		// 	console.log('true!');
 		// 	history.push('/posts');
 		// }
 
 		// if (userId.length > 0) {
 		// 	history.push(`/users/${userId}/posts`);
 		// }
+
+		history.push('/posts');
 	} catch (err) {
 		console.log(err);
 

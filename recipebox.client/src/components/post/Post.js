@@ -1,13 +1,11 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import CommentItem from './CommentItem';
-import PostItem from '../posts/PostItem';
 import { getPost, deletePost } from '../../actions/post';
-import { addToFavourites, deleteFavourite, getFavourite, getFavourites } from '../../actions/favourite';
-import { withRouter } from 'react-router';
+import { addToFavourites, deleteFavourite, getFavourite } from '../../actions/favourite';
 import AwesomeSlider from 'react-awesome-slider';
 import AwsSliderStyles from 'react-awesome-slider/dist/styles.css';
 
@@ -21,11 +19,13 @@ const Post = ({
 	favourite: { favourite, favouritesLoading },
 	post: { post, loading },
 	auth: { user },
+	// user: { user: { id, username } },
 	match
 }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ requestComments, loadComments ] = useState(false);
 	const [ isFavourited, setFavourited ] = useState(false);
+	const [ confirmDeletion, setConfirmDeletion ] = useState(false);
 
 	useEffect(
 		() => {
@@ -52,9 +52,15 @@ const Post = ({
 	) : (
 		<Fragment>
 			<div className='post-header'>
+				{/* {post && id && post.userId === id ? (
+					<Link to={`/users/${id}/posts`} className='btn'>
+						<i className='fas fa-arrow-circle-left' /> Back To {username.split(' ')[0]}'s Posts
+					</Link> */}
 				<Link to='/posts' className='btn'>
 					<i className='fas fa-arrow-circle-left' /> Back To Posts
 				</Link>
+
+				{/* Managing state & functionality of the favourite button */}
 				<div className='favourites'>
 					{!isFavourited && user && user.id !== post.userId ? (
 						<button
@@ -88,20 +94,51 @@ const Post = ({
 						)
 					)}
 				</div>
+
+				{/* Handling confirmation of post deletion */}
 				<div className='favourites'>
 					{user &&
-					user.id === post.userId && (
+					user.id === post.userId &&
+					!confirmDeletion && (
 						<button
 							onClick={(e) => {
-								deletePost(user.id, post.postId, history);
+								setConfirmDeletion(true);
+								// deletePost(user.id, post.postId, history);
 							}}
 						>
 							Delete post
 						</button>
 					)}
 				</div>
-			</div>
 
+				<div className='favourites'>
+					{user &&
+					user.id === post.userId &&
+					confirmDeletion && (
+						// <button
+						// 	onClick={(e) => {
+						// 		setConfirmDeletion(true);
+						// 		// deletePost(user.id, post.postId, history);
+						// 	}}
+						// >
+						// 	Are you sure you want to delete this post?
+						// </button>
+						<div>
+							Are you sure you want to delete this post?
+							<span>
+								<button
+									onClick={() => {
+										deletePost(user.id, post.postId, history);
+									}}
+								>
+									Yes
+								</button>
+								<button onClick={() => setConfirmDeletion(false)}>No</button>
+							</span>
+						</div>
+					)}
+				</div>
+			</div>
 			<div className='post-grid my-1'>
 				<div className='post-top'>
 					<h1 className='text-dark'>{post.nameOfDish}</h1>
@@ -191,12 +228,14 @@ Post.propTypes = {
 	post: PropTypes.object.isRequired,
 	auth: PropTypes.object.isRequired,
 	favourite: PropTypes.object.isRequired
+	// user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	post: state.post,
 	auth: state.auth,
 	favourite: state.favourite
+	// user: state.user
 });
 
 export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, deletePost, getFavourite })(Post);

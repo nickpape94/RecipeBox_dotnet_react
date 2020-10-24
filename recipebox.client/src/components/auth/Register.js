@@ -18,14 +18,18 @@ const Register = ({ setAlert, register, isAuthenticated, history }) => {
 
 	const [ submitted, submitting ] = useState(false);
 
-	useEffect(
-		() => {
-			if (isAuthenticated) {
-				history.push('/posts');
-			}
-		},
-		[ isAuthenticated ]
-	);
+	// useEffect(
+	// 	() => {
+	// 		if (isAuthenticated) {
+	// 			history.push('/posts');
+	// 		}
+	// 	},
+	// 	[ isAuthenticated ]
+	// );
+
+	if (isAuthenticated) {
+		return <Redirect to='/posts' />;
+	}
 
 	if (submitted) {
 		return <Spinner />;
