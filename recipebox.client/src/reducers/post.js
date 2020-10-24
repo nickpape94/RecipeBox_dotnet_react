@@ -1,4 +1,13 @@
-import { GET_POSTS, GET_POST, DELETE_POST, POST_ERROR, POST_SUBMIT_SUCCESS, POST_SUBMIT_FAIL } from '../actions/types';
+import {
+	GET_POSTS,
+	GET_POST,
+	DELETE_POST,
+	POST_ERROR,
+	POST_SUBMIT_SUCCESS,
+	POST_SUBMIT_FAIL,
+	POST_UPDATE_SUCCESS,
+	POST_UPDATE_FAIL
+} from '../actions/types';
 
 const initialState = {
 	posts: [],
@@ -25,6 +34,7 @@ export default function(state = initialState, action) {
 				loading: false
 			};
 		case POST_SUBMIT_SUCCESS:
+		case POST_UPDATE_SUCCESS:
 			return {
 				...state,
 				loading: false,
@@ -39,6 +49,7 @@ export default function(state = initialState, action) {
 				loading: false
 			};
 		case POST_SUBMIT_FAIL:
+		case POST_UPDATE_FAIL:
 		case POST_ERROR:
 			return {
 				...state,

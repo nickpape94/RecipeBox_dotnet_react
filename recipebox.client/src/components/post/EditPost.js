@@ -1,12 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, Prompt } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { setAlert } from '../../actions/alert';
-import { getPost } from '../../actions/post';
+import { getPost, updatePost } from '../../actions/post';
 import Spinner from '../layout/Spinner';
 
-const EditPost = ({ getPost, post: { post, loading }, auth: { user }, match }) => {
+const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }, match }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
 
 	const [ formData, setFormData ] = useState({
@@ -44,6 +44,20 @@ const EditPost = ({ getPost, post: { post, loading }, auth: { user }, match }) =
 
 	const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
+	const onSubmit = (e) => {
+		e.preventDefault();
+		updatePost(user.id, match.params.id, {
+			nameOfDish,
+			description,
+			ingredients,
+			method,
+			prepTime,
+			cookingTime,
+			feeds,
+			cuisine
+		});
+	};
+
 	if (loading) {
 		return <Spinner />;
 	}
@@ -52,13 +66,140 @@ const EditPost = ({ getPost, post: { post, loading }, auth: { user }, match }) =
 		<Redirect to={`/posts/${match.params.id}`} />
 	) : (
 		<Fragment>
-			<h1>{nameOfDish}</h1>
+			{/* <Prompt when={isDataChanged} message='Are you sure you want to leave? All fields will be lost.' />; */}
+			<h1 className='large text-primary'>Edit your post</h1>
+			<p className='lead'>
+				<i className='fas fa-bacon' /> Share your delicious meals with the community!
+			</p>
+			<form className='form' onSubmit={(e) => onSubmit(e)}>
+				<div className='form-group'>
+					<select
+						name='cuisine'
+						type='text'
+						placeholder='Select Cuisine'
+						name='cuisine'
+						value={cuisine}
+						required
+						onChange={(e) => onChange(e)}
+					>
+						<option value=''>* Select Cuisine</option>
+						<option value='African'>African</option>
+						<option value='American'>American</option>
+						<option value='British'>British</option>
+						<option value='Caribbean'>Caribbean</option>
+						<option value='Chinese'>Chinese</option>
+						<option value='East European'>East European</option>
+						<option value='French'>French</option>
+						<option value='Greek'>Greek</option>
+						<option value='Indian'>Indian</option>
+						<option value='Italian'>Italian</option>
+						<option value='Japanese'>Japanese</option>
+						<option value='Korean'>Korean</option>
+						<option value='Mexican'>Mexican</option>
+						<option value='North African'>Middle Eastern</option>
+						<option value='Pakistani'>Pakistani</option>
+						<option value='Portuguese'>Portuguese</option>
+						<option value='South American'>South American</option>
+						<option value='Spanish'>Spanish</option>
+						<option value='Thai and South-East Asian'>Thai and South-East Asian</option>
+						<option value='Turkish and Middle Eastern'>Turkish and Middle Eastern</option>
+						<option value='Other'>Other</option>
+					</select>
+					<small className='form-text'>Please specify which cusine type this is</small>
+				</div>
+				<div className='form-group'>
+					<input
+						type='nameOfDish'
+						placeholder='Name of Dish'
+						name='nameOfDish'
+						value={nameOfDish}
+						required
+						onChange={(e) => onChange(e)}
+					/>
+				</div>
+				<div className='form-group'>
+					<textarea
+						cols='30'
+						rows='5'
+						placeholder='Description'
+						type='description'
+						name='description'
+						value={description}
+						required
+						onChange={(e) => onChange(e)}
+					/>
+				</div>
+				<div className='form-group'>
+					<textarea
+						cols='30'
+						rows='5'
+						placeholder='Ingredients'
+						type='ingredients'
+						name='ingredients'
+						value={ingredients}
+						required
+						onChange={(e) => onChange(e)}
+					/>
+					<small className='form-text'>
+						Please use comma separated values (eg.Beef, Tomatoes, Coriander, Turmeric)
+					</small>
+				</div>
+				<div className='form-group'>
+					<textarea
+						cols='30'
+						rows='20'
+						placeholder='Method'
+						type='method'
+						name='method'
+						value={method}
+						required
+						onChange={(e) => onChange(e)}
+					/>
+					<small className='form-text'>Please leave a line and numerate each stage of the method (eg)</small>
+					<small className='form-text'>(1) Prepare marinade</small>
+					<small className='form-text'>(2) Let meat marinade for 5 hours</small>
+				</div>
+				<span className='form-group'>
+					<input
+						type='preptime'
+						placeholder='Prep time'
+						name='prepTime'
+						value={prepTime}
+						required
+						onChange={(e) => onChange(e)}
+					/>
+				</span>
+				<span className='form-group'>
+					<input
+						type='cookingtime'
+						placeholder='Cooking time'
+						name='cookingTime'
+						value={cookingTime}
+						required
+						onChange={(e) => onChange(e)}
+					/>
+				</span>
+				<span className='form-group'>
+					<input
+						type='feeds'
+						placeholder='Feeds'
+						name='feeds'
+						value={feeds}
+						required
+						onChange={(e) => onChange(e)}
+					/>
+				</span>
+				<div className='form-group'>
+					<input type='submit' className='btn btn-primary' value='Update' />
+				</div>
+			</form>
 		</Fragment>
 	);
 };
 
 EditPost.propTypes = {
 	getPost: PropTypes.func.isRequired,
+	updatePost: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	auth: PropTypes.object.isRequired
 };
@@ -68,4 +209,4 @@ const mapStateToProps = (state) => ({
 	post: state.post
 });
 
-export default connect(mapStateToProps, { getPost })(withRouter(EditPost));
+export default connect(mapStateToProps, { getPost, updatePost })(withRouter(EditPost));

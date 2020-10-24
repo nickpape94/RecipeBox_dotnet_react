@@ -7,6 +7,8 @@ import {
 	DELETE_POST,
 	POST_SUBMIT_SUCCESS,
 	POST_SUBMIT_FAIL,
+	POST_UPDATE_SUCCESS,
+	POST_UPDATE_FAIL,
 	GET_PAGINATION_HEADERS,
 	GET_PROFILE_PAGINATION_HEADERS
 } from './types';
@@ -145,6 +147,52 @@ export const createPost = (
 
 		dispatch({
 			type: POST_SUBMIT_FAIL
+		});
+	}
+};
+
+// Update post
+export const updatePost = (
+	userId,
+	postId,
+	{ nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine }
+) => async (dispatch) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	const body = JSON.stringify({
+		nameOfDish,
+		description,
+		ingredients,
+		method,
+		prepTime,
+		cookingTime,
+		feeds,
+		cuisine
+	});
+
+	try {
+		const res = await axios.put(`/api/users/${userId}/posts/${postId}`, body, config);
+
+		dispatch({
+			type: POST_UPDATE_SUCCESS,
+			payload: res.data
+		});
+	} catch (err) {
+		const errors = err.response.data.errors;
+
+		if (errors) {
+			Object.keys(errors).forEach((key) => {
+				dispatch(setAlert(errors[key], 'danger', 7000));
+			});
+		}
+
+		dispatch({
+			type: POST_UPDATE_FAIL
 		});
 	}
 };
