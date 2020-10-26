@@ -9,6 +9,7 @@ import Spinner from '../layout/Spinner';
 const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }, match, history }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ isDataChanged, setDataChanged ] = useState(false);
+	const [ isError, setError ] = useState(false);
 
 	const [ formData, setFormData ] = useState({
 		nameOfDish: '',
@@ -39,6 +40,15 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 		[ loading ]
 	);
 
+	useEffect(
+		() => {
+			if (isError) {
+				window.scrollTo(0, 0);
+			}
+		},
+		[ isError ]
+	);
+
 	const { cuisine, nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds } = formData;
 
 	const onChange = (e) => {
@@ -49,7 +59,7 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 	const onSubmit = (e) => {
 		e.preventDefault();
 		setDataChanged(false);
-		updatePost(user.id, match.params.id, setLoadingPage, history, {
+		updatePost(user.id, match.params.id, setLoadingPage, setError, history, {
 			nameOfDish,
 			description,
 			ingredients,
@@ -69,7 +79,7 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 		<Redirect to={`/posts/${match.params.id}`} />
 	) : (
 		<Fragment>
-			<Prompt when={isDataChanged} message='Are you sure you want to leave? Any changes made will be lost.' />;
+			<Prompt when={isDataChanged} message='Are you sure you want to leave? Any changes made will be lost.' />
 			<h1 className='large text-primary'>Edit your recipe</h1>
 			<form className='form' onSubmit={(e) => onSubmit(e)}>
 				<div className='form-group'>

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Prompt } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
@@ -17,6 +17,17 @@ const PostForm = ({ createPost, auth: { user }, history }) => {
 		cuisine: ''
 	});
 
+	const [ isError, setError ] = useState(false);
+
+	useEffect(
+		() => {
+			if (isError) {
+				window.scrollTo(0, 0);
+			}
+		},
+		[ isError ]
+	);
+
 	const { cuisine, nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds } = formData;
 
 	const [ isDataChanged, setDataChanged ] = useState(false);
@@ -32,7 +43,7 @@ const PostForm = ({ createPost, auth: { user }, history }) => {
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		setDataChanged(false);
-		createPost(userId, history, {
+		createPost(userId, history, setError, {
 			nameOfDish,
 			description,
 			ingredients,
@@ -46,7 +57,7 @@ const PostForm = ({ createPost, auth: { user }, history }) => {
 
 	return (
 		<Fragment>
-			<Prompt when={isDataChanged} message='Are you sure you want to leave? All fields will be lost.' />;
+			<Prompt when={isDataChanged} message='Are you sure you want to leave? All fields will be lost.' />
 			<h1 className='large text-primary'>Create a Recipe</h1>
 			<p className='lead'>
 				<i className='fas fa-bacon' /> Share your delicious meals with the community!

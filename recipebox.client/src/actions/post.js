@@ -70,12 +70,12 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 
 		setLoadingPage(false);
 	} catch (err) {
-		console.log(err);
+		// console.log(err);
 
-		// dispatch({
-		// 	type: POST_ERROR,
-		// 	payload: { msg: err.response.statusText, status: err.response.status }
-		// });
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
 	}
 };
 
@@ -93,7 +93,7 @@ export const getPost = (postId, setLoadingPage) => async (dispatch) => {
 
 		setLoadingPage(false);
 	} catch (err) {
-		console.log(err);
+		// console.log(err);
 		dispatch({
 			type: POST_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }
@@ -105,6 +105,7 @@ export const getPost = (postId, setLoadingPage) => async (dispatch) => {
 export const createPost = (
 	userId,
 	history,
+	setError,
 	{ nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine }
 ) => async (dispatch) => {
 	const config = {
@@ -136,7 +137,8 @@ export const createPost = (
 		// history.push(`/add-photos/post/${res.data.postId}`);
 		history.push('post/add-photos');
 	} catch (err) {
-		// console.log(err);
+		setError(true);
+
 		const errors = err.response.data.errors;
 
 		if (errors) {
@@ -156,6 +158,7 @@ export const updatePost = (
 	userId,
 	postId,
 	setLoadingPage,
+	setError,
 	history,
 	{ nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine }
 ) => async (dispatch) => {
@@ -189,6 +192,9 @@ export const updatePost = (
 		setLoadingPage(false);
 		history.push(`/posts/${postId}/edit/photos`);
 	} catch (err) {
+		setLoadingPage(false);
+		setError(true);
+
 		const errors = err.response.data.errors;
 
 		if (errors) {
@@ -233,7 +239,7 @@ export const deletePost = (id, postId, history, userId) => async (dispatch) => {
 
 		history.push('/posts');
 	} catch (err) {
-		console.log(err);
+		// console.log(err);
 
 		dispatch({
 			type: POST_ERROR,
