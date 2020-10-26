@@ -137,9 +137,14 @@ namespace RecipeBox.API.Controllers
             // Map updated post into the repo
             var postToUpdate = _mapper.Map(postForUpdateDto, postFromRepo);
             var postToReturn = _mapper.Map<PostsForDetailedDto>(postToUpdate);
+            var postToReturnIfNoChanges = _mapper.Map<PostsForDetailedDto>(postFromRepo);
 
-            if ( await _recipeRepo.SaveAll())
+            if ( await _recipeRepo.SaveAll()) {
                 return CreatedAtRoute("GetPost", new {userId = userId, id = postFromRepo.PostId}, postToReturn);
+            } else {
+                return Ok(postToReturnIfNoChanges);
+            }
+                
 
             throw new Exception($"Updating post {postId} failed on save");
         }

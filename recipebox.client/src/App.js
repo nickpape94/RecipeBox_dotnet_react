@@ -16,6 +16,7 @@ import UserProfile from './components/user/UserProfile';
 import UserFavourites from './components/user/UserFavourites';
 import UserPosts from './components/user/UserPosts';
 import EditPost from './components/post/EditPost';
+import EditPhotos from './components/post/EditPhotos';
 import PrivateRoute from './components/routing/PrivateRoute';
 
 //Redux
@@ -55,6 +56,7 @@ const App = () => {
 							<Route exact path='/reset-password' component={PasswordReset} />
 							<Route exact path='/submit-post' component={PostForm} />
 							<PrivateRoute exact path='/posts/:id/edit' component={EditPost} />
+							<PrivateRoute exact path='/posts/:id/edit/photos' component={EditPhotos} />
 							<Route exact path='/post/add-photos' component={PhotosToPost} />
 							<Route exact path='/users/:id' component={UserProfile} />
 							<Route exact path='/users/:id/posts' component={UserPosts} />

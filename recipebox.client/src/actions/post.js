@@ -155,6 +155,8 @@ export const createPost = (
 export const updatePost = (
 	userId,
 	postId,
+	setLoadingPage,
+	history,
 	{ nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine }
 ) => async (dispatch) => {
 	const config = {
@@ -176,12 +178,16 @@ export const updatePost = (
 	});
 
 	try {
+		setLoadingPage(true);
 		const res = await axios.put(`/api/users/${userId}/posts/${postId}`, body, config);
 
 		dispatch({
 			type: POST_UPDATE_SUCCESS,
 			payload: res.data
 		});
+
+		setLoadingPage(false);
+		history.push(`/posts/${postId}/edit/photos`);
 	} catch (err) {
 		const errors = err.response.data.errors;
 

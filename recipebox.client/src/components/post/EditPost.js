@@ -6,8 +6,9 @@ import { setAlert } from '../../actions/alert';
 import { getPost, updatePost } from '../../actions/post';
 import Spinner from '../layout/Spinner';
 
-const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }, match }) => {
+const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }, match, history }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
+	const [ isDataChanged, setDataChanged ] = useState(false);
 
 	const [ formData, setFormData ] = useState({
 		nameOfDish: '',
@@ -19,8 +20,6 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 		feeds: '',
 		cuisine: ''
 	});
-
-	console.log(match.params.id);
 
 	useEffect(
 		() => {
@@ -42,11 +41,15 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 
 	const { cuisine, nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds } = formData;
 
-	const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+	const onChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+		setDataChanged(true);
+	};
 
 	const onSubmit = (e) => {
 		e.preventDefault();
-		updatePost(user.id, match.params.id, {
+		setDataChanged(false);
+		updatePost(user.id, match.params.id, setLoadingPage, history, {
 			nameOfDish,
 			description,
 			ingredients,
@@ -58,7 +61,7 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 		});
 	};
 
-	if (loading) {
+	if (loading || loadingPage) {
 		return <Spinner />;
 	}
 
@@ -66,11 +69,8 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 		<Redirect to={`/posts/${match.params.id}`} />
 	) : (
 		<Fragment>
-			{/* <Prompt when={isDataChanged} message='Are you sure you want to leave? All fields will be lost.' />; */}
-			<h1 className='large text-primary'>Edit your post</h1>
-			<p className='lead'>
-				<i className='fas fa-bacon' /> Share your delicious meals with the community!
-			</p>
+			<Prompt when={isDataChanged} message='Are you sure you want to leave? Any changes made will be lost.' />;
+			<h1 className='large text-primary'>Edit your recipe</h1>
 			<form className='form' onSubmit={(e) => onSubmit(e)}>
 				<div className='form-group'>
 					<select
@@ -190,7 +190,7 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 					/>
 				</span>
 				<div className='form-group'>
-					<input type='submit' className='btn btn-primary' value='Update' />
+					<input type='submit' className='btn btn-primary' value='Save and continue' />
 				</div>
 			</form>
 		</Fragment>
