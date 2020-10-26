@@ -20,7 +20,7 @@ export const addRecipePhotos = (postId, history, formData) => async (dispatch) =
 			payload: res.data
 		});
 
-		setTimeout(() => history.push(`/posts/${postId}`), 1000);
+		setTimeout(() => history.push(`/posts/${postId}`), 800);
 	} catch (err) {
 		dispatch({
 			type: RECIPE_PHOTO_UPLOAD_FAIL,
