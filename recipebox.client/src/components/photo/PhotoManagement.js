@@ -12,24 +12,32 @@ import {
 	rejectStyle
 } from '../layout/PhotoUploadStyles';
 
-const PhotoManagement = ({ files, setFiles, deleteRecipePhoto }) => {
-	const removeFile = (file) => () => {
-		const newFiles = [ ...files ];
-		newFiles.splice(newFiles.indexOf(file), 1);
-		setFiles(newFiles);
+const PhotoManagement = ({ currentFiles, setCurrentFiles, newFiles, setNewFiles, deleteRecipePhoto }) => {
+	// const allFiles = [ ...newFiles, ...currentFiles ];
+	// console.log(...allFiles);
+
+	const removeCurrentFile = (file) => () => {
+		const files = [ ...currentFiles ];
+		files.splice(files.indexOf(file), 1);
+		setCurrentFiles(files);
 		deleteRecipePhoto(file.postId, file.postPhotoId);
 		console.log(file);
 	};
 
-	const removeAll = () => {
-		setFiles([]);
+	const removeNewFile = (file) => () => {
+		const files = [ ...newFiles ];
+		files.splice(files.indexOf(file), 1);
+		setNewFiles(files);
 	};
 
-	const [ fileUrl, setFileUrl ] = useState('');
+	const removeAll = () => {
+		setCurrentFiles([]);
+	};
+
 	const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject, acceptedFiles, open } = useDropzone({
 		accept: 'image/*',
 		onDrop: (acceptedFiles) => {
-			setFiles(
+			setCurrentFiles(
 				acceptedFiles.map((file) =>
 					Object.assign(file, {
 						preview: URL.createObjectURL(file)
@@ -39,7 +47,9 @@ const PhotoManagement = ({ files, setFiles, deleteRecipePhoto }) => {
 		}
 	});
 
-	files.length = Math.min(files.length, 6);
+	// Set max number of new files that can be added
+	currentFiles.length = Math.min(currentFiles.length, 6);
+	newFiles.length = 6 - currentFiles.length;
 
 	const style = useMemo(
 		() => ({
@@ -51,11 +61,22 @@ const PhotoManagement = ({ files, setFiles, deleteRecipePhoto }) => {
 		[ isDragActive, isDragReject ]
 	);
 
-	const thumbs = files.map((file) => (
+	const currentPhotoThumbs = currentFiles.map((file) => (
 		<div className='thumb-style' style={thumb} key={file.postPhotoId}>
 			<div style={thumbInner}>
 				<img src={file.url} style={img} />
-				<button onClick={removeFile(file)}>
+				<button onClick={removeCurrentFile(file)}>
+					<i className='fas fa-trash-alt fa-2x' />
+				</button>
+			</div>
+		</div>
+	));
+
+	const newPhotoThumbs = newFiles.map((file) => (
+		<div className='thumb-style' style={thumb} key={file.name}>
+			<div style={thumbInner}>
+				<img src={file.preview} style={img} />
+				<button onClick={removeNewFile(file)}>
 					<i className='fas fa-trash-alt fa-2x' />
 				</button>
 			</div>
@@ -65,9 +86,9 @@ const PhotoManagement = ({ files, setFiles, deleteRecipePhoto }) => {
 	useEffect(
 		() => () => {
 			// Make sure to revoke the data uris to avoid memory leaks
-			files.forEach((file) => URL.revokeObjectURL(file.preview));
+			newFiles.forEach((file) => URL.revokeObjectURL(file.preview));
 		},
-		[ files ]
+		[ newFiles ]
 	);
 
 	return (
@@ -79,10 +100,10 @@ const PhotoManagement = ({ files, setFiles, deleteRecipePhoto }) => {
 					<p>(Maximum of 6 photos)</p>
 					<button className='button my-1 btn btn-primary'>Open Files</button>
 				</div>
-				<aside style={thumbsContainer}>{thumbs}</aside>
-				{files.length > 0 && (
+				<aside style={thumbsContainer}>{[ ...newPhotoThumbs, ...currentPhotoThumbs ]}</aside>
+				{newFiles.length > 0 && (
 					<button className='btn btn-danger' onClick={removeAll}>
-						Remove All
+						Remove All Newly Added Photos
 					</button>
 				)}
 			</section>

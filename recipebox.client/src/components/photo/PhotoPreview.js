@@ -52,7 +52,13 @@ const PhotoPreview = ({ files, setFiles }) => {
 	const thumbs = files.map((file) => (
 		<div className='thumb-style' style={thumb} key={file.name}>
 			<div style={thumbInner}>
-				<img src={file.preview} style={img} />
+				{console.log(files[0].postPhotoId)}
+				{files[0].postPhotoId !== undefined && files[0].postPhotoId !== null ? (
+					<img src={file.url} style={img} />
+				) : (
+					<img src={file.preview} style={img} />
+				)}
+
 				<button onClick={removeFile(file)}>
 					<i className='fas fa-trash-alt fa-2x' />
 				</button>

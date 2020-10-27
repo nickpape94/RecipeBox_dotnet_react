@@ -6,11 +6,20 @@ import { addRecipePhotos, deleteRecipePhoto } from '../../actions/photo';
 import { getPost } from '../../actions/post';
 import Spinner from '../layout/Spinner';
 import PhotoManagement from '../photo/PhotoManagement';
+import PhotoPreview from '../photo/PhotoPreview';
 
-const EditPhotos = ({ getPost, deleteRecipePhoto, post: { post }, match, auth: { user, loading } }) => {
+const EditPhotos = ({
+	getPost,
+	addRecipePhotos,
+	deleteRecipePhoto,
+	post: { post },
+	match,
+	auth: { user, loading },
+	history
+}) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
-	const [ files, setFiles ] = useState([]);
-	// const [ shit, setShit ] = useState('');
+	const [ currentFiles, setCurrentFiles ] = useState([]);
+	const [ newFiles, setNewFiles ] = useState([]);
 
 	useEffect(
 		() => {
@@ -19,7 +28,7 @@ const EditPhotos = ({ getPost, deleteRecipePhoto, post: { post }, match, auth: {
 			}
 
 			if (post !== null) {
-				setFiles(loading || !post.postPhoto ? null : post.postPhoto);
+				setCurrentFiles(loading || !post.postPhoto ? null : post.postPhoto);
 			}
 		},
 		[ getPost, match.params.id, loading, post ]
@@ -33,17 +42,39 @@ const EditPhotos = ({ getPost, deleteRecipePhoto, post: { post }, match, auth: {
 		return <Redirect to='/posts' />;
 	}
 
+	const onSubmit = (e) => {
+		e.preventDefault();
+
+		for (let i = 0; i < newFiles.length; i++) {
+			const formData = new FormData();
+			formData.append('file', newFiles[i]);
+			addRecipePhotos(post.postId, history, formData);
+		}
+	};
+
 	return (
 		<Fragment>
 			<div className='text-center lead m-1'>
 				<i className='fas fa-upload fa-2x text-primary' /> <h3>Manage photos </h3>
 				{/* <small>(Please select the files in the order you would like them to be displayed)</small> */}
 			</div>
-			{files &&
-			!loading && <PhotoManagement files={files} setFiles={setFiles} deleteRecipePhoto={deleteRecipePhoto} />}
+			{currentFiles &&
+			!loading && (
+				<PhotoPreview files={currentFiles} setFiles={setCurrentFiles} deleteRecipePhoto={deleteRecipePhoto} />
+			)}
+			{newFiles &&
+			!loading && (
+				<PhotoManagement
+					currentFiles={currentFiles}
+					setCurrentFiles={setCurrentFiles}
+					newFiles={newFiles}
+					setNewFiles={setNewFiles}
+					deleteRecipePhoto={deleteRecipePhoto}
+				/>
+			)}
 			<form className='container'>
 				<div className='my-1 text-center'>
-					{files && files.length === 0 ? (
+					{currentFiles && currentFiles.length === 0 ? (
 						<input type='submit' className='upload_photo btn-success' value='Upload' disabled />
 					) : (
 						<input type='submit' className='upload_photo btn-success' value='Upload' />
@@ -69,4 +100,4 @@ const mapStateToProps = (state) => ({
 	post: state.post
 });
 
-export default connect(mapStateToProps, { getPost, deleteRecipePhoto })(withRouter(EditPhotos));
+export default connect(mapStateToProps, { getPost, deleteRecipePhoto, addRecipePhotos })(withRouter(EditPhotos));
