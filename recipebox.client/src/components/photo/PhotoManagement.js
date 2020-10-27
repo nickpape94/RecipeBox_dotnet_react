@@ -12,11 +12,13 @@ import {
 	rejectStyle
 } from '../layout/PhotoUploadStyles';
 
-const PhotoManagement = ({ files, setFiles }) => {
+const PhotoManagement = ({ files, setFiles, deleteRecipePhoto }) => {
 	const removeFile = (file) => () => {
 		const newFiles = [ ...files ];
 		newFiles.splice(newFiles.indexOf(file), 1);
 		setFiles(newFiles);
+		deleteRecipePhoto(file.postId, file.postPhotoId);
+		console.log(file);
 	};
 
 	const removeAll = () => {
@@ -38,8 +40,6 @@ const PhotoManagement = ({ files, setFiles }) => {
 	});
 
 	files.length = Math.min(files.length, 6);
-
-	console.log(files.length);
 
 	const style = useMemo(
 		() => ({

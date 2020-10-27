@@ -6,7 +6,9 @@ import {
 	POST_SUBMIT_SUCCESS,
 	POST_SUBMIT_FAIL,
 	POST_UPDATE_SUCCESS,
-	POST_UPDATE_FAIL
+	POST_UPDATE_FAIL,
+	RECIPE_PHOTO_DELETED,
+	RECIPE_PHOTO_DELETION_ERROR
 } from '../actions/types';
 
 const initialState = {
@@ -48,9 +50,19 @@ export default function(state = initialState, action) {
 				posts: state.posts.filter((post) => post.postId !== payload),
 				loading: false
 			};
+		case RECIPE_PHOTO_DELETED:
+			return {
+				...state,
+				post: {
+					...state.post,
+					postPhoto: state.post.postPhoto.filter((photo) => photo.postPhotoId !== payload)
+				},
+				loading: false
+			};
 		case POST_SUBMIT_FAIL:
 		case POST_UPDATE_FAIL:
 		case POST_ERROR:
+		case RECIPE_PHOTO_DELETION_ERROR:
 			return {
 				...state,
 				error: payload,
