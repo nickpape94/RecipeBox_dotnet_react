@@ -12,6 +12,9 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 				<Link to='/posts'>Browse Recipes</Link>
 			</li>
 			<li>
+				<Link to='/cuisines'>Cuisines</Link>
+			</li>
+			<li>
 				<a
 					onClick={() => {
 						logout();
@@ -27,6 +30,9 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 
 	const guestLinks = (
 		<ul>
+			<li>
+				<Link to='/cuisines'>Cuisines</Link>
+			</li>
 			<li>
 				<Link to='/posts'>Browse Recipes</Link>
 			</li>
