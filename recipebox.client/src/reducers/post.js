@@ -1,6 +1,7 @@
 import {
 	GET_POSTS,
 	GET_POST,
+	GET_CUISINE,
 	DELETE_POST,
 	POST_ERROR,
 	POST_SUBMIT_SUCCESS,
@@ -24,6 +25,7 @@ export default function(state = initialState, action) {
 
 	switch (type) {
 		case GET_POSTS:
+		case GET_CUISINE:
 			return {
 				...state,
 				posts: payload,

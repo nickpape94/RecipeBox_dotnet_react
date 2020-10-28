@@ -4,6 +4,7 @@ import {
 	GET_POSTS,
 	POST_ERROR,
 	GET_POST,
+	GET_CUISINE,
 	DELETE_POST,
 	POST_SUBMIT_SUCCESS,
 	POST_SUBMIT_FAIL,
@@ -72,6 +73,24 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 	} catch (err) {
 		// console.log(err);
 
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+// Get posts by cuisine
+export const getPostsByCuisine = (match) => async (dispatch) => {
+	try {
+		console.log(match.params.cuisine);
+		const res = await axios.get(`/api/cuisine/${match.params.cuisine}`);
+
+		dispatch({
+			type: GET_CUISINE,
+			payload: res.data
+		});
+	} catch (err) {
 		dispatch({
 			type: POST_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }

@@ -10,6 +10,7 @@ import EmailConfirmed from './components/email/EmailConfirmed';
 import Post from './components/post/Post';
 import Posts from './components/posts/Posts';
 import Cuisines from './components/posts/Cuisines';
+import Cuisine from './components/post/Cuisine';
 import PostForm from './components/post/PostForm';
 import PhotosToPost from './components/post/PhotosToPost';
 import Alert from './components/layout/Alert';
@@ -52,6 +53,7 @@ const App = () => {
 							<Route exact path='/login' component={Login} />
 							<Route exact path='/posts' component={Posts} />
 							<Route exact path='/cuisines' component={Cuisines} />
+							<Route exact path='/cuisines/:cuisine' component={Cuisine} />
 							<Route exact path='/posts/:id' component={Post} />
 							<Route exact path='/password-reset' component={ForgotPassword} />
 							<Route exact path='/email-confirmed' component={EmailConfirmed} />
