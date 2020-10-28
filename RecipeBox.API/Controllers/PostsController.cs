@@ -48,6 +48,27 @@ namespace RecipeBox.API.Controllers
 
             return Ok(postsFromRepo);
         }
+
+        // Get posts by cuisine
+        [AllowAnonymous]
+        [HttpGet("~/api/cuisine/{cuisine}")]
+        public async Task<IActionResult> GetPostsByCuisine([FromQuery]PageParams pageParams, string cuisine)
+        {
+            var posts = await _recipeRepo.GetPostsByCuisine(pageParams, cuisine);
+
+            foreach(var post in posts)
+            {
+                var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
+                if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
+
+            }
+
+            var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
+
+            Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
+
+            return Ok(postsFromRepo);
+        }
         
         // Get posts by user id
         // [AllowAnonymous]

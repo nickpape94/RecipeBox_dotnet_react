@@ -123,6 +123,15 @@ namespace RecipeBox.API.Data
             return await PagedList<Post>.CreateAsync(filteredPosts, pageParams.PageNumber, pageParams.PageSize);
         }
 
+        public async Task<PagedList<Post>> GetPostsByCuisine(PageParams pageParams, string cuisine)
+        {
+            var posts = _context.Posts.Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
+
+            var filteredPosts = posts.Where(x => x.Cuisine.ToLower() == cuisine.ToLower());
+
+            return await PagedList<Post>.CreateAsync(filteredPosts, pageParams.PageNumber, pageParams.PageSize);
+        }
+
         public async Task<PagedList<Post>> SearchPostsByUser(PageParams pageParams, int userId)
         {
             var posts = _context.Posts.Where(x => x.UserId == userId).Include(c => c.Comments).Include(r => r.Ratings).Include(p => p.PostPhoto).OrderByDescending(x => x.Created);
