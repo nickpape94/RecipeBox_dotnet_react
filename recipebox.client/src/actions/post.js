@@ -71,7 +71,7 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 
 		setLoadingPage(false);
 	} catch (err) {
-		// console.log(err);
+		console.log(err);
 
 		dispatch({
 			type: POST_ERROR,
@@ -81,22 +81,22 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 };
 
 // Get posts by cuisine
-export const getPostsByCuisine = (match) => async (dispatch) => {
-	try {
-		console.log(match.params.cuisine);
-		const res = await axios.get(`/api/cuisine/${match.params.cuisine}`);
+// export const getPostsByCuisine = (cuisine) => async (dispatch) => {
+// 	try {
+// 		console.log(cuisine);
+// 		const res = await axios.get(`/api/cuisine/${cuisine}`);
 
-		dispatch({
-			type: GET_CUISINE,
-			payload: res.data
-		});
-	} catch (err) {
-		dispatch({
-			type: POST_ERROR,
-			payload: { msg: err.response.statusText, status: err.response.status }
-		});
-	}
-};
+// 		dispatch({
+// 			type: GET_CUISINE,
+// 			payload: res.data
+// 		});
+// 	} catch (err) {
+// 		dispatch({
+// 			type: POST_ERROR,
+// 			payload: { msg: err.response.statusText, status: err.response.status }
+// 		});
+// 	}
+// };
 
 // Get a post
 export const getPost = (postId, setLoadingPage) => async (dispatch) => {

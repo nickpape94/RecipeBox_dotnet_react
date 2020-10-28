@@ -40,121 +40,121 @@ const Cuisines = (props) => (
 			<div className='cuisine'>
 				<Link to={`/cuisines/african`}>
 					<h1>African</h1>
-					<img src={african} alt='african' className='cuisine__image' />
+					<LazyLoadImage src={african} alt='african' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/american`}>
 					<h1>American</h1>
-					<img src={american} alt='american' className='cuisine__image' />
+					<LazyLoadImage src={american} alt='american' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/british`}>
 					<h1>British</h1>
-					<img src={british} alt='british' className='cuisine__image' />
+					<LazyLoadImage src={british} alt='british' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/caribbean`}>
 					<h1>Caribbean</h1>
-					<img src={caribbean} alt='caribbean' className='cuisine__image' />
+					<LazyLoadImage src={caribbean} alt='caribbean' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/chinese`}>
 					<h1>Chinese</h1>
-					<img src={chinese} alt='chinese' className='cuisine__image' />
+					<LazyLoadImage src={chinese} alt='chinese' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/east%20european`}>
 					<h1>Eastern European</h1>
-					<img src={easteuropean} alt='easteuropean' className='cuisine__image' />
+					<LazyLoadImage src={easteuropean} alt='easteuropean' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/french`}>
 					<h1>French</h1>
-					<img src={french} alt='french' className='cuisine__image' />
+					<LazyLoadImage src={french} alt='french' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/greek`}>
 					<h1>Greek</h1>
-					<img src={greek} alt='greek' className='cuisine__image' />
+					<LazyLoadImage src={greek} alt='greek' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/indian`}>
 					<h1>Indian</h1>
-					<img src={indian} alt='indian' className='cuisine__image' />
+					<LazyLoadImage src={indian} alt='indian' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/italian`}>
 					<h1>Italian</h1>
-					<img src={italian} alt='italian' className='cuisine__image' />
+					<LazyLoadImage src={italian} alt='italian' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/japanese`}>
 					<h1>Japanese</h1>
-					<img src={japanese} alt='japanese' className='cuisine__image' />
+					<LazyLoadImage src={japanese} alt='japanese' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/korean`}>
 					<h1>Korean</h1>
-					<img src={korean} alt='korean' className='cuisine__image' />
+					<LazyLoadImage src={korean} alt='korean' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/mexican`}>
 					<h1>Mexican</h1>
-					<img src={mexican} alt='mexican' className='cuisine__image' />
+					<LazyLoadImage src={mexican} alt='mexican' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/middle%20eastern`}>
 					<h1>Middle Eastern</h1>
-					<img src={middleeastern} alt='middleeastern' className='cuisine__image' />
+					<LazyLoadImage src={middleeastern} alt='middleeastern' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/pakistani`}>
 					<h1>Pakistani</h1>
-					<img src={pakistani} alt='pakistani' className='cuisine__image' />
+					<LazyLoadImage src={pakistani} alt='pakistani' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/portuguese`}>
 					<h1>Portuguese</h1>
-					<img src={portuguese} alt='portuguese' className='cuisine__image' />
+					<LazyLoadImage src={portuguese} alt='portuguese' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/south%20american`}>
 					<h1>South American</h1>
-					<img src={southamerican} alt='southamerican' className='cuisine__image' />
+					<LazyLoadImage src={southamerican} alt='southamerican' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/spanish`}>
 					<h1>Spanish</h1>
-					<img src={spanish} alt='spanish' className='cuisine__image' />
+					<LazyLoadImage src={spanish} alt='spanish' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/`}>
 					<h1>Thai and South-East Asia</h1>
-					<img src={thai} alt='thai' className='cuisine__image' />
+					<LazyLoadImage src={thai} alt='thai' className='cuisine__image' />
 				</Link>
 			</div>
 			<div className='cuisine'>
 				<Link to={`/cuisines/turkish`}>
 					<h1>Turkish</h1>
-					<img src={turkish} alt='turkish' className='cuisine__image' />
+					<LazyLoadImage src={turkish} alt='turkish' className='cuisine__image' />
 				</Link>
 			</div>
 		</div>
