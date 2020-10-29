@@ -165,9 +165,7 @@ namespace RecipeBox.API.Controllers
             } else {
                 return Ok(postToReturnIfNoChanges);
             }
-                
 
-            throw new Exception($"Updating post {postId} failed on save");
         }
 
         // Delete a post
@@ -294,11 +292,8 @@ namespace RecipeBox.API.Controllers
             
             if (await _recipeRepo.SaveAll())
             {
-                
-
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
 
-                // postToReturn.AverageRating = average;
                 return CreatedAtRoute("GetPost", new {userId = userId, id = rating.RatingId}, postToReturn);
 
             }
@@ -306,28 +301,6 @@ namespace RecipeBox.API.Controllers
             return BadRequest("Failed to add a rating to post");
 
         }
-
-        // Get average rating
-        // [AllowAnonymous]
-        // [HttpGet("~/api/posts/{postId}/ratings")]
-        // public async Task<double> GetAverageRating(int postId)
-        // {
-        //     var ratingsForPost = await _repo.GetRatings(postId);
-
-        //     double sum = 0;
-        //     double numberOfRatings = ratingsForPost.Count();
-            
-        //     foreach (var rating in ratingsForPost)
-        //     {
-        //         sum += rating.Score;
-        //     }
-
-        //     if (numberOfRatings == 0) return 0.0;
-            
-        //     var averageRating = sum / numberOfRatings;
-
-        //     return Math.Round(averageRating, 2);
-        // }
     
     }
 }

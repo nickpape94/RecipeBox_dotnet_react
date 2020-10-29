@@ -10,7 +10,6 @@ namespace RecipeBox.API.Data
     {
         void Add<T>(T entity) where T: class;
         void Delete<T>(T entity) where T: class;
-        void Update<T>(T entity) where T: class;
         Task<bool> SaveAll();
         Task<PagedList<User>> GetUsers(PageParams pageParams);
         Task<User> GetUser(int id);
