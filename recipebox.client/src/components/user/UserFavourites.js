@@ -16,7 +16,9 @@ const UserFavourites = ({
 	match,
 	profilePagination
 }) => {
-	const [ pageNumber, setPageNumber ] = useState(1);
+	const [ pageNumber, setPageNumber ] = useState(
+		profilePagination.currentPage !== null ? profilePagination.currentPage : 1
+	);
 	const [ userLoading, setUserLoading ] = useState(false);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ sortData, setSortData ] = useState({
@@ -49,6 +51,8 @@ const UserFavourites = ({
 	if (loadingPage || userLoading) {
 		return <Spinner />;
 	}
+
+	// console.log(location.pathname.split('/')[3]);
 
 	return (
 		<Fragment>
@@ -102,6 +106,7 @@ const UserFavourites = ({
 								<PostItem
 									key={post.postId}
 									post={post}
+									favouritesFromProfile={true}
 									// postPhoto={post.postPhoto.filter((photo) => photo.isMain == true)}
 								/>
 							))

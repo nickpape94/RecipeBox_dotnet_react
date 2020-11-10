@@ -49,7 +49,7 @@ const Post = ({
 		return <Spinner />;
 	}
 
-	// console.log(location.state.postsFromProfile);
+	// console.log(location.state);
 	// console.log(id);
 	// console.log(username);
 
@@ -68,6 +68,11 @@ const Post = ({
 				{userInStore && location.state.postsFromProfile ? (
 					<Link to={`/users/${userInStore.id}/posts`} className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To {userInStore.username.split(' ')[0]}'s Posts
+					</Link>
+				) : userInStore && location.state.favouritesFromProfile ? (
+					<Link to={`/users/${userInStore.id}/favourites`} className='btn'>
+						<i className='fas fa-arrow-circle-left' /> Back To {userInStore.username.split(' ')[0]}'s
+						Favourites
 					</Link>
 				) : (
 					<Link to='/posts' className='btn'>

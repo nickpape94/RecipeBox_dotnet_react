@@ -9,7 +9,9 @@ import { Link } from 'react-router-dom';
 import PageNavigation from '../posts/PageNavigation';
 
 const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }, match, profilePagination }) => {
-	const [ pageNumber, setPageNumber ] = useState(1);
+	const [ pageNumber, setPageNumber ] = useState(
+		profilePagination.currentPage !== null ? profilePagination.currentPage : 1
+	);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ userLoading, setUserLoading ] = useState(false);
 	const [ sortData, setSortData ] = useState({

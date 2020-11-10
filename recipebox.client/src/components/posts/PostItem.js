@@ -26,13 +26,17 @@ const PostItem = ({
 		feeds,
 		userId
 	},
-	postsFromProfile = false
+	postsFromProfile = false,
+	favouritesFromProfile = false
 }) => (
 	<div className='card'>
 		<Link
 			to={{
 				pathname: `/posts/${postId}`,
-				state: { postsFromProfile: postsFromProfile }
+				state: {
+					postsFromProfile: postsFromProfile,
+					favouritesFromProfile: favouritesFromProfile
+				}
 			}}
 		>
 			<img
