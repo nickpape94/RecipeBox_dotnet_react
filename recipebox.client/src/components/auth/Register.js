@@ -43,8 +43,7 @@ const Register = ({ setAlert, register, isAuthenticated, history }) => {
 		if (password !== password2) {
 			submitting(false);
 			setAlert('Passwords do not match', 'danger');
-		}
-		if (username.length < 4 || username.length > 20) {
+		} else if (username.length < 4 || username.length > 20) {
 			submitting(false);
 			setAlert('User name must be between 4 and 20 characters long', 'danger');
 		} else {

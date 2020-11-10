@@ -1,22 +1,21 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { getPostsByCuisine, getPosts } from '../../actions/post';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Spinner from '../layout/Spinner';
 import PostItem from '../posts/PostItem';
 import PageNavigation from '../posts/PageNavigation';
 
-const Cuisine = ({ getPosts, pagination, post: { posts, loading }, match }) => {
+const Cuisine = ({ getPosts, pagination, post: { posts, loading }, match, history }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ pageNumber, setPageNumber ] = useState(1);
-	console.log(pageNumber);
 
 	useEffect(
 		() => {
 			const searchParams = match.params.cuisine;
 			const orderBy = '';
 			const userId = '';
-			console.log(searchParams);
 			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 		},
 		[ getPosts, pageNumber, match.params.cuisine ]
@@ -26,8 +25,14 @@ const Cuisine = ({ getPosts, pagination, post: { posts, loading }, match }) => {
 		return <Spinner />;
 	}
 
+	// console.log(history.location.pathname);
+
 	return (
 		<Fragment>
+			<Link to={'/cuisines'} className='btn'>
+				<i className='fas fa-arrow-circle-left' /> Back To Cuisines
+			</Link>
+
 			<h1>{match.params.cuisine}</h1>
 
 			<PageNavigation pagination={pagination} pageNumber={pageNumber} setPageNumber={setPageNumber} />

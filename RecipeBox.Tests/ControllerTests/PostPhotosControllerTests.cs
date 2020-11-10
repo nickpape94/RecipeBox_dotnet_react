@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -291,6 +292,90 @@ namespace RecipeBox.Tests.ControllerTests
             // Assert
             var okResult = Assert.IsType<UnauthorizedResult>(result);
 
+        }
+
+        [Fact]
+        public void Delete_Post_And_All_Associated_Cloudinary_Images_Unauthorized_User_Claims()
+        {
+            int userId = 1;
+            int postId = 1;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+
+            var result = _photosController.DeletePost(userId, postId).Result;
+
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
+        }
+       
+        [Fact]
+        public void Delete_Post_And_All_Associated_Cloudinary_Images_Authorized()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 2;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+
+            foreach(var photo in postFromRepo.PostPhoto) 
+            {
+                _repoMock.Setup(x => x.GetPostPhoto(photo.PostPhotoId)).ReturnsAsync(GetFakePostPhotoList().SingleOrDefault(x => x.PostPhotoId == photo.PostPhotoId));
+            }
+
+            _repoMock.Setup(x => x.Delete(postFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _photosController.DeletePost(userId, postId).Result;
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Successfully deleted post", okResult.Value);
+        }
+        
+        [Fact]
+        public async void Delete_Post_And_All_Associated_Cloudinary_Images_FailsOnSave()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 2;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+
+            foreach(var photo in postFromRepo.PostPhoto) 
+            {
+                _repoMock.Setup(x => x.GetPostPhoto(photo.PostPhotoId)).ReturnsAsync(GetFakePostPhotoList().SingleOrDefault(x => x.PostPhotoId == photo.PostPhotoId));
+            }
+
+            _repoMock.Setup(x => x.Delete(postFromRepo));
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+
+            // Act
+            Exception result = await Assert.ThrowsAsync<Exception>(() => _photosController.DeletePost(userId, postId));
+
+            // Assert
+            
+            Assert.Equal($"Deleting post {postId} failed on save", result.Message);
+        }
+        
+        [Fact]
+        public  void Delete_Post_And_All_Associated_Cloudinary_Images_Unauthorized_User()
+        {
+            // Arrange
+            int userId = 2;
+            int postId = 1;
+            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+            var postFromRepo = GetFakePostList().SingleOrDefault(x => x.PostId == postId);
+
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
+
+            // Act
+            var result = _photosController.DeletePost(userId, postId).Result;
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
         }
 
         private ICollection<Post> GetFakePostList()

@@ -143,7 +143,7 @@ namespace RecipeBox.API.Services
 
             message.Subject = subject;
 
-            message.Body = new TextPart("plain"){
+            message.Body = new TextPart("html"){
                 Text = content
             };
 

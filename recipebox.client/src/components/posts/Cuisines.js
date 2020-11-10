@@ -24,7 +24,7 @@ import spanish from '../../img/cuisines/spanish.jpg';
 import thai from '../../img/cuisines/thai.jpg';
 import turkish from '../../img/cuisines/turkish.jpg';
 
-const Cuisines = (props) => (
+const Cuisines = () => (
 	// const [ picsLoading, picsLoaded ] = useState(false);
 
 	// useEffect(() => {

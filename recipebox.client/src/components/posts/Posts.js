@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getPosts } from '../../actions/post';
@@ -7,7 +7,7 @@ import Spinner from '../layout/Spinner';
 import PostItem from './PostItem';
 import PageNavigation from './PageNavigation';
 
-const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
+const Posts = ({ getPosts, post: { posts, loading }, auth, pagination, location }) => {
 	const [ pageNumber, setPageNumber ] = useState(pagination.currentPage !== null ? pagination.currentPage : 1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ searched, setSearch ] = useState(false);
@@ -19,6 +19,9 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 	});
 
 	const { searchParams, orderBy, userId } = sortData;
+	// const referrer = document.referrer;
+
+	console.log(location.pathname);
 
 	useEffect(
 		() => {
@@ -47,6 +50,8 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination }) => {
 		setSearchQuery(searchParams);
 		getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 	};
+
+	// console.log(history.location);
 
 	return loading ? (
 		<Spinner />

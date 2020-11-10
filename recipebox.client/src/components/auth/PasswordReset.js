@@ -56,7 +56,7 @@ const PasswordReset = ({ setAlert, resetPassword, isAuthenticated }) => {
 						onChange={(e) => onChange(e)}
 					/>
 				</div>
-				<input type='submit' className='btn btn-primary' value='Register' />
+				<input type='submit' className='btn btn-primary' value='Submit' />
 			</form>
 		</Fragment>
 	);
