@@ -10,7 +10,6 @@ import { getPost } from '../../actions/post';
 // console.log(mainPhoto);
 
 const PostItem = ({
-	auth,
 	post: {
 		postId,
 		nameOfDish,
@@ -26,10 +25,16 @@ const PostItem = ({
 		ratings,
 		feeds,
 		userId
-	}
+	},
+	postsFromProfile = false
 }) => (
 	<div className='card'>
-		<Link to={`/posts/${postId}`}>
+		<Link
+			to={{
+				pathname: `/posts/${postId}`,
+				state: { postsFromProfile: postsFromProfile }
+			}}
+		>
 			<img
 				src={
 					mainPhoto ? (

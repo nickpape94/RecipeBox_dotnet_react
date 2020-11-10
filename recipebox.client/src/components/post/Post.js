@@ -18,9 +18,11 @@ const Post = ({
 	history,
 	favourite: { favourite, favouritesLoading },
 	post: { post, loading },
-	auth: { user },
+	auth: { user: authUser },
 	// user: { user: { id, username } },
-	match
+	user: { user: userInStore },
+	match,
+	location
 }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ requestComments, loadComments ] = useState(false);
@@ -36,16 +38,23 @@ const Post = ({
 
 	useEffect(
 		() => {
-			if (user !== null) {
-				getFavourite(user.id, match.params.id, setFavourited);
+			if (authUser !== null) {
+				getFavourite(authUser.id, match.params.id, setFavourited);
 			}
 		},
-		[ getFavourite, user, match.params.id ]
+		[ getFavourite, authUser, match.params.id ]
 	);
 
-	if (loadingPage || (user !== null && favouritesLoading)) {
+	if (loadingPage || (authUser !== null && favouritesLoading)) {
 		return <Spinner />;
 	}
+
+	// console.log(location.state.postsFromProfile);
+	// console.log(id);
+	// console.log(username);
+
+	// console.log(authUser);
+	// console.log(userInStore.username);
 
 	return post === null ? (
 		<Spinner />
@@ -56,27 +65,33 @@ const Post = ({
 					<Link to={`/users/${id}/posts`} className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To {username.split(' ')[0]}'s Posts
 					</Link> */}
-				<Link to='/posts' className='btn'>
-					<i className='fas fa-arrow-circle-left' /> Back To Posts
-				</Link>
+				{userInStore && location.state.postsFromProfile ? (
+					<Link to={`/users/${userInStore.id}/posts`} className='btn'>
+						<i className='fas fa-arrow-circle-left' /> Back To {userInStore.username.split(' ')[0]}'s Posts
+					</Link>
+				) : (
+					<Link to='/posts' className='btn'>
+						<i className='fas fa-arrow-circle-left' /> Back To Posts
+					</Link>
+				)}
 
 				{/* Managing state & functionality of the favourite button */}
 				<div className='favourites'>
-					{!isFavourited && user && user.id !== post.userId ? (
+					{!isFavourited && authUser && authUser.id !== post.userId ? (
 						<button
 							onClick={() => {
-								addToFavourites(user.id, post.postId, setFavourited);
+								addToFavourites(authUser.id, post.postId, setFavourited);
 								// setFavourited(true);
 							}}
 						>
 							<i className='far fa-heart fa-2x text-red' /> <p>Add to favourites</p>
 						</button>
-					) : user === null ? (
+					) : authUser === null ? (
 						<button
 							onClick={() => {
 								history.push('/login');
 								// console.log(history);
-								// addToFavourites(user.id, post.postId);
+								// addToFavourites(authUser.id, post.postId);
 								// toggleFavouriteStatus(false);
 							}}
 						>
@@ -86,7 +101,7 @@ const Post = ({
 						isFavourited && (
 							<button
 								onClick={() => {
-									deleteFavourite(user.id, post.postId, setFavourited);
+									deleteFavourite(authUser.id, post.postId, setFavourited);
 								}}
 							>
 								<i className='fas fa-heart fa-2x text-red' /> <p>Remove from favourites</p>
@@ -97,13 +112,13 @@ const Post = ({
 
 				{/* Handling confirmation of post deletion */}
 				<div className='favourites'>
-					{user &&
-					user.id === post.userId &&
+					{authUser &&
+					authUser.id === post.userId &&
 					!confirmDeletion && (
 						<button
 							onClick={(e) => {
 								setConfirmDeletion(true);
-								// deletePost(user.id, post.postId, history);
+								// deletePost(authUser.id, post.postId, history);
 							}}
 						>
 							Delete post
@@ -112,15 +127,15 @@ const Post = ({
 				</div>
 
 				<div className='favourites'>
-					{user &&
-					user.id === post.userId &&
+					{authUser &&
+					authUser.id === post.userId &&
 					confirmDeletion && (
 						<div>
 							Are you sure you want to delete this post?
 							<span>
 								<button
 									onClick={() => {
-										deletePost(user.id, post.postId, history);
+										deletePost(authUser.id, post.postId, history);
 									}}
 								>
 									Yes
@@ -133,7 +148,8 @@ const Post = ({
 
 				{/* Handling edit portion if authenticated */}
 				<div className='favourites'>
-					{user && user.id === post.userId && <Link to={`/posts/${post.postId}/edit`}>Edit Post</Link>}
+					{authUser &&
+					authUser.id === post.userId && <Link to={`/posts/${post.postId}/edit`}>Edit Post</Link>}
 				</div>
 			</div>
 			<div className='post-grid my-1'>
@@ -190,7 +206,7 @@ const Post = ({
 									{post.userPhotoUrl ? (
 										<img className='icon-b' src={post.userPhotoUrl} />
 									) : (
-										<i className='far fa-user-circle fa-3x ' />
+										<i className='far fa-authUser-circle fa-3x ' />
 									)}
 									<h2>{post.author}</h2>
 								</div>
@@ -224,15 +240,15 @@ Post.propTypes = {
 	deletePost: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	auth: PropTypes.object.isRequired,
-	favourite: PropTypes.object.isRequired
-	// user: PropTypes.object.isRequired
+	favourite: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	post: state.post,
 	auth: state.auth,
-	favourite: state.favourite
-	// user: state.user
+	favourite: state.favourite,
+	user: state.user
 });
 
 export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, deletePost, getFavourite })(Post);

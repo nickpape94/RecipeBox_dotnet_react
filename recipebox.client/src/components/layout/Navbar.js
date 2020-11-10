@@ -9,7 +9,14 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 	const authLinks = (
 		<ul>
 			<li>
-				<Link to='/posts'>Browse Recipes</Link>
+				<Link
+					to={{
+						pathname: '/posts',
+						state: { fromNav: true }
+					}}
+				>
+					Browse Recipes
+				</Link>
 			</li>
 			<li>
 				<Link to='/cuisines'>Cuisines</Link>
@@ -34,7 +41,14 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 				<Link to='/cuisines'>Cuisines</Link>
 			</li>
 			<li>
-				<Link to='/posts'>Browse Recipes</Link>
+				<Link
+					to={{
+						pathname: '/posts',
+						state: { fromNav: true }
+					}}
+				>
+					Browse Recipes
+				</Link>
 			</li>
 			<li>
 				<Link to='/register'>Register</Link>

@@ -94,6 +94,7 @@ const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }
 								<PostItem
 									key={post.postId}
 									post={post}
+									postsFromProfile={true}
 									// postPhoto={post.postPhoto.filter((photo) => photo.isMain == true)}
 								/>
 							))

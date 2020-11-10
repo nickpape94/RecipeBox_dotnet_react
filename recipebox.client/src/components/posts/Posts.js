@@ -8,7 +8,12 @@ import PostItem from './PostItem';
 import PageNavigation from './PageNavigation';
 
 const Posts = ({ getPosts, post: { posts, loading }, auth, pagination, location }) => {
-	const [ pageNumber, setPageNumber ] = useState(pagination.currentPage !== null ? pagination.currentPage : 1);
+	// const [ pageNumber, setPageNumber ] = useState(pagination.currentPage !== null ? pagination.currentPage : 1);
+	const [ pageNumber, setPageNumber ] = useState(
+		pagination.currentPage === null || (location.state !== undefined && location.state.fromNav)
+			? 1
+			: pagination.currentPage
+	);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ searched, setSearch ] = useState(false);
 	const [ searchQuery, setSearchQuery ] = useState('');
@@ -19,9 +24,6 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination, location 
 	});
 
 	const { searchParams, orderBy, userId } = sortData;
-	// const referrer = document.referrer;
-
-	console.log(location.pathname);
 
 	useEffect(
 		() => {
