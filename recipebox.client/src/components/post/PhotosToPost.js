@@ -60,7 +60,17 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 					)}
 				</div>
 				<div className='lnk m-1 text-center a:hover'>
-					<Link to={`/posts/${post.postId}`}>Continue without uploading any photos</Link>
+					<Link
+						to={{
+							pathname: `/posts/${post.postId}`,
+							state: {
+								favouritesFromProfile: false,
+								postsFromProfile: false
+							}
+						}}
+					>
+						Continue without uploading any photos
+					</Link>
 				</div>
 			</form>
 		</Fragment>

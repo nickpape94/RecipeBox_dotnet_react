@@ -16,7 +16,9 @@ const initialState = {
 	posts: [],
 	post: null,
 	loading: true,
-	error: {}
+	error: {},
+	storeSearchParams: '',
+	storeOrderBy: ''
 	// postSubmitted: false
 };
 
@@ -28,7 +30,9 @@ export default function(state = initialState, action) {
 		case GET_CUISINE:
 			return {
 				...state,
-				posts: payload,
+				posts: payload.postsToReturn,
+				storeSearchParams: payload.searchParams,
+				storeOrderBy: payload.orderBy,
 				loading: false
 			};
 		case GET_POST:

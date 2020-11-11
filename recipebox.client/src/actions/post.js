@@ -52,7 +52,11 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 
 		dispatch({
 			type: GET_POSTS,
-			payload: sortData
+			payload: {
+				postsToReturn: sortData,
+				searchParams: searchParams,
+				orderBy: orderBy
+			}
 		});
 
 		if (userId === '') {

@@ -7,8 +7,7 @@ import Spinner from '../layout/Spinner';
 import PostItem from './PostItem';
 import PageNavigation from './PageNavigation';
 
-const Posts = ({ getPosts, post: { posts, loading }, auth, pagination, location }) => {
-	// const [ pageNumber, setPageNumber ] = useState(pagination.currentPage !== null ? pagination.currentPage : 1);
+const Posts = ({ getPosts, post: { posts, loading, storeSearchParams, storeOrderBy }, auth, pagination, location }) => {
 	const [ pageNumber, setPageNumber ] = useState(
 		pagination.currentPage === null || (location.state !== undefined && location.state.fromNav)
 			? 1
@@ -16,10 +15,10 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination, location 
 	);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ searched, setSearch ] = useState(false);
-	const [ searchQuery, setSearchQuery ] = useState('');
+	const [ searchQuery, setSearchQuery ] = useState(storeSearchParams);
 	const [ sortData, setSortData ] = useState({
-		searchParams: '',
-		orderBy: '',
+		searchParams: storeSearchParams,
+		orderBy: storeOrderBy,
 		userId: ''
 	});
 
@@ -27,9 +26,24 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination, location 
 
 	useEffect(
 		() => {
+			setSortData({
+				searchParams: storeSearchParams,
+				orderBy: storeOrderBy,
+				userId: ''
+			});
+
+			if (orderBy.length !== 0) {
+				setPageNumber(1);
+			}
+		},
+		[ storeSearchParams, storeOrderBy ]
+	);
+
+	useEffect(
+		() => {
 			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 		},
-		[ getPosts, pageNumber, orderBy ]
+		[ getPosts, pageNumber, orderBy, searchQuery ]
 	);
 
 	if (loadingPage) {
@@ -53,7 +67,16 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination, location 
 		getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 	};
 
-	// console.log(history.location);
+	const resetForm = async (e) => {
+		e.preventDefault();
+		setSortData({
+			searchParams: '',
+			orderBy: '',
+			userId: ''
+		});
+		setSearchQuery('');
+		setPageNumber(1);
+	};
 
 	return loading ? (
 		<Spinner />
@@ -88,7 +111,9 @@ const Posts = ({ getPosts, post: { posts, loading }, auth, pagination, location 
 						<option value='most discussed'>Most discussed</option>
 					</select>
 				</div>
-
+				{(orderBy.length > 0 || searchQuery.length > 0) && (
+					<button onClick={(e) => resetForm(e)}>Reset filters</button>
+				)}
 				{/* <div className='post__dropdown'>
 					<div class='dropdown'>
 						<button class='dropbtn'>Sort Recipes By:</button>
