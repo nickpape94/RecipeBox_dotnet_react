@@ -1,7 +1,9 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import PropTypes from 'prop-types';
+import { resetPagination } from '../../actions/post';
 import Spinner from '../layout/Spinner';
 import african from '../../img/cuisines/african.jpg';
 import american from '../../img/cuisines/american.jpg';
@@ -24,7 +26,7 @@ import spanish from '../../img/cuisines/spanish.jpg';
 import thai from '../../img/cuisines/thai.jpg';
 import turkish from '../../img/cuisines/turkish.jpg';
 
-const Cuisines = () => (
+const Cuisines = ({ resetPagination }) => {
 	// const [ picsLoading, picsLoaded ] = useState(false);
 
 	// useEffect(() => {
@@ -35,130 +37,144 @@ const Cuisines = () => (
 	// 	return <Spinner />;
 	// }
 
-	<Fragment>
-		<div className='cuisines'>
-			<div className='cuisine'>
-				<Link to={`/cuisines/african`}>
-					<h1>African</h1>
-					<LazyLoadImage src={african} alt='african' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/american`}>
-					<h1>American</h1>
-					<LazyLoadImage src={american} alt='american' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/british`}>
-					<h1>British</h1>
-					<LazyLoadImage src={british} alt='british' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/caribbean`}>
-					<h1>Caribbean</h1>
-					<LazyLoadImage src={caribbean} alt='caribbean' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/chinese`}>
-					<h1>Chinese</h1>
-					<LazyLoadImage src={chinese} alt='chinese' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/east%20european`}>
-					<h1>Eastern European</h1>
-					<LazyLoadImage src={easteuropean} alt='easteuropean' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/french`}>
-					<h1>French</h1>
-					<LazyLoadImage src={french} alt='french' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/greek`}>
-					<h1>Greek</h1>
-					<LazyLoadImage src={greek} alt='greek' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/indian`}>
-					<h1>Indian</h1>
-					<LazyLoadImage src={indian} alt='indian' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/italian`}>
-					<h1>Italian</h1>
-					<LazyLoadImage src={italian} alt='italian' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/japanese`}>
-					<h1>Japanese</h1>
-					<LazyLoadImage src={japanese} alt='japanese' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/korean`}>
-					<h1>Korean</h1>
-					<LazyLoadImage src={korean} alt='korean' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/mexican`}>
-					<h1>Mexican</h1>
-					<LazyLoadImage src={mexican} alt='mexican' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/middle%20eastern`}>
-					<h1>Middle Eastern</h1>
-					<LazyLoadImage src={middleeastern} alt='middleeastern' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/pakistani`}>
-					<h1>Pakistani</h1>
-					<LazyLoadImage src={pakistani} alt='pakistani' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/portuguese`}>
-					<h1>Portuguese</h1>
-					<LazyLoadImage src={portuguese} alt='portuguese' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/south%20american`}>
-					<h1>South American</h1>
-					<LazyLoadImage src={southamerican} alt='southamerican' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/spanish`}>
-					<h1>Spanish</h1>
-					<LazyLoadImage src={spanish} alt='spanish' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/`}>
-					<h1>Thai and South-East Asia</h1>
-					<LazyLoadImage src={thai} alt='thai' className='cuisine__image' />
-				</Link>
-			</div>
-			<div className='cuisine'>
-				<Link to={`/cuisines/turkish`}>
-					<h1>Turkish</h1>
-					<LazyLoadImage src={turkish} alt='turkish' className='cuisine__image' />
-				</Link>
-			</div>
-		</div>
-	</Fragment>
-);
+	useEffect(() => {
+		resetPagination();
+	}, []);
 
-export default Cuisines;
+	return (
+		<Fragment>
+			<div className='cuisines'>
+				<div className='cuisine'>
+					<Link to={`/cuisines/african`}>
+						<h1>African</h1>
+						<LazyLoadImage src={african} alt='african' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/american`}>
+						<h1>American</h1>
+						<LazyLoadImage src={american} alt='american' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/british`}>
+						<h1>British</h1>
+						<LazyLoadImage src={british} alt='british' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/caribbean`}>
+						<h1>Caribbean</h1>
+						<LazyLoadImage src={caribbean} alt='caribbean' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/chinese`}>
+						<h1>Chinese</h1>
+						<LazyLoadImage src={chinese} alt='chinese' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/east%20european`}>
+						<h1>Eastern European</h1>
+						<LazyLoadImage src={easteuropean} alt='easteuropean' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/french`}>
+						<h1>French</h1>
+						<LazyLoadImage src={french} alt='french' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/greek`}>
+						<h1>Greek</h1>
+						<LazyLoadImage src={greek} alt='greek' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/indian`}>
+						<h1>Indian</h1>
+						<LazyLoadImage src={indian} alt='indian' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/italian`}>
+						<h1>Italian</h1>
+						<LazyLoadImage src={italian} alt='italian' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/japanese`}>
+						<h1>Japanese</h1>
+						<LazyLoadImage src={japanese} alt='japanese' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/korean`}>
+						<h1>Korean</h1>
+						<LazyLoadImage src={korean} alt='korean' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/mexican`}>
+						<h1>Mexican</h1>
+						<LazyLoadImage src={mexican} alt='mexican' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/middle%20eastern`}>
+						<h1>Middle Eastern</h1>
+						<LazyLoadImage src={middleeastern} alt='middleeastern' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/pakistani`}>
+						<h1>Pakistani</h1>
+						<LazyLoadImage src={pakistani} alt='pakistani' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/portuguese`}>
+						<h1>Portuguese</h1>
+						<LazyLoadImage src={portuguese} alt='portuguese' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/south%20american`}>
+						<h1>South American</h1>
+						<LazyLoadImage src={southamerican} alt='southamerican' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/spanish`}>
+						<h1>Spanish</h1>
+						<LazyLoadImage src={spanish} alt='spanish' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/`}>
+						<h1>Thai and South-East Asia</h1>
+						<LazyLoadImage src={thai} alt='thai' className='cuisine__image' />
+					</Link>
+				</div>
+				<div className='cuisine'>
+					<Link to={`/cuisines/turkish`}>
+						<h1>Turkish</h1>
+						<LazyLoadImage src={turkish} alt='turkish' className='cuisine__image' />
+					</Link>
+				</div>
+			</div>
+		</Fragment>
+	);
+};
+
+Cuisines.propTypes = {
+	resetPagination: PropTypes.func.isRequired
+};
+
+const mapStateToProps = (state) => ({
+	pagination: state.pagination
+});
+
+export default connect(mapStateToProps, { resetPagination })(Cuisines);

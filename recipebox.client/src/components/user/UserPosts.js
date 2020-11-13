@@ -66,7 +66,7 @@ const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }
 					<Link to={`/users/${user.id}`} className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To {user.username.split(' ')[0]}'s Profile
 					</Link>
-					<div className='dropdown2 m-3'>
+					{/* <div className='dropdown2 m-3'>
 						<select
 							className='test2'
 							name='orderBy'
@@ -81,7 +81,7 @@ const UserPosts = ({ getPosts, post: { posts, loading }, getUser, user: { user }
 							<option value='highest rated'>Highest rated</option>
 							<option value='most discussed'>Most discussed</option>
 						</select>
-					</div>
+					</div> */}
 					<PageNavigation
 						pagination={profilePagination}
 						pageNumber={pageNumber}

@@ -7,9 +7,14 @@ import Spinner from '../layout/Spinner';
 import PostItem from '../posts/PostItem';
 import PageNavigation from '../posts/PageNavigation';
 
-const Cuisine = ({ getPosts, pagination, post: { posts, loading }, match, history }) => {
+const Cuisine = ({ getPosts, pagination, post: { posts, loading }, match }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
-	const [ pageNumber, setPageNumber ] = useState(1);
+	const [ pageNumber, setPageNumber ] = useState(pagination.currentPage !== null ? pagination.currentPage : 1);
+	// const [ pageNumber, setPageNumber ] = useState(
+	// 	pagination.currentPage === null || (location.state !== undefined && location.state.fromCuisine)
+	// 		? 1
+	// 		: pagination.currentPage
+	// );
 
 	useEffect(
 		() => {
@@ -24,8 +29,6 @@ const Cuisine = ({ getPosts, pagination, post: { posts, loading }, match, histor
 	if (loading || loadingPage) {
 		return <Spinner />;
 	}
-
-	// console.log(history.location.pathname);
 
 	return (
 		<Fragment>
@@ -42,6 +45,7 @@ const Cuisine = ({ getPosts, pagination, post: { posts, loading }, match, histor
 					<PostItem
 						key={post.postId}
 						post={post}
+						postsFromCuisine={true}
 						// postPhoto={post.postPhoto.filter((photo) => photo.isMain == true)}
 					/>
 				))}

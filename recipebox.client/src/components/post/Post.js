@@ -55,6 +55,7 @@ const Post = ({
 
 	// console.log(authUser);
 	// console.log(userInStore.username);
+	// console.log(location.state.postsFromCuisine);
 
 	return post === null ? (
 		<Spinner />
@@ -74,6 +75,13 @@ const Post = ({
 						<i className='fas fa-arrow-circle-left' /> Back To {userInStore.username.split(' ')[0]}'s
 						Favourites
 					</Link>
+				) : location.state.postsFromCuisine ? (
+					// <Link to='/posts' className='btn'>
+					// 	<i className='fas fa-arrow-circle-left' /> Back To Cuisine
+					// </Link>
+					<button onClick={() => history.goBack()}>
+						<i className='fas fa-arrow-circle-left' /> Back
+					</button>
 				) : (
 					<Link to='/posts' className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To Posts

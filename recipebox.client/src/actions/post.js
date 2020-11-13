@@ -5,6 +5,7 @@ import {
 	POST_ERROR,
 	GET_POST,
 	GET_CUISINE,
+	RESET_PAGINATION,
 	DELETE_POST,
 	POST_SUBMIT_SUCCESS,
 	POST_SUBMIT_FAIL,
@@ -15,7 +16,7 @@ import {
 } from './types';
 
 // Get all posts
-export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, userId }) => async (dispatch) => {
+export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, userId, match }) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
@@ -30,6 +31,7 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 		const res = await axios.post(`/api/posts?pageNumber=${pageNumber}`, body, config);
 
 		const resHeaders = JSON.parse(res.headers.pagination);
+		const currentLocation = window.location.href.split('/')[window.location.href.split('/').length - 1];
 		// console.log(resHeaders.currentPage);
 		// console.log(resHeaders);
 
@@ -54,10 +56,14 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 			type: GET_POSTS,
 			payload: {
 				postsToReturn: sortData,
-				searchParams: searchParams,
+				searchParams: currentLocation !== 'posts' ? '' : searchParams,
 				orderBy: orderBy
 			}
 		});
+
+		// if ( window.location.href.split('/')[window.location.href.split('/').length - 1])
+
+		console.log(window.location.href.split('/')[window.location.href.split('/').length - 1]);
 
 		if (userId === '') {
 			dispatch({
@@ -269,4 +275,11 @@ export const deletePost = (id, postId, history, userId) => async (dispatch) => {
 			payload: { msg: err.response.statusText, status: err.response.status }
 		});
 	}
+};
+
+// Reset Pagination
+export const resetPagination = () => async (dispatch) => {
+	dispatch({
+		type: RESET_PAGINATION
+	});
 };

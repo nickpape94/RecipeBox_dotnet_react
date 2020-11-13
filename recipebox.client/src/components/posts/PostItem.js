@@ -27,7 +27,8 @@ const PostItem = ({
 		userId
 	},
 	postsFromProfile = false,
-	favouritesFromProfile = false
+	favouritesFromProfile = false,
+	postsFromCuisine = false
 }) => (
 	<div className='card'>
 		<Link
@@ -35,7 +36,9 @@ const PostItem = ({
 				pathname: `/posts/${postId}`,
 				state: {
 					postsFromProfile: postsFromProfile,
-					favouritesFromProfile: favouritesFromProfile
+					favouritesFromProfile: favouritesFromProfile,
+					postsFromCuisine: postsFromCuisine
+					// cuisine: window.location.href.split('/')[window.location.href.split('/').length - 1]
 				}
 			}}
 		>
