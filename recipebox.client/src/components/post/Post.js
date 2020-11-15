@@ -22,7 +22,7 @@ const Post = ({
 	history,
 	favourite: { favourite, favouritesLoading },
 	post: { post, loading },
-	auth: { user: authUser },
+	auth: { user: authUser, isAuthenticated },
 	// user: { user: { id, username } },
 	user: { user: userInStore },
 	match,
@@ -93,7 +93,7 @@ const Post = ({
 						<i className='fas fa-arrow-circle-left' /> Back To {userInStore.username.split(' ')[0]}'s
 						Favourites
 					</Link>
-				) : location.state.postsFromCuisine ? (
+				) : location.state !== undefined && location.state.postsFromCuisine ? (
 					// <Link to='/posts' className='btn'>
 					// 	<i className='fas fa-arrow-circle-left' /> Back To Cuisine
 					// </Link>
@@ -260,27 +260,40 @@ const Post = ({
 									<CommentItem key={comment.commentId} comment={comment} postId={post.postId} />
 								))}
 							</div>
-							<form className='form' onSubmit={(e) => onSubmit(e)}>
-								<div className='form-group'>
+							{isAuthenticated ? (
+								<form className='form' onSubmit={(e) => onSubmit(e)}>
 									<div className='form-group'>
-										<textarea
-											cols='30'
-											rows='5'
-											placeholder='Add Comment'
-											type='description'
-											name='description'
-											value={comment}
-											required
-											onChange={(e) => onChange(e)}
-										/>
+										<div className='form-group'>
+											<textarea
+												cols='30'
+												rows='5'
+												placeholder='Add Comment'
+												type='description'
+												name='description'
+												value={comment}
+												required
+												onChange={(e) => onChange(e)}
+											/>
+										</div>
 									</div>
-								</div>
-								{comment.length === 0 ? (
-									<input type='submit' className='btn btn-primary' value='Submit' disabled />
-								) : (
-									<input type='submit' className='btn btn-primary' value='Submit' />
-								)}
-							</form>
+									{comment.length === 0 ? (
+										<input type='submit' className='btn btn-primary' value='Submit' disabled />
+									) : (
+										<input type='submit' className='btn btn-primary' value='Submit' />
+									)}
+								</form>
+							) : (
+								<Link
+									to={{
+										pathname: '/login',
+										state: {
+											fromComments: true
+										}
+									}}
+								>
+									Login to leave a comment
+								</Link>
+							)}
 						</Fragment>
 					)}
 				</div>

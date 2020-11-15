@@ -7,7 +7,7 @@ import Spinner from '../layout/Spinner';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const UserProfile = ({ getUser, user: { user, loading }, match, history }) => {
+const UserProfile = ({ getUser, user: { user, loading }, match, history, location }) => {
 	const [ userLoading, setUserLoading ] = useState(false);
 
 	useEffect(
@@ -32,9 +32,15 @@ const UserProfile = ({ getUser, user: { user, loading }, match, history }) => {
 					{/* <Link to='/posts' className='btn btn-light my-1'>
 						<i className='fas fa-arrow-circle-left' /> Back To Posts
 					</Link> */}
-					<button className='btn btn-light my-1' onClick={() => history.push('/posts')}>
-						<i className='fas fa-arrow-circle-left' /> Back To Posts
-					</button>
+					{location.state !== undefined && location.state.fromPost ? (
+						<button className='btn btn-light my-1' onClick={() => history.goBack()}>
+							<i className='fas fa-arrow-circle-left' /> Back
+						</button>
+					) : (
+						<button className='btn btn-light my-1' onClick={() => history.push('/posts')}>
+							<i className='fas fa-arrow-circle-left' /> Back To Posts
+						</button>
+					)}
 
 					<div className='profile-grid'>
 						<div className='profile-top bg-primary p-2'>

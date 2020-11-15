@@ -326,7 +326,7 @@ export const updateComment = ({ userId, postId, comment }) => async (dispatch) =
 	}
 };
 
-export const deleteComment = ({ userId, commentId }) => async (dispatch) => {
+export const deleteComment = (userId, commentId) => async (dispatch) => {
 	const config = {
 		headers: {
 			Authorization: `Bearer ${localStorage.token}`

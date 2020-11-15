@@ -80,7 +80,7 @@ export const register = ({ username, email, password, submitting }) => async (di
 };
 
 // Login
-export const login = ({ email, password }) => async (dispatch) => {
+export const login = ({ email, password, location, history }) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
@@ -100,6 +100,14 @@ export const login = ({ email, password }) => async (dispatch) => {
 		});
 
 		dispatch(loadUser());
+
+		if (location !== undefined && location.state.fromPosts) {
+			history.push('/submit-post');
+		}
+
+		if (location !== undefined && location.state.fromComments) {
+			history.goBack();
+		}
 	} catch (err) {
 		const errors = err.response.data;
 
