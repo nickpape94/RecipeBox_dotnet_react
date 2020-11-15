@@ -56,7 +56,7 @@ const EditPost = ({ getPost, updatePost, post: { post, loading }, auth: { user }
 		setDataChanged(true);
 	};
 
-	const onSubmit = (e) => {
+	const onSubmit = async (e) => {
 		e.preventDefault();
 		setDataChanged(false);
 		updatePost(user.id, match.params.id, setLoadingPage, setError, history, {

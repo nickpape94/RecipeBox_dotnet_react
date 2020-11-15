@@ -12,7 +12,10 @@ import {
 	POST_UPDATE_SUCCESS,
 	POST_UPDATE_FAIL,
 	GET_PAGINATION_HEADERS,
-	GET_PROFILE_PAGINATION_HEADERS
+	GET_PROFILE_PAGINATION_HEADERS,
+	COMMENT_ADDED,
+	COMMENT_UPDATED,
+	COMMENT_REMOVED
 } from './types';
 
 // Get all posts
@@ -57,7 +60,7 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 			payload: {
 				postsToReturn: sortData,
 				searchParams: currentLocation !== 'posts' ? '' : searchParams,
-				orderBy: orderBy
+				orderBy: currentLocation !== 'posts' ? '' : orderBy
 			}
 		});
 
@@ -274,6 +277,71 @@ export const deletePost = (id, postId, history, userId) => async (dispatch) => {
 			type: POST_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }
 		});
+	}
+};
+
+export const addComment = (userId, postId, { comment: text }) => async (dispatch) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${localStorage.token}`,
+			'Content-Type': 'application/json'
+		}
+	};
+
+	const body = JSON.stringify({ text });
+
+	// console.log(body);
+
+	try {
+		const res = await axios.post(`/api/users/${userId}/posts/${postId}/comments`, body, config);
+
+		dispatch({
+			type: COMMENT_ADDED,
+			payload: res.data
+		});
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+export const updateComment = ({ userId, postId, comment }) => async (dispatch) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${localStorage.token}`,
+			'Content-Type': 'application/json'
+		}
+	};
+
+	const body = JSON.stringify(comment);
+
+	try {
+		const res = await axios.put(`/api/users/${userId}/posts/${postId}/comments`, body, config);
+
+		dispatch({
+			type: COMMENT_UPDATED,
+			payload: res.data
+		});
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+export const deleteComment = ({ userId, commentId }) => async (dispatch) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	try {
+		await axios.delete(`/api/users/${userId}/comments/${commentId}`, config);
+
+		dispatch({
+			type: COMMENT_REMOVED,
+			payload: commentId
+		});
+	} catch (err) {
+		console.log(err);
 	}
 };
 

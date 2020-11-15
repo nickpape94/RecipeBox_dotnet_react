@@ -178,10 +178,12 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             var userFromRepo = await _recipeRepo.GetUser(userId);
+            var usersMainPhoto = await _recipeRepo.GetMainPhotoForUser(userId);
 
             // Assign commenter id to the comment creator
             commentForCreationDto.CommenterId = userId;
             commentForCreationDto.Author = userFromRepo.UserName;
+            commentForCreationDto.UserPhotoUrl = usersMainPhoto.Url;
 
             // Get post from repo
             var postFromRepo = await _recipeRepo.GetPost(postId);
@@ -197,9 +199,10 @@ namespace RecipeBox.API.Controllers
 
             if (await _recipeRepo.SaveAll())
             {
-                var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
+                var commentToReturn = _mapper.Map<CommentsForReturnedDto>(comment);
                 
-                return CreatedAtRoute("GetPost", new {userId = userId, id = comment.CommentId}, postToReturn);
+                // return CreatedAtRoute("GetPost", new {userId = userId, id = comment.CommentId}, postToReturn);
+                return Ok(commentToReturn);
             }
 
             throw new Exception("Creating the comment failed on save");

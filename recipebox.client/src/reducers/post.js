@@ -9,7 +9,10 @@ import {
 	POST_UPDATE_SUCCESS,
 	POST_UPDATE_FAIL,
 	RECIPE_PHOTO_DELETED,
-	RECIPE_PHOTO_DELETION_ERROR
+	RECIPE_PHOTO_DELETION_ERROR,
+	COMMENT_ADDED,
+	COMMENT_UPDATED,
+	COMMENT_REMOVED
 } from '../actions/types';
 
 const initialState = {
@@ -43,6 +46,8 @@ export default function(state = initialState, action) {
 			};
 		case POST_SUBMIT_SUCCESS:
 		case POST_UPDATE_SUCCESS:
+			// case COMMENT_ADDED:
+			// case COMMENT_UPDATED:
 			return {
 				...state,
 				loading: false,
@@ -62,6 +67,26 @@ export default function(state = initialState, action) {
 				post: {
 					...state.post,
 					postPhoto: state.post.postPhoto.filter((photo) => photo.postPhotoId !== payload)
+				},
+				loading: false
+			};
+		case COMMENT_ADDED:
+		case COMMENT_UPDATED:
+			return {
+				...state,
+				loading: false,
+				posts: [ ...state.posts ],
+				post: {
+					...state.post,
+					comments: [ payload, ...state.post.comments ]
+				}
+			};
+		case COMMENT_REMOVED:
+			return {
+				...state,
+				post: {
+					...state.post,
+					comments: state.post.comments.filter((comment) => comment.commentId !== payload)
 				},
 				loading: false
 			};

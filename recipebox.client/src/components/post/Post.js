@@ -4,16 +4,20 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import CommentItem from './CommentItem';
-import { getPost, deletePost } from '../../actions/post';
+import { getPost, deletePost, addComment, deleteComment, updateComment } from '../../actions/post';
 import { addToFavourites, deleteFavourite, getFavourite } from '../../actions/favourite';
 import AwesomeSlider from 'react-awesome-slider';
 import AwsSliderStyles from 'react-awesome-slider/dist/styles.css';
+import { setAlert } from '../../actions/alert';
 
 const Post = ({
 	addToFavourites,
 	deleteFavourite,
 	getFavourite,
 	getPost,
+	addComment,
+	updateComment,
+	deleteComment,
 	deletePost,
 	history,
 	favourite: { favourite, favouritesLoading },
@@ -28,6 +32,7 @@ const Post = ({
 	const [ requestComments, loadComments ] = useState(false);
 	const [ isFavourited, setFavourited ] = useState(false);
 	const [ confirmDeletion, setConfirmDeletion ] = useState(false);
+	const [ comment, setComment ] = useState('');
 
 	useEffect(
 		() => {
@@ -44,6 +49,19 @@ const Post = ({
 		},
 		[ getFavourite, authUser, match.params.id ]
 	);
+
+	const onChange = (e) => {
+		e.preventDefault();
+		setComment(e.target.value);
+	};
+
+	const onSubmit = async (e) => {
+		e.preventDefault();
+		const idOfUser = authUser.id;
+		const idOfPost = match.params.id;
+		addComment(idOfUser, idOfPost, { comment });
+		setComment('');
+	};
 
 	if (loadingPage || (authUser !== null && favouritesLoading)) {
 		return <Spinner />;
@@ -230,16 +248,40 @@ const Post = ({
 						<button
 							className='comments'
 							onClick={() =>
-								post.comments.length > 0 ? loadComments(true) : console.log('No comments to load')}
+								// post.comments.length > 0 ? loadComments(true) : console.log('No comments to load')
+								loadComments(true)}
 						>
 							<i className='fas fa-comments fa-3x text-primary comments'>{'  ' + post.comments.length}</i>
 						</button>
 					) : (
-						<div>
-							{post.comments.map((comment) => (
-								<CommentItem key={comment.commentId} comment={comment} postId={post.postId} />
-							))}
-						</div>
+						<Fragment>
+							<div>
+								{post.comments.map((comment) => (
+									<CommentItem key={comment.commentId} comment={comment} postId={post.postId} />
+								))}
+							</div>
+							<form className='form' onSubmit={(e) => onSubmit(e)}>
+								<div className='form-group'>
+									<div className='form-group'>
+										<textarea
+											cols='30'
+											rows='5'
+											placeholder='Add Comment'
+											type='description'
+											name='description'
+											value={comment}
+											required
+											onChange={(e) => onChange(e)}
+										/>
+									</div>
+								</div>
+								{comment.length === 0 ? (
+									<input type='submit' className='btn btn-primary' value='Submit' disabled />
+								) : (
+									<input type='submit' className='btn btn-primary' value='Submit' />
+								)}
+							</form>
+						</Fragment>
 					)}
 				</div>
 			</div>
@@ -251,6 +293,9 @@ Post.propTypes = {
 	getPost: PropTypes.func.isRequired,
 	getFavourite: PropTypes.func.isRequired,
 	deletePost: PropTypes.func.isRequired,
+	addComment: PropTypes.func.isRequired,
+	updateComment: PropTypes.func.isRequired,
+	deleteComment: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	auth: PropTypes.object.isRequired,
 	favourite: PropTypes.object.isRequired,
@@ -264,4 +309,13 @@ const mapStateToProps = (state) => ({
 	user: state.user
 });
 
-export default connect(mapStateToProps, { getPost, addToFavourites, deleteFavourite, deletePost, getFavourite })(Post);
+export default connect(mapStateToProps, {
+	getPost,
+	addToFavourites,
+	deleteFavourite,
+	deletePost,
+	getFavourite,
+	addComment,
+	deleteComment,
+	updateComment
+})(Post);
