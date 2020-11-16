@@ -276,7 +276,8 @@ const Post = ({
 											/>
 										</div>
 									</div>
-									{comment.length === 0 ? (
+									<small>Please Keep Comments Between 6 and 300 Characters</small>
+									{comment.length < 6 || comment.length > 300 ? (
 										<input type='submit' className='btn btn-primary' value='Submit' disabled />
 									) : (
 										<input type='submit' className='btn btn-primary' value='Submit' />

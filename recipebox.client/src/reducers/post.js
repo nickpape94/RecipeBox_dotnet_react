@@ -12,7 +12,8 @@ import {
 	RECIPE_PHOTO_DELETION_ERROR,
 	COMMENT_ADDED,
 	COMMENT_UPDATED,
-	COMMENT_REMOVED
+	COMMENT_REMOVED,
+	COMMENT_ERROR
 } from '../actions/types';
 
 const initialState = {
@@ -93,6 +94,7 @@ export default function(state = initialState, action) {
 		case POST_SUBMIT_FAIL:
 		case POST_UPDATE_FAIL:
 		case POST_ERROR:
+		case COMMENT_ERROR:
 		case RECIPE_PHOTO_DELETION_ERROR:
 			return {
 				...state,

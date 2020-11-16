@@ -126,16 +126,34 @@ const Posts = ({ getPosts, post: { posts, loading, storeSearchParams, storeOrder
 					</div>
 				</div>{' '} */}
 				<div className='post__submit'>
-					{auth.isAuthenticated && (
+					{auth.isAuthenticated ? (
 						<Link to='submit-post'>
 							<div className='button'>Submit a Recipe</div>
 						</Link>
-					)}
-					{!auth.isAuthenticated && (
-						<Link to='login'>
+					) : (
+						<Link
+							to={{
+								pathname: '/login',
+								state: {
+									fromPosts: true
+								}
+							}}
+						>
 							<div className='button'>Submit a Recipe</div>
 						</Link>
 					)}
+					{/* {!auth.isAuthenticated && (
+						<Link
+							to={{
+								pathname: '/login',
+								state: {
+									fromPosts: true
+								}
+							}}
+						>
+							<div className='button'>Submit a Recipe</div>
+						</Link>
+					)} */}
 				</div>
 			</div>
 

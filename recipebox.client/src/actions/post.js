@@ -15,7 +15,8 @@ import {
 	GET_PROFILE_PAGINATION_HEADERS,
 	COMMENT_ADDED,
 	COMMENT_UPDATED,
-	COMMENT_REMOVED
+	COMMENT_REMOVED,
+	COMMENT_ERROR
 } from './types';
 
 // Get all posts
@@ -66,7 +67,7 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 
 		// if ( window.location.href.split('/')[window.location.href.split('/').length - 1])
 
-		console.log(window.location.href.split('/')[window.location.href.split('/').length - 1]);
+		// console.log(window.location.href.split('/')[window.location.href.split('/').length - 1]);
 
 		if (userId === '') {
 			dispatch({
@@ -300,7 +301,14 @@ export const addComment = (userId, postId, { comment: text }) => async (dispatch
 			payload: res.data
 		});
 	} catch (err) {
-		console.log(err);
+		const errors = err.response.data.errors;
+
+		// console.log(errors);
+
+		dispatch({
+			type: COMMENT_ERROR,
+			payload: errors.Text[0]
+		});
 	}
 };
 
@@ -322,7 +330,7 @@ export const updateComment = ({ userId, postId, comment }) => async (dispatch) =
 			payload: res.data
 		});
 	} catch (err) {
-		console.log(err);
+		console.log(err.response);
 	}
 };
 
@@ -341,7 +349,11 @@ export const deleteComment = (userId, commentId) => async (dispatch) => {
 			payload: commentId
 		});
 	} catch (err) {
-		console.log(err);
+		// console.log(err);
+		dispatch({
+			type: COMMENT_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
 	}
 };
 

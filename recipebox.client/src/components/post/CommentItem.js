@@ -14,8 +14,6 @@ const CommentItem = ({
 	const dateFormatted = moment(created).format('YYYYMMDD');
 	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 
-	console.log(commenterId);
-	console.log(user.id);
 	return (
 		<div className='comment bg-white p-1 my-1'>
 			<div>
