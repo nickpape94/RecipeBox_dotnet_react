@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, Prompt } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import CommentItem from './CommentItem';
@@ -79,6 +79,10 @@ const Post = ({
 		<Spinner />
 	) : (
 		<Fragment>
+			<Prompt
+				when={comment.length > 6}
+				message='Are you sure you want to leave without submitting your comment? '
+			/>
 			<div className='post-header'>
 				{/* {post && id && post.userId === id ? (
 					<Link to={`/users/${id}/posts`} className='btn'>
@@ -256,9 +260,11 @@ const Post = ({
 					) : (
 						<Fragment>
 							<div>
-								{post.comments.map((comment) => (
-									<CommentItem key={comment.commentId} comment={comment} postId={post.postId} />
-								))}
+								{[ ...post.comments ]
+									.reverse()
+									.map((comment) => (
+										<CommentItem key={comment.commentId} comment={comment} postId={post.postId} />
+									))}
 							</div>
 							{isAuthenticated ? (
 								<form className='form' onSubmit={(e) => onSubmit(e)}>

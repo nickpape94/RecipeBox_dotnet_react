@@ -79,7 +79,7 @@ export default function(state = initialState, action) {
 				posts: [ ...state.posts ],
 				post: {
 					...state.post,
-					comments: [ payload, ...state.post.comments ]
+					comments: [ ...state.post.comments, payload ]
 				}
 			};
 		case COMMENT_REMOVED:
