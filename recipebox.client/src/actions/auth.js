@@ -101,14 +101,15 @@ export const login = ({ email, password, location, history }) => async (dispatch
 
 		dispatch(loadUser());
 
-		if (location !== undefined && location.state.fromPosts) {
+		if (location.state === undefined) {
+			history.push('/posts');
+		} else if (location !== undefined && location.state.fromPosts) {
 			history.push('/submit-post');
-		}
-
-		if (location !== undefined && location.state.fromComments) {
+		} else if ((location !== undefined && location.state.fromComments) || location.state.fromFavourites) {
 			history.goBack();
 		}
 	} catch (err) {
+		// console.log(err);
 		const errors = err.response.data;
 
 		if (errors) {

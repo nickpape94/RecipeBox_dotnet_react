@@ -9,7 +9,7 @@ import { deleteComment } from '../../actions/post';
 const CommentItem = ({
 	deleteComment,
 	comment: { text, created, author, userPhotoUrl, commenterId, commentId },
-	auth: { user }
+	auth: { user, isAuthenticated }
 }) => {
 	const dateFormatted = moment(created).format('YYYYMMDD');
 	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -54,13 +54,17 @@ const CommentItem = ({
 					</button>
 				)} */}
 			</div>
-			{commenterId === user.id &&
+			{user &&
+			isAuthenticated &&
+			commenterId === user.id &&
 			!confirmDeletion && (
 				<button onClick={() => setConfirmDeletion(true)}>
 					<i className='fas fa-trash-alt' />
 				</button>
 			)}
-			{commenterId === user.id &&
+			{user &&
+			isAuthenticated &&
+			commenterId === user.id &&
 			confirmDeletion && (
 				<div>
 					Are you sure you want to delete this comment?

@@ -4,7 +4,7 @@ import { Link, Prompt } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import CommentItem from './CommentItem';
-import { getPost, deletePost, addComment, deleteComment, updateComment } from '../../actions/post';
+import { getPost, deletePost, addComment, deleteComment, updateComment, addRating } from '../../actions/post';
 import { addToFavourites, deleteFavourite, getFavourite } from '../../actions/favourite';
 import AwesomeSlider from 'react-awesome-slider';
 import AwsSliderStyles from 'react-awesome-slider/dist/styles.css';
@@ -19,6 +19,7 @@ const Post = ({
 	updateComment,
 	deleteComment,
 	deletePost,
+	addRating,
 	history,
 	favourite: { favourite, favouritesLoading },
 	post: { post, loading },
@@ -33,6 +34,7 @@ const Post = ({
 	const [ isFavourited, setFavourited ] = useState(false);
 	const [ confirmDeletion, setConfirmDeletion ] = useState(false);
 	const [ comment, setComment ] = useState('');
+	// const [ postRating, setPostRating ] = useState(null);
 
 	useEffect(
 		() => {
@@ -53,6 +55,7 @@ const Post = ({
 	const onChange = (e) => {
 		e.preventDefault();
 		setComment(e.target.value);
+		// addRating(e.target.value);
 	};
 
 	const onSubmit = async (e) => {
@@ -112,7 +115,7 @@ const Post = ({
 
 				{/* Managing state & functionality of the favourite button */}
 				<div className='favourites'>
-					{!isFavourited && authUser && authUser.id !== post.userId ? (
+					{!isFavourited && isAuthenticated && authUser && authUser.id !== post.userId ? (
 						<button
 							onClick={() => {
 								addToFavourites(authUser.id, post.postId, setFavourited);
@@ -121,10 +124,15 @@ const Post = ({
 						>
 							<i className='far fa-heart fa-2x text-red' /> <p>Add to favourites</p>
 						</button>
-					) : authUser === null ? (
+					) : authUser === null && !isAuthenticated ? (
 						<button
 							onClick={() => {
-								history.push('/login');
+								history.push({
+									pathname: '/login',
+									state: {
+										fromFavourites: true
+									}
+								});
 								// console.log(history);
 								// addToFavourites(authUser.id, post.postId);
 								// toggleFavouriteStatus(false);
@@ -133,6 +141,9 @@ const Post = ({
 							<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
 						</button>
 					) : (
+						// <Link to={{ pathname: '/login', state: { fromFavourites: true } }}>
+						// 	<i className='fas fa-heart fa-2x text-red' /> <p>Add to favourites</p>
+						// </Link>
 						isFavourited && (
 							<button
 								onClick={() => {
@@ -187,6 +198,26 @@ const Post = ({
 					authUser.id === post.userId && <Link to={`/posts/${post.postId}/edit`}>Edit Post</Link>}
 				</div>
 			</div>
+
+			{/* <div className='form-group'>
+				<select
+					name='rating'
+					type='text'
+					placeholder='Rate this recipe'
+					value={postRating}
+					required
+					onChange={(e) => onChange(e)}
+				>
+					<option value=''>* Rate Recipe</option>
+					<option value='1 Star'>1 Star</option>
+					<option value='2 Stars'>2 Stars</option>
+					<option value='3 Stars'>3 Stars</option>
+					<option value='4 Stars'>4 Stars</option>
+					<option value='5 Stars'>5 Stars</option>
+				</select>
+				<small className='form-text'>Please specify which cusine type this is</small>
+			</div> */}
+
 			<div className='post-grid my-1'>
 				<div className='post-top'>
 					<h1 className='text-dark'>{post.nameOfDish}</h1>
@@ -316,6 +347,7 @@ Post.propTypes = {
 	addComment: PropTypes.func.isRequired,
 	updateComment: PropTypes.func.isRequired,
 	deleteComment: PropTypes.func.isRequired,
+	addRating: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	auth: PropTypes.object.isRequired,
 	favourite: PropTypes.object.isRequired,
@@ -337,5 +369,6 @@ export default connect(mapStateToProps, {
 	getFavourite,
 	addComment,
 	deleteComment,
-	updateComment
+	updateComment,
+	addRating
 })(Post);
