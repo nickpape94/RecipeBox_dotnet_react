@@ -13,7 +13,9 @@ import {
 	COMMENT_ADDED,
 	COMMENT_UPDATED,
 	COMMENT_REMOVED,
-	COMMENT_ERROR
+	COMMENT_ERROR,
+	ADDED_RATING,
+	RATING_ERROR
 } from '../actions/types';
 
 const initialState = {
@@ -82,6 +84,16 @@ export default function(state = initialState, action) {
 					comments: [ ...state.post.comments, payload ]
 				}
 			};
+		case ADDED_RATING:
+			return {
+				...state,
+				loading: false,
+				posts: [ ...state.posts ],
+				posts: {
+					...state.post,
+					ratings: [ payload, ...state.post.ratings ]
+				}
+			};
 		case COMMENT_REMOVED:
 			return {
 				...state,
@@ -95,6 +107,7 @@ export default function(state = initialState, action) {
 		case POST_UPDATE_FAIL:
 		case POST_ERROR:
 		case COMMENT_ERROR:
+		case RATING_ERROR:
 		case RECIPE_PHOTO_DELETION_ERROR:
 			return {
 				...state,

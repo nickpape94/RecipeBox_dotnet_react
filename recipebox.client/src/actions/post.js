@@ -16,7 +16,9 @@ import {
 	COMMENT_ADDED,
 	COMMENT_UPDATED,
 	COMMENT_REMOVED,
-	COMMENT_ERROR
+	COMMENT_ERROR,
+	ADDED_RATING,
+	RATING_ERROR
 } from './types';
 
 // Get all posts
@@ -352,6 +354,31 @@ export const deleteComment = (userId, commentId) => async (dispatch) => {
 		// console.log(err);
 		dispatch({
 			type: COMMENT_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+// Add or update rating
+export const addRating = (userId, postId, { score }) => async (dispatch) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	const body = JSON.stringify(score);
+
+	try {
+		const res = await axios.post(`/api/users/${userId}/posts/${postId}/ratings`, body, config);
+
+		dispatch({
+			type: ADDED_RATING,
+			payload: res.data
+		});
+	} catch (err) {
+		dispatch({
+			type: RATING_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }
 		});
 	}

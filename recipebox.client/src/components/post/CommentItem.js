@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -13,6 +13,9 @@ const CommentItem = ({
 }) => {
 	const dateFormatted = moment(created).format('YYYYMMDD');
 	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+	const [ confirmDeletion, setConfirmDeletion ] = useState(false);
+
+	console.log(confirmDeletion);
 
 	return (
 		<div className='comment bg-white p-1 my-1'>
@@ -25,7 +28,11 @@ const CommentItem = ({
 						}
 					}}
 				>
-					<img className='round-img' src={userPhotoUrl} alt='' />
+					{userPhotoUrl ? (
+						<img className='round-img' src={userPhotoUrl} alt='' />
+					) : (
+						<i className='fas fa-user fa-3x icon-a' />
+					)}
 					<h4>{author}</h4>
 				</Link>
 			</div>
@@ -47,10 +54,27 @@ const CommentItem = ({
 					</button>
 				)} */}
 			</div>
-			{commenterId === user.id && (
-				<button onClick={() => deleteComment(user.id, commentId)}>
+			{commenterId === user.id &&
+			!confirmDeletion && (
+				<button onClick={() => setConfirmDeletion(true)}>
 					<i className='fas fa-trash-alt' />
 				</button>
+			)}
+			{commenterId === user.id &&
+			confirmDeletion && (
+				<div>
+					Are you sure you want to delete this comment?
+					<span>
+						<button
+							onClick={() => {
+								deleteComment(user.id, commentId);
+							}}
+						>
+							Yes
+						</button>
+						<button onClick={() => setConfirmDeletion(false)}>No</button>
+					</span>
+				</div>
 			)}
 		</div>
 	);
