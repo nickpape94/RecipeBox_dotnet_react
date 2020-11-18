@@ -4,6 +4,7 @@ import { Link, Prompt } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import CommentItem from './CommentItem';
+import Ratings from './Ratings';
 import { getPost, deletePost, addComment, deleteComment, updateComment, addRating } from '../../actions/post';
 import { addToFavourites, deleteFavourite, getFavourite } from '../../actions/favourite';
 import AwesomeSlider from 'react-awesome-slider';
@@ -34,13 +35,22 @@ const Post = ({
 	const [ isFavourited, setFavourited ] = useState(false);
 	const [ confirmDeletion, setConfirmDeletion ] = useState(false);
 	const [ comment, setComment ] = useState('');
-	// const [ postRating, setPostRating ] = useState(null);
+	const [ rating, setRating ] = useState('');
+
+	useEffect(
+		() => {
+			if (authUser !== null && rating !== '') {
+				addRating(authUser.id, match.params.id, { rating });
+			}
+		},
+		[ rating ]
+	);
 
 	useEffect(
 		() => {
 			getPost(match.params.id, setLoadingPage);
 		},
-		[ getPost, match.params.id ]
+		[ getPost, match.params.id, rating ]
 	);
 
 	useEffect(
@@ -54,8 +64,13 @@ const Post = ({
 
 	const onChange = (e) => {
 		e.preventDefault();
-		setComment(e.target.value);
-		// addRating(e.target.value);
+
+		if (e.target.name === 'comment') {
+			setComment(e.target.value);
+		}
+		if (e.target.name === 'rating') {
+			setRating(e.target.value);
+		}
 	};
 
 	const onSubmit = async (e) => {
@@ -69,14 +84,6 @@ const Post = ({
 	if (loadingPage || (authUser !== null && favouritesLoading)) {
 		return <Spinner />;
 	}
-
-	// console.log(location.state);
-	// console.log(id);
-	// console.log(username);
-
-	// console.log(authUser);
-	// console.log(userInStore.username);
-	// console.log(location.state.postsFromCuisine);
 
 	return post === null ? (
 		<Spinner />
@@ -112,6 +119,8 @@ const Post = ({
 						<i className='fas fa-arrow-circle-left' /> Back To Posts
 					</Link>
 				)}
+
+				<Ratings averageRating={post.averageRating} ratings={post.ratings} />
 
 				{/* Managing state & functionality of the favourite button */}
 				<div className='favourites'>
@@ -199,24 +208,28 @@ const Post = ({
 				</div>
 			</div>
 
-			{/* <div className='form-group'>
-				<select
-					name='rating'
-					type='text'
-					placeholder='Rate this recipe'
-					value={postRating}
-					required
-					onChange={(e) => onChange(e)}
-				>
-					<option value=''>* Rate Recipe</option>
-					<option value='1 Star'>1 Star</option>
-					<option value='2 Stars'>2 Stars</option>
-					<option value='3 Stars'>3 Stars</option>
-					<option value='4 Stars'>4 Stars</option>
-					<option value='5 Stars'>5 Stars</option>
-				</select>
-				<small className='form-text'>Please specify which cusine type this is</small>
-			</div> */}
+			{authUser !== null &&
+			isAuthenticated &&
+			post.userId !== authUser.id && (
+				<div className='form-group'>
+					<select
+						name='rating'
+						type='rating'
+						placeholder='Rate this recipe'
+						value={rating}
+						required
+						onChange={(e) => onChange(e)}
+					>
+						<option value=''>* Rate Recipe</option>
+						<option value={1}>1 Star</option>
+						<option value={2}>2 Stars</option>
+						<option value={3}>3 Stars</option>
+						<option value={4}>4 Stars</option>
+						<option value={5}>5 Stars</option>
+					</select>
+					<small className='form-text'>How would you rate this recipe?</small>
+				</div>
+			)}
 
 			<div className='post-grid my-1'>
 				<div className='post-top'>
@@ -305,8 +318,8 @@ const Post = ({
 												cols='30'
 												rows='5'
 												placeholder='Add Comment'
-												type='description'
-												name='description'
+												type='comment'
+												name='comment'
 												value={comment}
 												required
 												onChange={(e) => onChange(e)}

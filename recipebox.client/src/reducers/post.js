@@ -89,9 +89,10 @@ export default function(state = initialState, action) {
 				...state,
 				loading: false,
 				posts: [ ...state.posts ],
-				posts: {
+				post: {
 					...state.post,
-					ratings: [ payload, ...state.post.ratings ]
+					// ratings: [ payload, ...state.post.ratings ]
+					ratings: [ payload, ...state.post.ratings.filter((rating) => rating.raterId !== payload.raterId) ]
 				}
 			};
 		case COMMENT_REMOVED:

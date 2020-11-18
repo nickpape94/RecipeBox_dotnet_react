@@ -283,6 +283,7 @@ export const deletePost = (id, postId, history, userId) => async (dispatch) => {
 	}
 };
 
+// Add comment
 export const addComment = (userId, postId, { comment: text }) => async (dispatch) => {
 	const config = {
 		headers: {
@@ -305,7 +306,7 @@ export const addComment = (userId, postId, { comment: text }) => async (dispatch
 	} catch (err) {
 		const errors = err.response.data.errors;
 
-		// console.log(errors);
+		// console.log(err);
 
 		dispatch({
 			type: COMMENT_ERROR,
@@ -314,6 +315,7 @@ export const addComment = (userId, postId, { comment: text }) => async (dispatch
 	}
 };
 
+// Update comment
 export const updateComment = ({ userId, postId, comment }) => async (dispatch) => {
 	const config = {
 		headers: {
@@ -336,6 +338,7 @@ export const updateComment = ({ userId, postId, comment }) => async (dispatch) =
 	}
 };
 
+// Delete comment
 export const deleteComment = (userId, commentId) => async (dispatch) => {
 	const config = {
 		headers: {
@@ -360,23 +363,39 @@ export const deleteComment = (userId, commentId) => async (dispatch) => {
 };
 
 // Add or update rating
-export const addRating = (userId, postId, { score }) => async (dispatch) => {
+export const addRating = (userId, postId, { rating }) => async (dispatch) => {
 	const config = {
 		headers: {
+			'Content-Type': 'application/json',
 			Authorization: `Bearer ${localStorage.token}`
 		}
 	};
 
-	const body = JSON.stringify(score);
+	const score = parseInt(rating);
+
+	const body = JSON.stringify({ score });
 
 	try {
 		const res = await axios.post(`/api/users/${userId}/posts/${postId}/ratings`, body, config);
 
+		// const removeIndex = res.data.ratings.findIndex((rating) => rating.raterId === userId);
+		// console.log(removeIndex);
+
+		const ratingToReturn = res.data.ratings.find((rating) => rating.raterId === userId);
+
+		// console.log(ratingToReturn);
+
 		dispatch({
 			type: ADDED_RATING,
-			payload: res.data
+			// payload: {
+			// 	rating: res.data,
+			// 	index: removeIndex
+			// }
+			payload: ratingToReturn
 		});
 	} catch (err) {
+		// console.log(err);
+
 		dispatch({
 			type: RATING_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }

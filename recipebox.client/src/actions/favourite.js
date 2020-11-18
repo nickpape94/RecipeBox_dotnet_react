@@ -5,6 +5,7 @@ import {
 	GET_PROFILE_PAGINATION_HEADERS,
 	USER_ERROR,
 	POST_ERROR,
+	NOT_FAVOURITED,
 	ADD_POST_TO_FAVOURITES,
 	DELETE_POST_FROM_FAVOURITES
 } from './types';
@@ -81,7 +82,7 @@ export const getFavourite = (userId, postId, setFavourited) => async (dispatch) 
 		setFavourited(true);
 	} catch (err) {
 		dispatch({
-			type: POST_ERROR,
+			type: NOT_FAVOURITED,
 			payload: { msg: err.response.statusText, status: err.response.status }
 		});
 	}

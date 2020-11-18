@@ -4,7 +4,8 @@ import {
 	USER_ERROR,
 	POST_ERROR,
 	ADD_POST_TO_FAVOURITES,
-	DELETE_POST_FROM_FAVOURITES
+	DELETE_POST_FROM_FAVOURITES,
+	NOT_FAVOURITED
 } from '../actions/types';
 
 const initialState = {
@@ -44,6 +45,7 @@ export default function(state = initialState, action) {
 			};
 		case USER_ERROR:
 		case POST_ERROR:
+		case NOT_FAVOURITED:
 			return {
 				...state,
 				error: payload,
