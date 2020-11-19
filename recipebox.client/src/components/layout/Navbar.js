@@ -1,11 +1,16 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 import { withRouter } from 'react-router-dom';
+import noavatar from '../../img/noavatar.png';
 
-const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
+const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, history }) => {
+	const [ hoverUserPic, setHoverUserPic ] = useState(false);
+
+	console.log(hoverUserPic);
+
 	const authLinks = (
 		<ul>
 			<li>
@@ -22,15 +27,60 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 				<Link to='/cuisines'>Cuisines</Link>
 			</li>
 			<li>
-				<a
+				{/* <a
 					onClick={() => {
 						logout();
 						history.push('/');
 					}}
-					// href='#!'
-				>
-					<i className='fas fa-sign-out-alt' /> <span className='hide-sm'> Logout </span>
-				</a>
+				> */}
+
+				{/* <i className='fas fa-sign-out-alt' />{' '} */}
+				<span className='hide-sm'>
+					{' '}
+					{/* <img src={user && user.photoUrl !== null ? user.photoUrl : (noavatar)} />{' '} */}
+					{user && user.photoUrl !== null ? (
+						<div onMouseEnter={() => setHoverUserPic(true)} onMouseLeave={() => setHoverUserPic(false)}>
+							<img src={user.photoUrl} />
+							{hoverUserPic && (
+								<div className='nav_dropdown'>
+									<a>
+										<i className='fas fa-portrait'>My Profile</i>
+									</a>
+									<a
+										onClick={() => {
+											logout();
+											history.push('/');
+											setHoverUserPic(false);
+										}}
+									>
+										<i className='fas fa-sign-out-alt' /> Logout
+									</a>
+								</div>
+							)}
+						</div>
+					) : (
+						<div onMouseEnter={() => setHoverUserPic(true)} onMouseLeave={() => setHoverUserPic(false)}>
+							<i className='fas fa-user-circle fa-3x' />
+							{hoverUserPic && (
+								<div>
+									<a>
+										<i className='fas fa-portrait'>My Profile</i>
+									</a>
+									<a
+										onClick={() => {
+											logout();
+											history.push('/');
+											setHoverUserPic(false);
+										}}
+									>
+										<i className='fas fa-sign-out-alt' /> Logout
+									</a>
+								</div>
+							)}
+						</div>
+					)}
+				</span>
+				{/* </a> */}
 			</li>
 		</ul>
 	);
@@ -67,6 +117,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 				</Link>
 			</h1>
 			{!loading && <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>}
+			{/* {console.log(user && user.photoUrl)} */}
 
 			{/* <!-- <div className="search-bar">
           <form className="input-group ">
