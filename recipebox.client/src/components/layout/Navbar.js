@@ -9,7 +9,7 @@ import noavatar from '../../img/noavatar.png';
 const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, history }) => {
 	const [ hoverUserPic, setHoverUserPic ] = useState(false);
 
-	console.log(hoverUserPic);
+	// console.log(hoverUserPic);
 
 	const authLinks = (
 		<ul>
@@ -38,47 +38,35 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, history }) =
 				<span className='hide-sm'>
 					{' '}
 					{/* <img src={user && user.photoUrl !== null ? user.photoUrl : (noavatar)} />{' '} */}
-					{user && user.photoUrl !== null ? (
-						<div onMouseEnter={() => setHoverUserPic(true)} onMouseLeave={() => setHoverUserPic(false)}>
+					<div onMouseEnter={() => setHoverUserPic(true)} onMouseLeave={() => setHoverUserPic(false)}>
+						{user && user.photoUrl !== null ? (
 							<img src={user.photoUrl} />
-							{hoverUserPic && (
-								<div className='nav_dropdown'>
-									<a>
-										<i className='fas fa-portrait'>My Profile</i>
-									</a>
-									<a
-										onClick={() => {
-											logout();
-											history.push('/');
-											setHoverUserPic(false);
-										}}
-									>
-										<i className='fas fa-sign-out-alt' /> Logout
-									</a>
-								</div>
-							)}
-						</div>
-					) : (
-						<div onMouseEnter={() => setHoverUserPic(true)} onMouseLeave={() => setHoverUserPic(false)}>
-							<i className='fas fa-user-circle fa-3x' />
-							{hoverUserPic && (
-								<div>
-									<a>
-										<i className='fas fa-portrait'>My Profile</i>
-									</a>
-									<a
-										onClick={() => {
-											logout();
-											history.push('/');
-											setHoverUserPic(false);
-										}}
-									>
-										<i className='fas fa-sign-out-alt' /> Logout
-									</a>
-								</div>
-							)}
-						</div>
-					)}
+						) : (
+							<i className='fas fa-user-circle fa-2x' />
+						)}
+
+						{hoverUserPic && (
+							<div className='nav_dropdown'>
+								<a
+									onClick={() => {
+										history.push(`/users/${user.id}/my-profile`);
+										setHoverUserPic(false);
+									}}
+								>
+									<i className='fas fa-portrait' /> My Profile
+								</a>
+								<a
+									onClick={() => {
+										logout();
+										history.push('/');
+										setHoverUserPic(false);
+									}}
+								>
+									<i className='fas fa-sign-out-alt' /> Logout
+								</a>
+							</div>
+						)}
+					</div>
 				</span>
 				{/* </a> */}
 			</li>

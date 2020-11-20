@@ -20,6 +20,7 @@ import UserPosts from './components/user/UserPosts';
 import EditPost from './components/post/EditPost';
 import EditPhotos from './components/post/EditPhotos';
 import PrivateRoute from './components/routing/PrivateRoute';
+import AuthProfile from './components/user/AuthProfile';
 
 //Redux
 import { Provider } from 'react-redux';
@@ -61,6 +62,7 @@ const App = () => {
 							<Route exact path='/submit-post' component={PostForm} />
 							<PrivateRoute exact path='/posts/:id/edit' component={EditPost} />
 							<PrivateRoute exact path='/posts/:id/edit/photos' component={EditPhotos} />
+							<PrivateRoute exact path='/users/:id/my-profile' component={AuthProfile} />
 							<Route exact path='/post/add-photos' component={PhotosToPost} />
 							<Route exact path='/users/:id' component={UserProfile} />
 							<Route exact path='/users/:id/posts' component={UserPosts} />

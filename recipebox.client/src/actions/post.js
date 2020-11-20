@@ -22,7 +22,7 @@ import {
 } from './types';
 
 // Get all posts
-export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, userId, match }) => async (dispatch) => {
+export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, userId }) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'

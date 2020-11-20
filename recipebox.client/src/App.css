@@ -519,16 +519,21 @@ button {
 	justify-content: space-between;
 	align-items: center;
 	padding: 0.7rem 2rem;
+	/* padding: 0.7rem; */
+	/* padding-top: 10px;
+	padding-bottom: 1px; */
 	position: fixed;
 	z-index: 1;
 	width: 100%;
 	top: 0;
 	border-bottom: solid 1px var(--primary-color);
 	opacity: 0.9;
+	
 }
 
 .navbar ul {
 	display: flex;
+	align-items: center;
 }
 
 .navbar a {
@@ -543,6 +548,19 @@ button {
 
 .navbar .welcome span {
 	margin-right: 0.6rem;
+}
+
+.navbar img {
+	width: 30%;
+	height: auto;
+	border-radius: 20px;
+	
+}
+
+.nav_dropdown a:hover,
+.navbar img:hover,
+.fa-user-circle:hover {
+	cursor: pointer;
 }
 
 /* Landing Page */
