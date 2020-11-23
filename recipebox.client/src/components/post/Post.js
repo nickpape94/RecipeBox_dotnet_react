@@ -98,11 +98,11 @@ const Post = ({
 					<Link to={`/users/${id}/posts`} className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To {username.split(' ')[0]}'s Posts
 					</Link> */}
-				{userInStore && location.state.postsFromProfile ? (
+				{userInStore && location.state !== undefined && location.state.postsFromProfile ? (
 					<Link to={`/users/${userInStore.id}/posts`} className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To {userInStore.username.split(' ')[0]}'s Posts
 					</Link>
-				) : userInStore && location.state.favouritesFromProfile ? (
+				) : userInStore && location.state !== undefined && location.state.favouritesFromProfile ? (
 					<Link to={`/users/${userInStore.id}/favourites`} className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To {userInStore.username.split(' ')[0]}'s
 						Favourites

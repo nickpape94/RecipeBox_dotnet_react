@@ -3,13 +3,15 @@ import { Redirect, withRouter, Prompt } from 'react-router-dom';
 import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
 import { getPosts } from '../../actions/post';
-import { getFavourites } from '../../actions/favourite';
+import { getFavourites, deleteFavourite } from '../../actions/favourite';
 import { connect } from 'react-redux';
-import ProfileItem from './ProfileItem';
+import ProfilePostItem from './ProfilePostItem';
+import ProfileFavouriteItem from './ProfileFavouriteItem';
 
 const AuthProfile = ({
 	getPosts,
 	getFavourites,
+	deleteFavourite,
 	match,
 	auth: { isAuthenticated, loading, user },
 	post: { posts, post, loading: postsLoading },
@@ -59,32 +61,46 @@ const AuthProfile = ({
 					</div>
 
 					<h2 className='my-2'>My Submissions</h2>
-					<table className='table'>
-						<thead>
-							<tr>
-								<th>Name of Dish</th>
-								<th className='hide-sm'>Cuisine</th>
-								<th className='hide-sm'>Created</th>
-							</tr>
-						</thead>
-						{posts.map((post) => <ProfileItem key={post.postId} post={post} />)}
-					</table>
+					{posts.length === 0 ? (
+						<h3>You have not yet submitted any posts</h3>
+					) : (
+						<table className='table'>
+							<thead>
+								<tr>
+									<th>Name of Dish</th>
+									<th className='hide-sm'>Cuisine</th>
+									<th className='hide-sm'>Created</th>
+									<th className='hide-sm'>Average Ratings</th>
+								</tr>
+							</thead>
+							{posts.map((post) => <ProfilePostItem key={post.postId} post={post} />)}
+						</table>
+					)}
 
 					<h2 className='my-2'>My Favorites</h2>
-					<table className='table'>
-						<thead>
-							<tr>
-								<th>Name Of Dish</th>
-								<th className='hide-sm'>Author</th>
-								{/* <th className="hide-sm">Author</th>  */}
-							</tr>
-						</thead>
-						{favourites.length === 0 ? (
-							<h3>No Favourites Yet</h3>
-						) : (
-							favourites.map((favourite) => <ProfileItem key={favourite.postId} post={favourite} />)
-						)}
-					</table>
+					{favourites.length === 0 ? (
+						<h3>No Favourites Yet</h3>
+					) : (
+						<table className='table'>
+							<thead>
+								<tr>
+									<th>Name Of Dish</th>
+									<th className='hide-sm'>Cuisine</th>
+									<th className='hide-sm'>Author</th>
+									<th className='hide-sm'>Average Ratings</th>
+								</tr>
+							</thead>
+
+							{favourites.map((favourite) => (
+								<ProfileFavouriteItem
+									key={favourite.postId}
+									favourite={favourite}
+									deleteFavourite={deleteFavourite}
+									user={user}
+								/>
+							))}
+						</table>
+					)}
 				</Fragment>
 			)}
 		</Fragment>
@@ -95,6 +111,7 @@ AuthProfile.propTypes = {
 	auth: PropTypes.object.isRequired,
 	getPosts: PropTypes.func.isRequired,
 	getFavourites: PropTypes.func.isRequired,
+	deleteFavourite: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	favourite: PropTypes.object.isRequired
 };
@@ -105,4 +122,4 @@ const mapStateToProps = (state) => ({
 	favourite: state.favourite
 });
 
-export default connect(mapStateToProps, { getPosts, getFavourites })(withRouter(AuthProfile));
+export default connect(mapStateToProps, { getPosts, getFavourites, deleteFavourite })(withRouter(AuthProfile));
