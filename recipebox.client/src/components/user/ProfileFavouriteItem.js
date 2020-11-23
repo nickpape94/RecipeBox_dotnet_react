@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 import moment from 'moment';
 import Ratings from '../post/Ratings';
-import { deleteFavourite } from '../../actions/favourite';
 
 const ProfileFavouriteItem = ({ favourite, deleteFavourite, user }) => {
 	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');

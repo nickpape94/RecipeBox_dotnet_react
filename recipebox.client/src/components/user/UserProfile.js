@@ -1,13 +1,13 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { getUser } from '../../actions/user';
 import Spinner from '../layout/Spinner';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-const UserProfile = ({ getUser, user: { user, loading }, match, history, location }) => {
+const UserProfile = ({ getUser, user: { user, loading }, auth: { user: authUser }, match, history, location }) => {
 	const [ userLoading, setUserLoading ] = useState(false);
 
 	useEffect(
@@ -21,6 +21,12 @@ const UserProfile = ({ getUser, user: { user, loading }, match, history, locatio
 
 	if (userLoading) {
 		return <Spinner />;
+	}
+
+	// console.log(typeof match.params.id, authUser !== null && typeof authUser.id);
+
+	if (authUser !== null && authUser.id.toString() === match.params.id) {
+		return <Redirect to={`/users/${match.params.id}/my-profile`} />;
 	}
 
 	return (
@@ -102,11 +108,13 @@ const UserProfile = ({ getUser, user: { user, loading }, match, history, locatio
 
 UserProfile.propTypes = {
 	getUser: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-	user: state.user
+	user: state.user,
+	auth: state.auth
 });
 
 export default connect(mapStateToProps, { getUser })(UserProfile);

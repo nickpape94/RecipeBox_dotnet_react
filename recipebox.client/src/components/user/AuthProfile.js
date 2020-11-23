@@ -7,6 +7,7 @@ import { getFavourites, deleteFavourite } from '../../actions/favourite';
 import { connect } from 'react-redux';
 import ProfilePostItem from './ProfilePostItem';
 import ProfileFavouriteItem from './ProfileFavouriteItem';
+import PageNavigation from '../posts/PageNavigation';
 
 const AuthProfile = ({
 	getPosts,
@@ -15,9 +16,12 @@ const AuthProfile = ({
 	match,
 	auth: { isAuthenticated, loading, user },
 	post: { posts, post, loading: postsLoading },
-	favourite: { favourites, favourite, favouritesLoading }
+	favourite: { favourites, favourite, favouritesLoading },
+	profilePagination
 }) => {
-	const [ pageNumber, setPageNumber ] = useState(1);
+	const [ pageNumber, setPageNumber ] = useState(
+		profilePagination.currentPage !== null ? profilePagination.currentPage : 1
+	);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ viewingPostType, setViewingPostType ] = useState(true);
 	const [ formData, setFormData ] = useState({
@@ -27,6 +31,7 @@ const AuthProfile = ({
 	});
 	const { orderBy, searchParams, userId } = formData;
 
+	// Could combine getPosts and getFavourites because they have the same dependencies?
 	useEffect(
 		() => {
 			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
@@ -41,7 +46,20 @@ const AuthProfile = ({
 		[ getFavourites, pageNumber, userId ]
 	);
 
-	if (loading) {
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
+
+	useEffect(
+		() => {
+			if (!favouritesLoading && favourites.length === 0) {
+				setPageNumber(pageNumber - 1);
+			}
+		},
+		[ favourites.length ]
+	);
+
+	if (loading || loadingPage) {
 		return <Spinner />;
 	}
 
@@ -64,58 +82,84 @@ const AuthProfile = ({
 					{viewingPostType ? (
 						<div className='tab'>
 							<button className='active'>My Submissions</button>
-							<button onClick={() => setViewingPostType(false)} className='tablinks'>
+							<button
+								onClick={() => {
+									setViewingPostType(false);
+									setPageNumber(1);
+								}}
+								className='tablinks'
+							>
 								My Favourites
 							</button>
 						</div>
 					) : (
 						<div className='tab'>
-							<button onClick={() => setViewingPostType(true)} className='tablinks'>
+							<button
+								onClick={() => {
+									setViewingPostType(true);
+									setPageNumber(1);
+								}}
+								className='tablinks'
+							>
 								My Submissions
 							</button>
 							<button className='active'>My Favourites</button>
 						</div>
 					)}
 
-					{/* On submission tab  */}
+					{/* On submissions tab  */}
 					{viewingPostType &&
 					posts.length !== 0 && (
-						<table className='table'>
-							<thead>
-								<tr>
-									<th>Name of Dish</th>
-									<th className='hide-sm'>Cuisine</th>
-									<th className='hide-sm'>Created</th>
-									<th className='hide-sm'>Average Ratings</th>
-								</tr>
-							</thead>
-							{posts.map((post) => <ProfilePostItem key={post.postId} post={post} />)}
-						</table>
+						<Fragment>
+							<table className='table'>
+								<thead>
+									<tr>
+										<th>Name of Dish</th>
+										<th className='hide-sm'>Cuisine</th>
+										<th className='hide-sm'>Created</th>
+										<th className='hide-sm'>Average Ratings</th>
+									</tr>
+								</thead>
+								{posts.map((post) => <ProfilePostItem key={post.postId} post={post} />)}
+							</table>
+							<PageNavigation
+								pagination={profilePagination}
+								pageNumber={pageNumber}
+								setPageNumber={setPageNumber}
+							/>
+						</Fragment>
 					)}
 					{viewingPostType && posts.length === 0 && <h1>You have not submitted any posts yet</h1>}
 
 					{/* On favourites tab  */}
 					{!viewingPostType &&
 					favourites.length !== 0 && (
-						<table className='table'>
-							<thead>
-								<tr>
-									<th>Name Of Dish</th>
-									<th className='hide-sm'>Cuisine</th>
-									<th className='hide-sm'>Author</th>
-									<th className='hide-sm'>Average Ratings</th>
-								</tr>
-							</thead>
+						<Fragment>
+							<table className='table'>
+								<thead>
+									<tr>
+										<th>Name Of Dish</th>
+										<th className='hide-sm'>Cuisine</th>
+										<th className='hide-sm'>Author</th>
+										<th className='hide-sm'>Average Ratings</th>
+									</tr>
+								</thead>
 
-							{favourites.map((favourite) => (
-								<ProfileFavouriteItem
-									key={favourite.postId}
-									favourite={favourite}
-									deleteFavourite={deleteFavourite}
-									user={user}
-								/>
-							))}
-						</table>
+								{favourites.map((favourite) => (
+									<ProfileFavouriteItem
+										key={favourite.postId}
+										favourite={favourite}
+										deleteFavourite={deleteFavourite}
+										user={user}
+									/>
+								))}
+							</table>
+							<PageNavigation
+								pagination={profilePagination}
+								pageNumber={pageNumber}
+								setPageNumber={setPageNumber}
+							/>
+						</Fragment>
 					)}
 					{!viewingPostType && favourites.length === 0 && <h1>You have not added any favourites yet</h1>}
 				</Fragment>
@@ -130,13 +174,15 @@ AuthProfile.propTypes = {
 	getFavourites: PropTypes.func.isRequired,
 	deleteFavourite: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
-	favourite: PropTypes.object.isRequired
+	favourite: PropTypes.object.isRequired,
+	profilePagination: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	auth: state.auth,
 	post: state.post,
-	favourite: state.favourite
+	favourite: state.favourite,
+	profilePagination: state.profilePagination
 });
 
 export default connect(mapStateToProps, { getPosts, getFavourites, deleteFavourite })(withRouter(AuthProfile));

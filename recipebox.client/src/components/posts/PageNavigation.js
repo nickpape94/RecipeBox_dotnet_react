@@ -13,14 +13,14 @@ const PageNavigation = ({ pagination: { currentPage, totalItems, totalPages }, p
 				<div className='pagination'>
 					<ul>
 						{currentPage !== 1 && (
-							<li onClick={() => setPageNumber(1)}>
-								<i className='fas fa-angle-double-left' />
-							</li>
-						)}
-						{currentPage !== 1 && (
-							<li onClick={() => setPageNumber(pageNumber - 1)}>
-								<i className='fas fa-angle-left' />
-							</li>
+							<Fragment>
+								<li onClick={() => setPageNumber(1)}>
+									<i className='fas fa-angle-double-left' />
+								</li>
+								<li onClick={() => setPageNumber(pageNumber - 1)}>
+									<i className='fas fa-angle-left' />
+								</li>
+							</Fragment>
 						)}
 
 						{numPages.splice(currentPage - 1, 5).map(
@@ -37,14 +37,14 @@ const PageNavigation = ({ pagination: { currentPage, totalItems, totalPages }, p
 								)
 						)}
 						{totalPages !== pageNumber && (
-							<li onClick={() => setPageNumber(pageNumber + 1)}>
-								<i className='fas fa-angle-right' />
-							</li>
-						)}
-						{totalPages !== pageNumber && (
-							<li onClick={() => setPageNumber(totalPages)}>
-								<i className='fas fa-angle-double-right' />
-							</li>
+							<Fragment>
+								<li onClick={() => setPageNumber(pageNumber + 1)}>
+									<i className='fas fa-angle-right' />
+								</li>
+								<li onClick={() => setPageNumber(totalPages)}>
+									<i className='fas fa-angle-double-right' />
+								</li>
+							</Fragment>
 						)}
 					</ul>
 				</div>
