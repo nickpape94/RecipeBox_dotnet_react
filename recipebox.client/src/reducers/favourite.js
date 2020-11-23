@@ -40,7 +40,7 @@ export default function(state = initialState, action) {
 		case DELETE_POST_FROM_FAVOURITES:
 			return {
 				...state,
-				favourites: state.favourites.filter((favourite) => favourite.id !== payload),
+				favourites: state.favourites.filter((favourite) => favourite.postId !== payload),
 				favouritesLoading: false
 			};
 		case USER_ERROR:

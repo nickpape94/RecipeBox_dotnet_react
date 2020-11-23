@@ -19,6 +19,7 @@ const AuthProfile = ({
 }) => {
 	const [ pageNumber, setPageNumber ] = useState(1);
 	const [ loadingPage, setLoadingPage ] = useState(false);
+	const [ viewingPostType, setViewingPostType ] = useState(true);
 	const [ formData, setFormData ] = useState({
 		orderBy: '',
 		searchParams: '',
@@ -60,10 +61,25 @@ const AuthProfile = ({
 						</a>
 					</div>
 
-					<h2 className='my-2'>My Submissions</h2>
-					{posts.length === 0 ? (
-						<h3>You have not yet submitted any posts</h3>
+					{viewingPostType ? (
+						<div className='tab'>
+							<button className='active'>My Submissions</button>
+							<button onClick={() => setViewingPostType(false)} className='tablinks'>
+								My Favourites
+							</button>
+						</div>
 					) : (
+						<div className='tab'>
+							<button onClick={() => setViewingPostType(true)} className='tablinks'>
+								My Submissions
+							</button>
+							<button className='active'>My Favourites</button>
+						</div>
+					)}
+
+					{/* On submission tab  */}
+					{viewingPostType &&
+					posts.length !== 0 && (
 						<table className='table'>
 							<thead>
 								<tr>
@@ -76,11 +92,11 @@ const AuthProfile = ({
 							{posts.map((post) => <ProfilePostItem key={post.postId} post={post} />)}
 						</table>
 					)}
+					{viewingPostType && posts.length === 0 && <h1>You have not submitted any posts yet</h1>}
 
-					<h2 className='my-2'>My Favorites</h2>
-					{favourites.length === 0 ? (
-						<h3>No Favourites Yet</h3>
-					) : (
+					{/* On favourites tab  */}
+					{!viewingPostType &&
+					favourites.length !== 0 && (
 						<table className='table'>
 							<thead>
 								<tr>
@@ -101,6 +117,7 @@ const AuthProfile = ({
 							))}
 						</table>
 					)}
+					{!viewingPostType && favourites.length === 0 && <h1>You have not added any favourites yet</h1>}
 				</Fragment>
 			)}
 		</Fragment>

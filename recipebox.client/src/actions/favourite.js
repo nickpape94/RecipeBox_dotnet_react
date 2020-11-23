@@ -130,7 +130,9 @@ export const deleteFavourite = (userId, postId, setFavourited) => async (dispatc
 			payload: postId
 		});
 
-		setFavourited(false);
+		if (setFavourited !== undefined) {
+			setFavourited(false);
+		}
 	} catch (err) {
 		dispatch({
 			type: POST_ERROR,
