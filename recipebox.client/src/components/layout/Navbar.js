@@ -3,10 +3,11 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
+import { resetProfilePagination } from '../../actions/user';
 import { withRouter } from 'react-router-dom';
 import noavatar from '../../img/noavatar.png';
 
-const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, history }) => {
+const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, resetProfilePagination, history }) => {
 	const [ hoverUserPic, setHoverUserPic ] = useState(false);
 
 	// console.log(hoverUserPic);
@@ -51,6 +52,7 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, history }) =
 									onClick={() => {
 										history.push(`/users/${user.id}/my-profile`);
 										setHoverUserPic(false);
+										resetProfilePagination();
 									}}
 								>
 									<i className='fas fa-portrait' /> My Profile
@@ -105,35 +107,18 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, history }) =
 				</Link>
 			</h1>
 			{!loading && <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>}
-			{/* {console.log(user && user.photoUrl)} */}
-
-			{/* <!-- <div className="search-bar">
-          <form className="input-group ">
-            <input className="form-control mr-sm-2" size="25" width="50%"
-              placeholder="Search recipe or cuisine..." aria-label="Search">
-              <span className="input-group-btn">        
-              <button className="btn btn-primary my-1 my-sm-0" type="submit" >Search</button>
-            </span>  
-          </form>
-        </div>  --> */}
-
-			{/* <div className="input-group">
-          <input type="text" className="form-control">
-          <span className="input-group-btn">
-            <button className="btn btn-default" type="button">Go!</button>
-          </span>
-        </div> */}
 		</nav>
 	);
 };
 
 Navbar.propTypes = {
 	logout: PropTypes.func.isRequired,
-	auth: PropTypes.object.isRequired
+	auth: PropTypes.object.isRequired,
+	resetProfilePagination: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	auth: state.auth
 });
 
-export default connect(mapStateToProps, { logout })(withRouter(Navbar));
+export default connect(mapStateToProps, { logout, resetProfilePagination })(withRouter(Navbar));

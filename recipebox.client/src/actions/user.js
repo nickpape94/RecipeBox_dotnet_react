@@ -45,3 +45,7 @@ export const getUser = (id, setUserLoading) => async (dispatch) => {
 		});
 	}
 };
+
+export const resetProfilePagination = () => (dispatch) => {
+	dispatch({ type: RESET_PROFILE_PAGINATION_HEADERS });
+};

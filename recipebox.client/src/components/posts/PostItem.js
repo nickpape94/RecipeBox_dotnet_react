@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Ratings from '../post/Ratings';
 import Moment from 'react-moment';
+import { resetProfilePagination } from '../../actions/user';
 import { connect } from 'react-redux';
 import { getPost } from '../../actions/post';
 
@@ -27,6 +28,7 @@ const PostItem = ({
 		feeds,
 		userId
 	},
+	resetProfilePagination,
 	postsFromProfile = false,
 	favouritesFromProfile = false,
 	postsFromCuisine = false
@@ -92,7 +94,7 @@ const PostItem = ({
 			</div>
 
 			<div className='card__footer'>
-				<Link to={`/users/${userId}`}>
+				<Link to={`/users/${userId}`} onClick={() => resetProfilePagination()}>
 					<div>
 						{userPhotoUrl ? (
 							<img className='icon-b' src={userPhotoUrl} />
@@ -115,11 +117,12 @@ const PostItem = ({
 
 PostItem.propTypes = {
 	post: PropTypes.object.isRequired,
-	auth: PropTypes.object.isRequired
+	auth: PropTypes.object.isRequired,
+	resetProfilePagination: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	auth: state.auth
 });
 
-export default connect(mapStateToProps, { getPost })(PostItem);
+export default connect(mapStateToProps, { getPost, resetProfilePagination })(PostItem);

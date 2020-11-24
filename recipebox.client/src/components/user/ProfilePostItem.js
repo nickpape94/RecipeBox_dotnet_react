@@ -4,7 +4,7 @@ import Moment from 'react-moment';
 import moment from 'moment';
 import Ratings from '../post/Ratings';
 
-const ProfileItem = ({ post }) => {
+const ProfileItem = ({ post, fromAuthProfile = false }) => {
 	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 
 	return (
@@ -23,7 +23,15 @@ const ProfileItem = ({ post }) => {
 					<Ratings averageRating={post.averageRating} ratings={post.ratings} />
 				</td>
 				<td>
-					<Link to={`/posts/${post.postId}`} className='btn btn-primary'>
+					<Link
+						to={{
+							pathname: `/posts/${post.postId}`,
+							state: {
+								fromAuthProfile: fromAuthProfile
+							}
+						}}
+						className='btn btn-primary'
+					>
 						View
 					</Link>
 				</td>

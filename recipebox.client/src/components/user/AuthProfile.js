@@ -41,16 +41,17 @@ const AuthProfile = ({
 				getFavourites({ userId, pageNumber, setLoadingPage, orderBy });
 			}
 		},
-		[ getPosts, pageNumber, userId, viewingPostType ]
+		[ getPosts, pageNumber, userId, viewingPostType, profilePagination.loading ]
 	);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
+	// This effect will go back a page IF on favourites tab and the last favourite is deleted
 	useEffect(
 		() => {
-			if (!favouritesLoading && favourites.length === 0) {
+			if (!favouritesLoading && !viewingPostType && favourites.length === 0) {
 				setPageNumber(pageNumber - 1);
 			}
 		},
@@ -118,7 +119,9 @@ const AuthProfile = ({
 										<th className='hide-sm'>Average Ratings</th>
 									</tr>
 								</thead>
-								{posts.map((post) => <ProfilePostItem key={post.postId} post={post} />)}
+								{posts.map((post) => (
+									<ProfilePostItem key={post.postId} post={post} fromAuthProfile={true} />
+								))}
 							</table>
 							<PageNavigation
 								pagination={profilePagination}

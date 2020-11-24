@@ -67,11 +67,6 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 			}
 		});
 
-		// if ( window.location.href.split('/')[window.location.href.split('/').length - 1])
-
-		// console.log(window.location.href.split('/')[window.location.href.split('/').length - 1]);
-		console.log('post action', resHeaders);
-
 		if (userId === '') {
 			dispatch({
 				type: GET_PAGINATION_HEADERS,
