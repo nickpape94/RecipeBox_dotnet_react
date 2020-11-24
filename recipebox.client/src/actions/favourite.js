@@ -51,7 +51,10 @@ export const getFavourites = ({ userId, pageNumber, setLoadingPage, orderBy }) =
 
 		dispatch({
 			type: GET_PROFILE_PAGINATION_HEADERS,
-			payload: resHeaders
+			payload: {
+				resHeaders: resHeaders,
+				fromPosts: false
+			}
 		});
 
 		setLoadingPage(false);

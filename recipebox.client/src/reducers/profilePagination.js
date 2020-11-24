@@ -6,7 +6,8 @@ const initialState = {
 	currentPage: null,
 	itemsPerPage: null,
 	totalItems: null,
-	totalPages: null
+	totalPages: null,
+	fromPosts: null
 };
 
 export default function(state = initialState, action) {
@@ -17,10 +18,11 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				loading: false,
-				currentPage: payload.currentPage,
-				itemsPerPage: payload.itemsPerPage,
-				totalItems: payload.totalItems,
-				totalPages: payload.totalPages
+				currentPage: payload.resHeaders.currentPage,
+				itemsPerPage: payload.resHeaders.itemsPerPage,
+				totalItems: payload.resHeaders.totalItems,
+				totalPages: payload.resHeaders.totalPages,
+				fromPosts: payload.fromPosts
 			};
 		case RESET_PROFILE_PAGINATION_HEADERS:
 			return {
@@ -29,7 +31,8 @@ export default function(state = initialState, action) {
 				currentPage: null,
 				itemsPerPage: null,
 				totalItems: null,
-				totalPages: null
+				totalPages: null,
+				fromPosts: null
 			};
 		default:
 			return state;

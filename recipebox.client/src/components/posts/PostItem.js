@@ -57,7 +57,18 @@ const PostItem = ({
 		</Link>
 		<div className='card__content'>
 			<div className='card__header'>
-				<Link to={`/posts/${postId}`} className='card__link'>
+				<Link
+					to={{
+						pathname: `/posts/${postId}`,
+						state: {
+							postsFromProfile: postsFromProfile,
+							favouritesFromProfile: favouritesFromProfile,
+							postsFromCuisine: postsFromCuisine
+							// cuisine: window.location.href.split('/')[window.location.href.split('/').length - 1]
+						}
+					}}
+					className='card__link'
+				>
 					<h2>{nameOfDish}</h2>
 				</Link>
 				<Ratings averageRating={averageRating} ratings={ratings} />

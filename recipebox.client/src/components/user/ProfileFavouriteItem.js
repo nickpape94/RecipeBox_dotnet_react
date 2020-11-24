@@ -4,7 +4,7 @@ import Moment from 'react-moment';
 import moment from 'moment';
 import Ratings from '../post/Ratings';
 
-const ProfileFavouriteItem = ({ favourite, deleteFavourite, user }) => {
+const ProfileFavouriteItem = ({ favourite, deleteFavourite, user, fromAuthProfile = false }) => {
 	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 
 	return (
@@ -28,7 +28,15 @@ const ProfileFavouriteItem = ({ favourite, deleteFavourite, user }) => {
 					<Ratings averageRating={favourite.averageRating} ratings={favourite.ratings} />
 				</td>
 				<td>
-					<Link to={`/posts/${favourite.postId}`} className='btn btn-primary'>
+					<Link
+						to={{
+							pathname: `/posts/${favourite.postId}`,
+							state: {
+								fromAuthProfile: fromAuthProfile
+							}
+						}}
+						className='btn btn-primary'
+					>
 						View
 					</Link>
 					{/* <button className='btn btn-primary'>View</button> */}

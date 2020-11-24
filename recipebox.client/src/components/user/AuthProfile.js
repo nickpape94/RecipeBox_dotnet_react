@@ -23,7 +23,9 @@ const AuthProfile = ({
 		profilePagination.currentPage !== null ? profilePagination.currentPage : 1
 	);
 	const [ loadingPage, setLoadingPage ] = useState(false);
-	const [ viewingPostType, setViewingPostType ] = useState(true);
+	const [ viewingPostType, setViewingPostType ] = useState(
+		profilePagination.fromPosts !== null ? profilePagination.fromPosts : true
+	);
 	const [ formData, setFormData ] = useState({
 		orderBy: '',
 		searchParams: '',
@@ -31,19 +33,15 @@ const AuthProfile = ({
 	});
 	const { orderBy, searchParams, userId } = formData;
 
-	// Could combine getPosts and getFavourites because they have the same dependencies?
 	useEffect(
 		() => {
-			getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
+			if (viewingPostType) {
+				getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
+			} else {
+				getFavourites({ userId, pageNumber, setLoadingPage, orderBy });
+			}
 		},
-		[ getPosts, pageNumber, userId ]
-	);
-
-	useEffect(
-		() => {
-			getFavourites({ userId, pageNumber, setLoadingPage, orderBy });
-		},
-		[ getFavourites, pageNumber, userId ]
+		[ getPosts, pageNumber, userId, viewingPostType ]
 	);
 
 	useEffect(() => {
@@ -151,6 +149,7 @@ const AuthProfile = ({
 										favourite={favourite}
 										deleteFavourite={deleteFavourite}
 										user={user}
+										fromAuthProfile={true}
 									/>
 								))}
 							</table>

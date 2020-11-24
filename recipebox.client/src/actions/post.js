@@ -70,6 +70,7 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 		// if ( window.location.href.split('/')[window.location.href.split('/').length - 1])
 
 		// console.log(window.location.href.split('/')[window.location.href.split('/').length - 1]);
+		console.log('post action', resHeaders);
 
 		if (userId === '') {
 			dispatch({
@@ -81,7 +82,10 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 		if (userId.length > 0) {
 			dispatch({
 				type: GET_PROFILE_PAGINATION_HEADERS,
-				payload: resHeaders
+				payload: {
+					resHeaders: resHeaders,
+					fromPosts: true
+				}
 			});
 		}
 

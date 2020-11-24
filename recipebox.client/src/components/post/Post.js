@@ -114,12 +114,15 @@ const Post = ({
 					<button onClick={() => history.goBack()}>
 						<i className='fas fa-arrow-circle-left' /> Back
 					</button>
+				) : authUser && authUser !== null && location.state !== undefined && location.state.fromAuthProfile ? (
+					<Link to={{ pathname: `/users/${authUser.id}/my-profile` }} className='btn'>
+						<i className='fas fa-arrow-circle-left' />Back to my profile
+					</Link>
 				) : (
 					<Link to='/posts' className='btn'>
 						<i className='fas fa-arrow-circle-left' /> Back To Posts
 					</Link>
 				)}
-
 				<Ratings averageRating={post.averageRating} ratings={post.ratings} />
 
 				{/* Managing state & functionality of the favourite button */}
