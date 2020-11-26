@@ -4,6 +4,7 @@ import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
 import { getPosts } from '../../actions/post';
 import { getFavourites, deleteFavourite } from '../../actions/favourite';
+import { addUserPhoto } from '../../actions/photo';
 import { connect } from 'react-redux';
 import ProfilePostItem from './ProfilePostItem';
 import ProfileFavouriteItem from './ProfileFavouriteItem';
@@ -13,6 +14,7 @@ const AuthProfile = ({
 	getPosts,
 	getFavourites,
 	deleteFavourite,
+	addUserPhoto,
 	match,
 	auth: { isAuthenticated, loading, user },
 	post: { posts, post, loading: postsLoading },
@@ -26,24 +28,25 @@ const AuthProfile = ({
 	const [ viewingPostType, setViewingPostType ] = useState(
 		profilePagination.fromPosts !== null ? profilePagination.fromPosts : true
 	);
-	const [ formData, setFormData ] = useState({
-		orderBy: '',
-		searchParams: '',
-		userId: match.params.id.toString()
-	});
-	const { orderBy, searchParams, userId } = formData;
+	const [ file, setFile ] = useState(null);
 
+	// Conditionally render either posts or favourites depending on which tab
 	useEffect(
 		() => {
+			const orderBy = '';
+			const searchParams = '';
+			const userId = match.params.id.toString();
+
 			if (viewingPostType) {
 				getPosts({ pageNumber, setLoadingPage, searchParams, orderBy, userId });
 			} else {
 				getFavourites({ userId, pageNumber, setLoadingPage, orderBy });
 			}
 		},
-		[ getPosts, pageNumber, userId, viewingPostType, profilePagination.loading ]
+		[ getPosts, pageNumber, match.params.id, viewingPostType, profilePagination.loading ]
 	);
 
+	// Scroll to top of page upon mounting
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -57,6 +60,17 @@ const AuthProfile = ({
 		},
 		[ favourites.length ]
 	);
+
+	const onChange = (e) => {
+		setFile(e.target.files[0]);
+	};
+
+	const onSubmit = async (e) => {
+		e.preventDefault();
+		const formData = new FormData();
+		formData.append('file', file);
+		addUserPhoto(user.id, formData);
+	};
 
 	if (loading || loadingPage) {
 		return <Spinner />;
@@ -72,6 +86,35 @@ const AuthProfile = ({
 					<p className='lead'>
 						<i className='fas fa-user' /> Welcome {user.username.split(' ')[0]}
 					</p>
+					{/* <button> */}
+
+					<div className='auth-profile-top p-2'>
+						{user.userPhotos.length !== 0 ? (
+							<img
+								// onClick={() => <input type='file' id='input' />}
+								className='round-img my-1'
+								src={user.userPhotos[0].url}
+								alt=''
+							/>
+						) : (
+							<img
+								// onClick={() => <input type='file' id='input' />}
+								className='round-img my-1'
+								src='https://kansai-resilience-forum.jp/wp-content/uploads/2019/02/IAFOR-Blank-Avatar-Image-1.jpg'
+								alt='no avatar'
+							/>
+						)}
+						<form onSubmit={onSubmit}>
+							<input type='file' name='fileToUpload' onChange={onChange} />
+							{file !== null && (
+								<input type='submit' value='Save Profile Picture' className='btn btn-primary my-1' />
+							)}
+						</form>
+
+						{/* <input type='submit' value='Upload Image' name='submit' /> */}
+						{/* <small>Click icon to add or change your avatar</small> */}
+					</div>
+					{/* </button> */}
 					<div className='dash-buttons'>
 						<a href='edit-profile.html' className='btn btn-light'>
 							<i className='fas fa-user-circle text-primary' /> Edit Profile
@@ -175,6 +218,7 @@ AuthProfile.propTypes = {
 	getPosts: PropTypes.func.isRequired,
 	getFavourites: PropTypes.func.isRequired,
 	deleteFavourite: PropTypes.func.isRequired,
+	addUserPhoto: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	favourite: PropTypes.object.isRequired,
 	profilePagination: PropTypes.object.isRequired
@@ -184,7 +228,10 @@ const mapStateToProps = (state) => ({
 	auth: state.auth,
 	post: state.post,
 	favourite: state.favourite,
-	profilePagination: state.profilePagination
+	profilePagination: state.profilePagination,
+	photo: state.photo
 });
 
-export default connect(mapStateToProps, { getPosts, getFavourites, deleteFavourite })(withRouter(AuthProfile));
+export default connect(mapStateToProps, { getPosts, getFavourites, deleteFavourite, addUserPhoto })(
+	withRouter(AuthProfile)
+);

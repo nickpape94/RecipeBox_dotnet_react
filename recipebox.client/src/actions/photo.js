@@ -1,9 +1,12 @@
 import {
 	RECIPE_PHOTO_UPLOAD_SUCCESS,
 	RECIPE_PHOTO_UPLOAD_FAIL,
-	SET_MAIN_PHOTO,
 	RECIPE_PHOTO_DELETED,
-	RECIPE_PHOTO_DELETION_ERROR
+	RECIPE_PHOTO_DELETION_ERROR,
+	USER_PHOTO_UPLOAD_SUCCESS,
+	USER_PHOTO_UPLOAD_FAIL,
+	USER_PHOTO_DELETED,
+	USER_PHOTO_DELETION_ERROR
 } from './types';
 import axios from 'axios';
 import { setAlert } from './alert';
@@ -35,6 +38,7 @@ export const addRecipePhotos = (postId, history, formData) => async (dispatch) =
 	}
 };
 
+// Delete recipe photo
 export const deleteRecipePhoto = (postId, photoId) => async (dispatch) => {
 	const config = {
 		headers: {
@@ -52,6 +56,61 @@ export const deleteRecipePhoto = (postId, photoId) => async (dispatch) => {
 	} catch (err) {
 		dispatch({
 			type: RECIPE_PHOTO_DELETION_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+// Add profile photo
+export const addUserPhoto = (userId, formData) => async (dispatch) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	try {
+		const res = await axios.post(`/api/users/${userId}/photos`, formData, config);
+
+		// could try calling deleteUserPhoto here??
+
+		dispatch({
+			type: USER_PHOTO_UPLOAD_SUCCESS,
+			payload: res.data
+		});
+	} catch (err) {
+		console.log(err);
+
+		dispatch({
+			type: USER_PHOTO_UPLOAD_FAIL,
+			payload: {
+				msg: err.response.statusText,
+				status: err.response.status
+			}
+		});
+	}
+};
+
+// Delete profile photo
+export const deleteUserPhoto = (userId, photoId) => async (dispatch) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	try {
+		await axios.delete(`/api/users/${userId}/photos/${photoId}`, config);
+
+		dispatch({
+			type: USER_PHOTO_DELETED,
+			payload: photoId
+		});
+	} catch (err) {
+		console.log(err);
+
+		dispatch({
+			type: USER_PHOTO_DELETION_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }
 		});
 	}

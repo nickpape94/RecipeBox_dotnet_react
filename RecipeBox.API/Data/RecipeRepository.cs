@@ -144,7 +144,7 @@ namespace RecipeBox.API.Data
 
         public async Task<UserPhoto> GetMainPhotoForUser(int userId)
         {
-            var photo = await _context.UserPhotos.Where(u => u.UserId == userId).FirstOrDefaultAsync(p => p.IsMain);
+            var photo = await _context.UserPhotos.Where(u => u.UserId == userId).FirstOrDefaultAsync();
 
             return photo;
         }

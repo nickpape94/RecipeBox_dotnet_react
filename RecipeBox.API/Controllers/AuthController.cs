@@ -109,8 +109,9 @@ namespace RecipeBox.API.Controllers
             if (result.Succeeded)
             {
                 user.LastActive = DateTime.Now;
+            
                 await _recipeRepo.SaveAll();
-                var appUser = _mapper.Map<UserForListDto>(user);
+                var appUser = _mapper.Map<UserForDetailedDto>(user);
 
                 return Ok(new {
                     token = GenerateJwtToken(user),

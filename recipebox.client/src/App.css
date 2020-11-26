@@ -1,3 +1,31 @@
+/* Auth profile  */
+.auth-profile-top {
+	grid-area: top;
+	display: flex;
+	flex-direction: column;
+	align-items: left;
+	justify-content: center;
+	text-align: center;
+}
+
+.auth-profile-top img {
+	width: 250px;
+	margin-bottom: 50px;
+}
+
+.auth-profile-top img:hover {
+	cursor: pointer;
+}
+
+.auth-profile-top .icons a {
+	color: #fff;
+	margin: 0 0.3rem;
+}
+
+.auth-profile-top .icons a:hover {
+	color: var(--dark-color);
+}
+
 /* Tabs  */
 .tab {
 	overflow: hidden;

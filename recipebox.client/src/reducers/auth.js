@@ -7,7 +7,9 @@ import {
 	LOGOUT,
 	LOGIN_SUCCESS,
 	PASSWORD_RESET_SUCCESS,
-	PASSWORD_RESET_FAIL
+	PASSWORD_RESET_FAIL,
+	USER_PHOTO_UPLOAD_SUCCESS,
+	USER_PHOTO_UPLOAD_FAIL
 } from '../actions/types';
 
 const initialState = {
@@ -38,6 +40,7 @@ export default function(state = initialState, action) {
 				isAuthenticated: true,
 				loading: false
 			};
+
 		case REGISTER_FAIL:
 		case LOGIN_FAIL:
 		case LOGOUT:

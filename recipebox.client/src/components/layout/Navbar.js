@@ -40,8 +40,8 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, resetProfile
 					{' '}
 					{/* <img src={user && user.photoUrl !== null ? user.photoUrl : (noavatar)} />{' '} */}
 					<div onMouseEnter={() => setHoverUserPic(true)} onMouseLeave={() => setHoverUserPic(false)}>
-						{user && user.photoUrl !== null ? (
-							<img src={user.photoUrl} />
+						{user && user.userPhotos.length !== 0 ? (
+							<img src={user.userPhotos[0].url} />
 						) : (
 							<i className='fas fa-user-circle fa-2x' />
 						)}
