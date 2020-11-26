@@ -11,6 +11,7 @@ namespace RecipeBox.API.Dtos.UserDtos
         public string Username  { get; set; }
         // public string Email  { get; set; }
         public DateTime Created { get; set; }
+        public string About { get; set; }
         public DateTime LastActive { get; set; }
         public string PhotoUrl { get; set; }
         public ICollection<UserPhotosForReturnDto> UserPhotos { get; set; }
