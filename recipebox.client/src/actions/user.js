@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { GET_USERS, GET_USER, USER_ERROR, GET_USER_FAVOURITES, RESET_PROFILE_PAGINATION_HEADERS } from './types';
+import {
+	GET_USERS,
+	GET_USER,
+	USER_ERROR,
+	RESET_PROFILE_PAGINATION_HEADERS,
+	ADD_OR_UPDATE_ABOUT_SECTION,
+	ABOUT_SECTION_ERROR
+} from './types';
 
 // Get users
 export const getUsers = () => async (dispatch) => {
@@ -42,6 +49,32 @@ export const getUser = (id, setUserLoading) => async (dispatch) => {
 		dispatch({
 			type: USER_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+// Add or update about section on profile
+export const addUpdateAboutSection = (userId, body) => async (dispatch) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	try {
+		const res = await axios.post(`/api/users/${userId}/about`, JSON.stringify(body), config);
+
+		dispatch({
+			type: ADD_OR_UPDATE_ABOUT_SECTION,
+			payload: res.data
+		});
+	} catch (err) {
+		// console.log(err.response.data);
+
+		dispatch({
+			type: ABOUT_SECTION_ERROR,
+			payload: err.response.data
 		});
 	}
 };

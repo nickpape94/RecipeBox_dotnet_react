@@ -65,12 +65,15 @@ const UserProfile = ({ getUser, user: { user, loading }, auth: { user: authUser 
 						</div>
 
 						<div className='profile-about bg-light p-2'>
-							<h2 className='text-primary'>About</h2>
-							<p>
-								Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed doloremque nesciunt,
-								repellendus nostrum deleniti recusandae nobis neque modi perspiciatis similique?
-							</p>
-							<div className='line' />
+							{user &&
+							user.about !== null && (
+								<Fragment>
+									<h2 className='text-primary'>About me</h2>
+									<p>{user.about}</p>
+									<div className='line' />
+								</Fragment>
+							)}
+
 							<ul>
 								<li>
 									Member Since: <Moment format='DD/MM/YYYY'>{user.created}</Moment>{' '}

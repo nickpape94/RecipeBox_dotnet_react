@@ -79,7 +79,7 @@ namespace RecipeBox.API.Controllers
                 return Ok(about);
             }
 
-            return BadRequest("Failed on save");
+            return Ok(about);
         }
 
         // [HttpPost("{id}")]

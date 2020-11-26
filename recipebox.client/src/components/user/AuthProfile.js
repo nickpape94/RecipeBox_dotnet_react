@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { getPosts } from '../../actions/post';
 import { getFavourites, deleteFavourite } from '../../actions/favourite';
 import { addUserPhoto, deleteUserPhoto } from '../../actions/photo';
+import { addUpdateAboutSection } from '../../actions/user';
 import { connect } from 'react-redux';
 import ProfilePostItem from './ProfilePostItem';
 import ProfileFavouriteItem from './ProfileFavouriteItem';
@@ -17,19 +18,22 @@ const AuthProfile = ({
 	addUserPhoto,
 	deleteUserPhoto,
 	match,
-	auth: { isAuthenticated, loading, user },
+	auth: { loading, user, error },
 	post: { posts, post, loading: postsLoading },
 	favourite: { favourites, favourite, favouritesLoading },
+	addUpdateAboutSection,
 	profilePagination
 }) => {
-	const [ pageNumber, setPageNumber ] = useState(
-		profilePagination.currentPage !== null ? profilePagination.currentPage : 1
-	);
+	const [ file, setFile ] = useState(null);
+	const [ showAboutSection, setShowAboutSection ] = useState(false);
+	const [ about, setAbout ] = useState('');
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ viewingPostType, setViewingPostType ] = useState(
 		profilePagination.fromPosts !== null ? profilePagination.fromPosts : true
 	);
-	const [ file, setFile ] = useState(null);
+	const [ pageNumber, setPageNumber ] = useState(
+		profilePagination.currentPage !== null ? profilePagination.currentPage : 1
+	);
 
 	// Conditionally render either posts or favourites depending on which tab
 	useEffect(
@@ -47,7 +51,6 @@ const AuthProfile = ({
 		[ getPosts, pageNumber, match.params.id, viewingPostType, profilePagination.loading ]
 	);
 
-	// Scroll to top of page upon mounting
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -62,15 +65,33 @@ const AuthProfile = ({
 		[ favourites.length ]
 	);
 
+	// Load about section
+	useEffect(
+		() => {
+			setAbout(user && user.about !== null ? user.about : '');
+		},
+		[ loading ]
+	);
+
 	const onChange = (e) => {
-		setFile(e.target.files[0]);
+		if (e.target.name === 'fileToUpload') {
+			setFile(e.target.files[0]);
+		}
+		if (e.target.name === 'about') {
+			setAbout(e.target.value);
+		}
 	};
 
-	const onSubmit = async (e) => {
+	const onProfilePicSubmit = async (e) => {
 		e.preventDefault();
 		const formData = new FormData();
 		formData.append('file', file);
 		addUserPhoto(user.id, formData);
+	};
+
+	const onAboutSectionSubmit = async (e) => {
+		e.preventDefault();
+		addUpdateAboutSection(user.id, about);
 	};
 
 	if (loading || loadingPage) {
@@ -113,7 +134,7 @@ const AuthProfile = ({
 								alt='no avatar'
 							/>
 						)}
-						<form onSubmit={onSubmit}>
+						<form onSubmit={(e) => onProfilePicSubmit(e)}>
 							<input type='file' name='fileToUpload' onChange={onChange} />
 							{file !== null && (
 								<input type='submit' value='Save Profile Picture' className='btn btn-primary my-1' />
@@ -125,10 +146,31 @@ const AuthProfile = ({
 					</div>
 					{/* </button> */}
 					<div className='dash-buttons'>
-						<a href='edit-profile.html' className='btn btn-light'>
-							<i className='fas fa-user-circle text-primary' /> Edit Profile
-						</a>
+						<button onClick={() => setShowAboutSection(true)} className='btn btn-light'>
+							<i className='fas fa-user-circle text-primary' /> Edit bio
+						</button>
 					</div>
+					{showAboutSection && (
+						<form onSubmit={(e) => onAboutSectionSubmit(e)}>
+							<div className='form-group'>
+								<div className='form-group'>
+									<textarea
+										cols='30'
+										rows='5'
+										placeholder='About'
+										// type='description'
+										name='about'
+										value={about}
+										onChange={(e) => onChange(e)}
+									/>
+								</div>
+								<div className='form-group'>
+									<input type='submit' className='btn btn-primary' value='Save' />
+								</div>
+							</div>
+						</form>
+					)}
+					{error !== null && <small>{error}</small>}
 
 					{viewingPostType ? (
 						<div className='tab'>
@@ -228,6 +270,7 @@ AuthProfile.propTypes = {
 	getFavourites: PropTypes.func.isRequired,
 	deleteFavourite: PropTypes.func.isRequired,
 	deleteUserPhoto: PropTypes.func.isRequired,
+	addUpdateAboutSection: PropTypes.func.isRequired,
 	addUserPhoto: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	favourite: PropTypes.object.isRequired,
@@ -242,6 +285,11 @@ const mapStateToProps = (state) => ({
 	photo: state.photo
 });
 
-export default connect(mapStateToProps, { getPosts, getFavourites, deleteFavourite, addUserPhoto, deleteUserPhoto })(
-	withRouter(AuthProfile)
-);
+export default connect(mapStateToProps, {
+	getPosts,
+	getFavourites,
+	deleteFavourite,
+	addUserPhoto,
+	deleteUserPhoto,
+	addUpdateAboutSection
+})(withRouter(AuthProfile));
