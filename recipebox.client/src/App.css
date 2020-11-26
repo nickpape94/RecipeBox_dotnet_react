@@ -582,8 +582,8 @@ button {
 	align-items: center;
 	padding: 0.7rem 2rem;
 	/* padding: 0.7rem; */
-	/* padding-top: 10px;
-	padding-bottom: 1px; */
+	padding-top: 10px;
+	padding-bottom: 1px;
 	position: fixed;
 	z-index: 1;
 	width: 100%;
@@ -613,7 +613,8 @@ button {
 }
 
 .navbar img {
-	width: 30%;
+	margin-left: 20px;
+	width: 8%;
 	height: auto;
 	border-radius: 20px;
 	

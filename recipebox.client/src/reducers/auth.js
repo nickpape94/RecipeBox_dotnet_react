@@ -9,6 +9,7 @@ import {
 	PASSWORD_RESET_SUCCESS,
 	PASSWORD_RESET_FAIL,
 	USER_PHOTO_UPLOAD_SUCCESS,
+	USER_PHOTO_DELETED,
 	USER_PHOTO_UPLOAD_FAIL
 } from '../actions/types';
 
@@ -40,7 +41,26 @@ export default function(state = initialState, action) {
 				isAuthenticated: true,
 				loading: false
 			};
-
+		case USER_PHOTO_UPLOAD_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				isAuthenticated: true,
+				user: {
+					...state.user,
+					userPhotos: [ payload ]
+				}
+			};
+		case USER_PHOTO_DELETED:
+			return {
+				...state,
+				loading: false,
+				isAuthenticated: true,
+				user: {
+					...state.user,
+					userPhotos: []
+				}
+			};
 		case REGISTER_FAIL:
 		case LOGIN_FAIL:
 		case LOGOUT:

@@ -1,7 +1,12 @@
-import { RECIPE_PHOTO_UPLOAD_SUCCESS, RECIPE_PHOTO_UPLOAD_FAIL, PHOTO_DELETED } from '../actions/types';
+import {
+	RECIPE_PHOTO_UPLOAD_SUCCESS,
+	RECIPE_PHOTO_UPLOAD_FAIL,
+	USER_PHOTO_UPLOAD_FAIL,
+	USER_PHOTO_DELETION_ERROR
+} from '../actions/types';
 
 const initialState = {
-	// userPhotos: [],
+	userPhotos: [],
 	postPhotos: [],
 	loading: true,
 	error: {}
@@ -15,8 +20,11 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				loading: false,
-				postPhotos: [ payload, ...state.postPhotos ]
+				postPhotos: [ payload, ...state.postPhotos ],
+				userPhotos: []
 			};
+		case USER_PHOTO_UPLOAD_FAIL:
+		case USER_PHOTO_DELETION_ERROR:
 		case RECIPE_PHOTO_UPLOAD_FAIL:
 			return {
 				...state,

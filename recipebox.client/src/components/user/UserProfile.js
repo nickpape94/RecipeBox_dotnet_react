@@ -50,8 +50,8 @@ const UserProfile = ({ getUser, user: { user, loading }, auth: { user: authUser 
 
 					<div className='profile-grid'>
 						<div className='profile-top bg-primary p-2'>
-							{user.photoUrl ? (
-								<img className='round-img my-1' src={user.photoUrl} alt='' />
+							{user && user.userPhotos.length !== 0 ? (
+								<img className='round-img my-1' src={user.userPhotos[0].url} alt='' />
 							) : (
 								<img
 									className='round-img my-1'

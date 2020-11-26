@@ -72,8 +72,6 @@ export const addUserPhoto = (userId, formData) => async (dispatch) => {
 	try {
 		const res = await axios.post(`/api/users/${userId}/photos`, formData, config);
 
-		// could try calling deleteUserPhoto here??
-
 		dispatch({
 			type: USER_PHOTO_UPLOAD_SUCCESS,
 			payload: res.data

@@ -4,7 +4,7 @@ import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
 import { getPosts } from '../../actions/post';
 import { getFavourites, deleteFavourite } from '../../actions/favourite';
-import { addUserPhoto } from '../../actions/photo';
+import { addUserPhoto, deleteUserPhoto } from '../../actions/photo';
 import { connect } from 'react-redux';
 import ProfilePostItem from './ProfilePostItem';
 import ProfileFavouriteItem from './ProfileFavouriteItem';
@@ -15,6 +15,7 @@ const AuthProfile = ({
 	getFavourites,
 	deleteFavourite,
 	addUserPhoto,
+	deleteUserPhoto,
 	match,
 	auth: { isAuthenticated, loading, user },
 	post: { posts, post, loading: postsLoading },
@@ -90,12 +91,20 @@ const AuthProfile = ({
 
 					<div className='auth-profile-top p-2'>
 						{user.userPhotos.length !== 0 ? (
-							<img
-								// onClick={() => <input type='file' id='input' />}
-								className='round-img my-1'
-								src={user.userPhotos[0].url}
-								alt=''
-							/>
+							<Fragment>
+								<img
+									// onClick={() => <input type='file' id='input' />}
+									className='round-img my-1'
+									src={user.userPhotos[0].url}
+									alt=''
+								/>
+								<button
+									className='btn btn-danger'
+									onClick={() => deleteUserPhoto(user.id, user.userPhotos[0].userPhotoId)}
+								>
+									<i className='fas fa-trash-alt'> Delete Profile Picture</i>
+								</button>
+							</Fragment>
 						) : (
 							<img
 								// onClick={() => <input type='file' id='input' />}
@@ -218,6 +227,7 @@ AuthProfile.propTypes = {
 	getPosts: PropTypes.func.isRequired,
 	getFavourites: PropTypes.func.isRequired,
 	deleteFavourite: PropTypes.func.isRequired,
+	deleteUserPhoto: PropTypes.func.isRequired,
 	addUserPhoto: PropTypes.func.isRequired,
 	post: PropTypes.object.isRequired,
 	favourite: PropTypes.object.isRequired,
@@ -232,6 +242,6 @@ const mapStateToProps = (state) => ({
 	photo: state.photo
 });
 
-export default connect(mapStateToProps, { getPosts, getFavourites, deleteFavourite, addUserPhoto })(
+export default connect(mapStateToProps, { getPosts, getFavourites, deleteFavourite, addUserPhoto, deleteUserPhoto })(
 	withRouter(AuthProfile)
 );
