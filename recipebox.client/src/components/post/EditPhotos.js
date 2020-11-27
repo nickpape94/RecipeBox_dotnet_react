@@ -63,6 +63,8 @@ const EditPhotos = ({
 				<PhotoPreview
 					files={currentFiles}
 					setFiles={setCurrentFiles}
+					newFiles={newFiles}
+					setNewFiles={setNewFiles}
 					edit={true}
 					deleteRecipePhoto={deleteRecipePhoto}
 				/>

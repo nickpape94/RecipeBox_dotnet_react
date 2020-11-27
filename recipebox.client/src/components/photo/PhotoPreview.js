@@ -12,7 +12,7 @@ import {
 	rejectStyle
 } from '../layout/PhotoUploadStyles';
 
-const PhotoPreview = ({ files, setFiles, edit = false, deleteRecipePhoto }) => {
+const PhotoPreview = ({ files, setFiles, newFiles, setNewFiles, edit = false, deleteRecipePhoto }) => {
 	const removeFile = (file) => () => {
 		const newFiles = [ ...files ];
 		newFiles.splice(newFiles.indexOf(file), 1);
@@ -84,14 +84,22 @@ const PhotoPreview = ({ files, setFiles, edit = false, deleteRecipePhoto }) => {
 	return (
 		<div className='my-2 text-center'>
 			<section className='container'>
-				<div {...getRootProps({ style })}>
-					<input {...getInputProps()} />
-					<p>Drag 'n' drop some files here</p>
-					<p>(Maximum of 6 photos)</p>
-					<button className='button my-1 btn btn-primary'>Open Files</button>
-				</div>
-				<aside style={thumbsContainer}>{thumbs}</aside>
-				{files.length > 0 && (
+				{!edit && (
+					<div {...getRootProps({ style })}>
+						<input {...getInputProps()} />
+						<p>Drag 'n' drop some files here</p>
+						<p>(Maximum of 6 photos)</p>
+						<button className='button my-1 btn btn-primary'>Open Files</button>
+					</div>
+				)}
+
+				{files.length === 0 && edit ? (
+					<h3>No photos currently uploaded</h3>
+				) : (
+					<aside style={thumbsContainer}>{thumbs}</aside>
+				)}
+				{files.length > 0 &&
+				!edit && (
 					<button className='btn btn-danger' onClick={removeAll}>
 						Remove All
 					</button>
