@@ -54,7 +54,7 @@ export const getUser = (id, setUserLoading) => async (dispatch) => {
 };
 
 // Add or update about section on profile
-export const addUpdateAboutSection = (userId, body) => async (dispatch) => {
+export const addUpdateAboutSection = (userId, body, setAboutSubmit) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json',
@@ -69,6 +69,8 @@ export const addUpdateAboutSection = (userId, body) => async (dispatch) => {
 			type: ADD_OR_UPDATE_ABOUT_SECTION,
 			payload: res.data
 		});
+
+		setAboutSubmit(true);
 	} catch (err) {
 		// console.log(err.response.data);
 
@@ -76,6 +78,8 @@ export const addUpdateAboutSection = (userId, body) => async (dispatch) => {
 			type: ABOUT_SECTION_ERROR,
 			payload: err.response.data
 		});
+
+		setAboutSubmit(false);
 	}
 };
 

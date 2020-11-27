@@ -168,8 +168,7 @@ export const createPost = (
 			payload: res.data
 		});
 
-		// history.push(`/add-photos/post/${res.data.postId}`);
-		history.push('post/add-photos');
+		history.push(`post/${res.data.postId}/add-photos`);
 	} catch (err) {
 		setError(true);
 

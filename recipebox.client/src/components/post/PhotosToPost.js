@@ -1,27 +1,26 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { addRecipePhotos } from '../../actions/photo';
 import { getPost } from '../../actions/post';
 import Spinner from '../layout/Spinner';
 import PhotoPreview from '../photo/PhotoPreview';
 
-const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, photo, history }) => {
+const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, photo, history, match }) => {
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ files, setFiles ] = useState([]);
 	const [ uploading, startedUploading ] = useState(false);
 
-	useEffect(() => {
-		if (post !== null) {
-			getPost(post.postId, setLoadingPage);
-		}
-	}, []);
+	useEffect(
+		() => {
+			getPost(match.params.id, setLoadingPage);
+		},
+		[ match.params.id ]
+	);
 
 	const userIdOfPost = post && post.userId;
 	const idOfLoggedInUser = user && user.id;
-
-	console.log(loadingPage);
 
 	if (loading || uploading || loadingPage) {
 		return <Spinner />;
@@ -62,7 +61,7 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 				<div className='lnk m-1 text-center a:hover'>
 					<Link
 						to={{
-							pathname: `/posts/${post.postId}`,
+							pathname: `/posts/${match.params.id}`,
 							state: {
 								favouritesFromProfile: false,
 								postsFromProfile: false
@@ -90,4 +89,4 @@ const mapStateToProps = (state) => ({
 	photo: state.photo
 });
 
-export default connect(mapStateToProps, { getPost, addRecipePhotos })(PhotosToPost);
+export default connect(mapStateToProps, { getPost, addRecipePhotos })(withRouter(PhotosToPost));

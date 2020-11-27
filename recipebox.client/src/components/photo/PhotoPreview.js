@@ -12,18 +12,24 @@ import {
 	rejectStyle
 } from '../layout/PhotoUploadStyles';
 
-const PhotoPreview = ({ files, setFiles }) => {
+const PhotoPreview = ({ files, setFiles, edit = false, deleteRecipePhoto }) => {
 	const removeFile = (file) => () => {
 		const newFiles = [ ...files ];
 		newFiles.splice(newFiles.indexOf(file), 1);
 		setFiles(newFiles);
 	};
 
+	const removeFileAndDelete = (file) => () => {
+		const newFiles = [ ...files ];
+		newFiles.splice(newFiles.indexOf(file), 1);
+		setFiles(newFiles);
+		deleteRecipePhoto(file.postId, file.postPhotoId);
+	};
+
 	const removeAll = () => {
 		setFiles([]);
 	};
 
-	const [ fileUrl, setFileUrl ] = useState('');
 	const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject, acceptedFiles, open } = useDropzone({
 		accept: 'image/*',
 		onDrop: (acceptedFiles) => {
@@ -36,6 +42,8 @@ const PhotoPreview = ({ files, setFiles }) => {
 			);
 		}
 	});
+
+	console.log(edit);
 
 	files.length = Math.min(files.length, 6);
 
@@ -52,14 +60,13 @@ const PhotoPreview = ({ files, setFiles }) => {
 	const thumbs = files.map((file) => (
 		<div className='thumb-style' style={thumb} key={file.name}>
 			<div style={thumbInner}>
-				{console.log(files[0].postPhotoId)}
 				{files[0].postPhotoId !== undefined && files[0].postPhotoId !== null ? (
 					<img src={file.url} style={img} />
 				) : (
 					<img src={file.preview} style={img} />
 				)}
 
-				<button onClick={removeFile(file)}>
+				<button onClick={!edit ? removeFile(file) : removeFileAndDelete(file)}>
 					<i className='fas fa-trash-alt fa-2x' />
 				</button>
 			</div>

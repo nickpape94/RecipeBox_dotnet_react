@@ -109,8 +109,8 @@ namespace RecipeBox.API.Controllers
 
             var photoFromRepo = await _recipeRepo.GetPostPhoto(id);
 
-            if (photoFromRepo.IsMain)
-                return BadRequest("You cannot delete the main photo");
+            // if (photoFromRepo.IsMain)
+            //     return BadRequest("You cannot delete the main photo");
 
             if (photoFromRepo.PublicId != null)
             {

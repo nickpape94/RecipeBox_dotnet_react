@@ -63,7 +63,7 @@ const App = () => {
 							<PrivateRoute exact path='/posts/:id/edit' component={EditPost} />
 							<PrivateRoute exact path='/posts/:id/edit/photos' component={EditPhotos} />
 							<PrivateRoute exact path='/users/:id/my-profile' component={AuthProfile} />
-							<Route exact path='/post/add-photos' component={PhotosToPost} />
+							<PrivateRoute exact path='/post/:id/add-photos' component={PhotosToPost} />
 							<Route exact path='/users/:id' component={UserProfile} />
 							<Route exact path='/users/:id/posts' component={UserPosts} />
 							<Route exact path='/users/:id/favourites' component={UserFavourites} />

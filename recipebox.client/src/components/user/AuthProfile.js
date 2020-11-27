@@ -27,6 +27,7 @@ const AuthProfile = ({
 	const [ file, setFile ] = useState(null);
 	const [ showAboutSection, setShowAboutSection ] = useState(false);
 	const [ about, setAbout ] = useState('');
+	const [ aboutSubmit, setAboutSubmit ] = useState(false);
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ viewingPostType, setViewingPostType ] = useState(
 		profilePagination.fromPosts !== null ? profilePagination.fromPosts : true
@@ -91,7 +92,7 @@ const AuthProfile = ({
 
 	const onAboutSectionSubmit = async (e) => {
 		e.preventDefault();
-		addUpdateAboutSection(user.id, about);
+		addUpdateAboutSection(user.id, about, setAboutSubmit);
 	};
 
 	if (loading || loadingPage) {
@@ -146,7 +147,10 @@ const AuthProfile = ({
 					</div>
 					{/* </button> */}
 					<div className='dash-buttons'>
-						<button onClick={() => setShowAboutSection(true)} className='btn btn-light'>
+						<button
+							onClick={() => (!showAboutSection ? setShowAboutSection(true) : setShowAboutSection(false))}
+							className='btn btn-light'
+						>
 							<i className='fas fa-user-circle text-primary' /> Edit bio
 						</button>
 					</div>
@@ -171,6 +175,7 @@ const AuthProfile = ({
 						</form>
 					)}
 					{error !== null && <small>{error}</small>}
+					{aboutSubmit && <small>Bio updated successfully</small>}
 
 					{viewingPostType ? (
 						<div className='tab'>

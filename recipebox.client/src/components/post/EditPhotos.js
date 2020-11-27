@@ -60,9 +60,14 @@ const EditPhotos = ({
 			</div>
 			{currentFiles &&
 			!loading && (
-				<PhotoPreview files={currentFiles} setFiles={setCurrentFiles} deleteRecipePhoto={deleteRecipePhoto} />
+				<PhotoPreview
+					files={currentFiles}
+					setFiles={setCurrentFiles}
+					edit={true}
+					deleteRecipePhoto={deleteRecipePhoto}
+				/>
 			)}
-			{newFiles &&
+			{/* {newFiles &&
 			!loading && (
 				<PhotoManagement
 					currentFiles={currentFiles}
@@ -71,7 +76,7 @@ const EditPhotos = ({
 					setNewFiles={setNewFiles}
 					deleteRecipePhoto={deleteRecipePhoto}
 				/>
-			)}
+			)} */}
 			<form className='container'>
 				<div className='my-1 text-center'>
 					{currentFiles && currentFiles.length === 0 ? (

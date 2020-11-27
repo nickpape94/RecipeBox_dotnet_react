@@ -61,7 +61,8 @@ export default function(state = initialState, action) {
 				user: {
 					...state.user,
 					about: payload
-				}
+				},
+				error: null
 			};
 		case USER_PHOTO_DELETED:
 			return {
