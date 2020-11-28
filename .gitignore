@@ -1,7 +1,7 @@
 .vscode
 bin
 obj
-*.db
+# *.db
 appsettings.json
 node_modules/
 coveragereport
