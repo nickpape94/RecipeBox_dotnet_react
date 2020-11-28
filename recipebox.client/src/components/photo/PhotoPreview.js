@@ -13,6 +13,7 @@ import {
 } from '../layout/PhotoUploadStyles';
 
 const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = false, deleteRecipePhoto }) => {
+	// Testing
 	const removeFile = (file) => () => {
 		const fileRemoved = [ ...files ];
 		fileRemoved.splice(fileRemoved.indexOf(file), 1);
