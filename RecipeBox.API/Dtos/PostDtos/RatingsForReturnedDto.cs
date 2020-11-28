@@ -6,7 +6,7 @@ namespace RecipeBox.API.Dtos.PostDtos
     {
         public int RatingId { get; set; }
         public double Score { get; set; }
-        public User Rater { get; set; }
+        // public User Rater { get; set; }
         public int RaterId { get; set; }
         
     }

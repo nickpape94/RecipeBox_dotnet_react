@@ -1,11 +1,24 @@
 import axios from 'axios';
 import { setAlert } from './alert';
-import { GET_POSTS, POST_ERROR } from './types';
+import {
+	GET_POSTS,
+	POST_ERROR,
+	GET_POST,
+	POST_SUBMIT_SUCCESS,
+	POST_SUBMIT_FAIL,
+	GET_PAGINATION_HEADERS
+} from './types';
 
 // Get posts
-export const getPosts = () => async (dispatch) => {
+export const getPosts = (pageNumber, setLoadingPage) => async (dispatch) => {
 	try {
-		const res = await axios.get('/api/posts');
+		setLoadingPage(true);
+
+		const res = await axios.get(`/api/posts?pageNumber=${pageNumber}`);
+
+		const resHeaders = JSON.parse(res.headers.pagination);
+		// console.log(resHeaders.currentPage);
+		// console.log(resHeaders);
 
 		const sortData = res.data.map((post) => ({
 			postId: post.postId,
@@ -19,6 +32,8 @@ export const getPosts = () => async (dispatch) => {
 			ratings: post.ratings,
 			feeds: post.feeds,
 			userId: post.userId,
+			author: post.author,
+			userPhotoUrl: post.userPhotoUrl,
 			mainPhoto: post.postPhoto.filter((photo) => photo.isMain)[0]
 		}));
 
@@ -26,10 +41,85 @@ export const getPosts = () => async (dispatch) => {
 			type: GET_POSTS,
 			payload: sortData
 		});
+
+		dispatch({
+			type: GET_PAGINATION_HEADERS,
+			payload: resHeaders
+		});
+
+		setLoadingPage(false);
 	} catch (err) {
 		dispatch({
 			type: POST_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+// Get a post
+export const getPost = (postId) => async (dispatch) => {
+	const res = await axios.get(`/api/posts/${postId}`);
+
+	try {
+		dispatch({
+			type: GET_POST,
+			payload: res.data
+		});
+	} catch (err) {
+		console.log(err);
+		dispatch({
+			type: POST_ERROR,
+			payload: { msg: err.response.statusText, status: err.response.status }
+		});
+	}
+};
+
+// Create a post
+export const createPost = (
+	userId,
+	history,
+	{ nameOfDish, description, ingredients, method, prepTime, cookingTime, feeds, cuisine }
+) => async (dispatch) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${localStorage.token}`
+		}
+	};
+
+	const body = JSON.stringify({
+		nameOfDish,
+		description,
+		ingredients,
+		method,
+		prepTime,
+		cookingTime,
+		feeds,
+		cuisine
+	});
+
+	try {
+		const res = await axios.post(`/api/users/${userId}/posts`, body, config);
+
+		dispatch({
+			type: POST_SUBMIT_SUCCESS,
+			payload: res.data
+		});
+
+		// history.push(`/add-photos/post/${res.data.postId}`);
+		history.push('post/add-photos');
+	} catch (err) {
+		// console.log(err);
+		const errors = err.response.data.errors;
+
+		if (errors) {
+			Object.keys(errors).forEach((key) => {
+				dispatch(setAlert(errors[key], 'danger', 7000));
+			});
+		}
+
+		dispatch({
+			type: POST_SUBMIT_FAIL
 		});
 	}
 };

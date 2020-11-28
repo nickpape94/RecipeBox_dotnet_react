@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 import { connect } from 'react-redux';
-import { Card } from 'react-bootstrap';
+import { getPost } from '../../actions/post';
 
 // var userImage = !post.postPhoto ? <img src="https://www.pinpng.com/pngs/m/341-3415688_no-avatar-png-transparent-png.png"></img> : <img></img>
 // var mainPhoto = post.postPhoto.filter((x) => x.isMain == true);
@@ -19,6 +19,8 @@ const PostItem = ({
 		cookingTime,
 		averageRating,
 		cuisine,
+		author,
+		userPhotoUrl,
 		mainPhoto,
 		created,
 		ratings,
@@ -27,7 +29,7 @@ const PostItem = ({
 	}
 }) => (
 	<div className='card'>
-		<Link to='#!'>
+		<Link to={`/posts/${postId}`}>
 			<img
 				src={
 					mainPhoto ? (
@@ -41,11 +43,135 @@ const PostItem = ({
 			/>
 		</Link>
 		<div className='card__content'>
-			<Link to='#!' className='card__link'>
-				<h2>{nameOfDish}</h2>
-			</Link>
-			<p>{description}</p>
+			<div className='card__header'>
+				<Link to={`/posts/${postId}`} className='card__link'>
+					<h2>{nameOfDish}</h2>
+				</Link>
+				<div className='ratings'>
+					{averageRating === 0 && (
+						<div>
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 0 &&
+					averageRating <= 0.5 && (
+						<div>
+							<span className='fas fa-star-half-alt checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 0.5 &&
+					averageRating <= 1 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 1 &&
+					averageRating <= 1.5 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fas fa-star-half-alt checked' />
+							<span className='far fa-star checked ' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 1.5 &&
+					averageRating <= 2 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 2 &&
+					averageRating <= 2.5 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fas fa-star-half-alt checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 2.5 &&
+					averageRating <= 3 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='far fa-star checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 3 &&
+					averageRating <= 3.5 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fas fa-star-half-alt checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 3.5 &&
+					averageRating <= 4 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='far fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 4 &&
+					averageRating <= 4.5 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fas fa-star-half-alt checked' />
+							({ratings.length})
+						</div>
+					)}
+					{averageRating > 4.5 &&
+					averageRating <= 5 && (
+						<div>
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							<span className='fa fa-star checked' />
+							({ratings.length})
+						</div>
+					)}
+				</div>
+			</div>
 
+			<p>{description}</p>
 			<div className='card__info'>
 				<div>
 					<i className='fas fa-utensils' />
@@ -64,68 +190,21 @@ const PostItem = ({
 
 			<div className='card__footer'>
 				<div>
-					<i className='fas fa-user fa-3x icon-a' />
+					{userPhotoUrl ? (
+						<img className='icon-b' src={userPhotoUrl} />
+					) : (
+						<i className='fas fa-user fa-3x icon-a' />
+					)}
 				</div>
-				<div>
-					<h3> Nicholas Pape</h3>
-				</div>
+				<h3> {author}</h3>
 				<div>
 					<h4>
-						Posted on <Moment format='DD/MM/YYYY'>{created}</Moment>
+						Posted on: <Moment format='DD/MM/YYYY'>{created}</Moment>
 					</h4>
 				</div>
 			</div>
 		</div>
 	</div>
-	// <div className='post bg-white p-1 my-1'>
-	// 	<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Fish_and_chips_blackpool.jpg/1200px-Fish_and_chips_blackpool.jpg' />
-	// 	<div className='post description bg-white p-1 my-1'>
-	// 		<a href='profile.html'>
-	// 			<h4>{nameOfDish}</h4>
-	// 		</a>
-	// 	</div>
-	// 	<div className='recipe-pics'>
-	// 		<a href='recipe.html'>
-	// 			<div className='zoom'>
-	// 				<img className='recipe' src={postPhoto.url} />
-	// 			</div>
-	// 			<h2>{nameOfDish}</h2>
-	// 			<p className='post-date'>{created}</p>
-	// 			<a href='post.html'>
-	// 				<i class='fas fa-comment' />
-	// 				<span className='comment-count'>{comments.length}</span>
-	// 			</a>
-	// 			<button type='button' className='btn btn-danger'>
-	// 				<i className='fas fa-times' />
-	// 			</button>
-	// 			<ul className='list-inline rating-list'>
-	// 				<li>
-	// 					<i className='fa fa-star ' title='Rate 5 Stars' />
-	// 				</li>
-	// 				<li>
-	// 					<i className='fa fa-star' title='Rate 4 Stars' />
-	// 				</li>
-	// 				<li>
-	// 					<i className='fa fa-star' title='Rate 3 Stars' />
-	// 				</li>
-	// 				<li>
-	// 					<i className='fa fa-star checked' title='Rate 2 Stars' />
-	// 				</li>
-	// 				<li>
-	// 					<i className='fa fa-star checked' title='Rate 1 Star' />
-	// 				</li>
-	// 				<small title='Ratings'>&nbsp;</small>
-	// 			</ul>
-	// 			<small title='Ratings'>({ratings.length})</small>
-	// 			<p className='text-dark'>
-	// 				<i class='far fa-clock'>{` Prep time: ${prepTime}`}</i>
-	// 			</p>
-	// 			<p className='text-dark'>
-	// 				<i class='far fa-clock'>{` Cooking time: ${cookingTime}`}</i>
-	// 			</p>
-	// 		</a>
-	// 	</div>
-	// </div>
 );
 
 PostItem.propTypes = {
@@ -137,4 +216,4 @@ const mapStateToProps = (state) => ({
 	auth: state.auth
 });
 
-export default connect(mapStateToProps, {})(PostItem);
+export default connect(mapStateToProps, { getPost })(PostItem);

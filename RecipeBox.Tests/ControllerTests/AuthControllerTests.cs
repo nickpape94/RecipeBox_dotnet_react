@@ -76,6 +76,7 @@ namespace RecipeBox.Tests
                 UserName = "nick"
             };
 
+
             // var fakeToken = "Q2ZESjhFVE5VYVBEb3FOQWhNbDduWHRuUXF3OWZZdDMva2dtUU9zTlJZR3JXcytXOG54MXF6bVc2UktDeUdZbVk1RUlHYTduUmRmM0o5Vkp4M2dTMHJZeHNzN0FPMGFFNE9YbGxCL0JiTzZ1TWZEb0RBME4yMERGVFdraUNXYWtOUkR1OFJpTXF3dkEzUEltRFh0Wm8wbDNLSnZqU21INlBNYytGdDEzLzFIUE5QNDc2V2NYZWVyT2pHVjNKOWI3K25Kc0ZnPT0";
 
             _mockUserManager.Setup(x => x.CreateAsync(It.IsAny<User>(), "password123")).Returns(Task.FromResult(IdentityResult.Success)).Verifiable();
@@ -83,6 +84,11 @@ namespace RecipeBox.Tests
             _mockUserManager.Setup(x => x.FindByEmailAsync(userToCreate.Email)).Returns(Task.FromResult(userToCreate));
             
             _mockUserManager.Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync("ervipevpievpjevpoj").Verifiable();
+
+            _recipeRepoMock.Setup(x => x.GetUser(0)).ReturnsAsync(new User{
+                Email = userToCreate.Email,
+                UserName = userToCreate.UserName
+            });
 
             // Act
             var result = _authController.Register(new UserForRegisterDto
@@ -94,7 +100,7 @@ namespace RecipeBox.Tests
             ).Result;
 
             // Assert
-            var okResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
@@ -138,10 +144,11 @@ namespace RecipeBox.Tests
         }
         
         [Fact]
-        public void Confirm_Email_Successful_ReturnsOk()
+        public void Confirm_Email_Successful_Returns_UserManagerResponse()
         {
             // Arrange
             int userId = 10;
+            string token = "somerandomstring";
             _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(new User
             {
                 Email = "nick@fakemail.com",
@@ -154,11 +161,11 @@ namespace RecipeBox.Tests
             });
 
             // Act
-            var result = _authController.ConfirmEmail(userId, "somerandomstring").Result;
+            var result = _authController.ConfirmEmail(userId, token).Result;
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Thanks for confirming your email!", okResult.Value);
+            var okResult = Assert.IsType<RedirectResult>(result);
+            Assert.Equal($"http://localhost:3000/email-confirmed?userid={userId}&token={token}", okResult.Url);
         }
         
         [Fact]
@@ -182,6 +189,24 @@ namespace RecipeBox.Tests
             // Assert
             var okResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal(response, okResult.Value);
+        }
+
+        [Fact]
+        public void Login_Should_Return_UnAuthorized_If_User_DoesNot_Exist()
+        {
+            // arrange
+            var email = "fakeuser@somthing.com";
+
+            // act
+            _mockUserManager.Setup(x => x.FindByEmailAsync(email));
+
+            var result = _authController.Login(new UserForLoginDto{
+                Email = email,
+                Password = "password"
+            }).Result;
+
+            // assert
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
         }
 
         [Fact]
@@ -321,8 +346,7 @@ namespace RecipeBox.Tests
             {
                 Token = It.IsAny<string>(),
                 Email = "someemail@fakemail.com",
-                NewPassword = "password1",
-                ConfirmPassword = "password1"
+                Password = "password1",
             };
             var response = new UserManagerResponse
             {
@@ -345,8 +369,7 @@ namespace RecipeBox.Tests
             {
                 Token = It.IsAny<string>(),
                 Email = "someemail@fakemail.com",
-                NewPassword = "password1",
-                ConfirmPassword = "password1"
+                Password = "password1",
             };
             var response = new UserManagerResponse
             {

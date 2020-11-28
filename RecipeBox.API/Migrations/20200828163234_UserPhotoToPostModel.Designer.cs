@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipeBox.API.Data;
 
 namespace RecipeBox.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200828163234_UserPhotoToPostModel")]
+    partial class UserPhotoToPostModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,9 +108,6 @@ namespace RecipeBox.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Author")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("CommenterId")
                         .HasColumnType("INTEGER");
 
@@ -119,9 +118,6 @@ namespace RecipeBox.API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserPhotoUrl")
                         .HasColumnType("TEXT");
 
                     b.HasKey("CommentId");

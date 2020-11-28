@@ -66,6 +66,23 @@ namespace RecipeBox.Tests.ControllerTests
         }
 
         [Fact]
+        public void GetUser_WhenCalled_ReturnsCurrentUser()
+        {
+            // Arrange
+            var user = _recipeRepoMock.Setup(x => x.GetUser(2)).ReturnsAsync(new User{
+                Id = 2,
+                UserName = "josh1"
+            });
+
+            // Act
+            var result = _usersController.GetUser().Result;
+            
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
         public void GetUsers_WhenCalled_ReturnsListOfUsers()
         {
             // Arrange

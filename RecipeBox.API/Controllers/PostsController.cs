@@ -54,13 +54,20 @@ namespace RecipeBox.API.Controllers
 
             foreach (var post in posts)
             {
+                // Assign average rating to the post
                 post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+                
+                // Assign author of the post
+                var author = await _recipeRepo.GetUser(post.UserId);
+                post.Author = author.UserName;
+
+                // Assign users avatar to the post
+                var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
+                if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
                 
             }
 
             var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
-
-            postsFromRepo = postsFromRepo.OrderByDescending(x => x.Created);
 
             Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
 
@@ -77,6 +84,28 @@ namespace RecipeBox.API.Controllers
 
             var average = calculateAverageRatings.GetAverageRating(id).Result;
             post.AverageRating = average;
+
+            post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+                
+            // Assign author of the post
+            var author = await _recipeRepo.GetUser(post.UserId);
+            post.Author = author.UserName;
+
+            // Assign users avatar to the post
+            var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
+            if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
+
+            // Assign commenters photos
+            foreach(var comment in post.Comments)
+            {
+                var commenterId = comment.CommenterId;
+                var commentersMainPhoto = await _recipeRepo.GetMainPhotoForUser(commenterId);
+
+                if (commentersMainPhoto != null )
+                {
+                    comment.UserPhotoUrl = commentersMainPhoto.Url;
+                }
+            }
             
             var postFromRepo = _mapper.Map<PostsForDetailedDto>(post);
 
@@ -156,11 +185,13 @@ namespace RecipeBox.API.Controllers
         [HttpPost("~/api/users/{userId}/posts/{postId}/comments")]
         public async Task<IActionResult> AddComment(int userId, int postId,  CommentForCreationDto commentForCreationDto)
         {
-            // Validate id of logged in user == userId
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            var userFromRepo = await _recipeRepo.GetUser(userId);
 
             // Assign commenter id to the comment creator
             commentForCreationDto.CommenterId = userId;
+            commentForCreationDto.Author = userFromRepo.UserName;
 
             // Get post from repo
             var postFromRepo = await _recipeRepo.GetPost(postId);

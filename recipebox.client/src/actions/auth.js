@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { setAlert } from './alert';
-import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from './types';
+import {
+	REGISTER_SUCCESS,
+	REGISTER_FAIL,
+	USER_LOADED,
+	AUTH_ERROR,
+	LOGIN_SUCCESS,
+	LOGIN_FAIL,
+	LOGOUT,
+	PASSWORD_RESET_SUCCESS,
+	PASSWORD_RESET_FAIL
+} from './types';
 import setAuthToken from '../utils/setAuthToken';
 
 // Load User
@@ -23,6 +33,8 @@ export const loadUser = () => async (dispatch) => {
 			payload: res.data
 		});
 	} catch (err) {
+		// console.log(err);
+
 		dispatch({
 			type: AUTH_ERROR,
 			payload: { msg: err.response.statusText, status: err.response.status }
@@ -31,7 +43,7 @@ export const loadUser = () => async (dispatch) => {
 };
 
 // Register User
-export const register = ({ username, email, password }) => async (dispatch) => {
+export const register = ({ username, email, password, submitting }) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
@@ -43,6 +55,8 @@ export const register = ({ username, email, password }) => async (dispatch) => {
 	try {
 		const res = await axios.post('/api/auth/register', body, config);
 
+		// submitting(true);
+
 		dispatch({
 			type: REGISTER_SUCCESS,
 			payload: res.data
@@ -50,9 +64,10 @@ export const register = ({ username, email, password }) => async (dispatch) => {
 
 		dispatch(loadUser());
 	} catch (err) {
+		submitting(false);
 		const errors = err.response.data;
 
-		console.log(errors);
+		// console.log(errors);
 
 		if (errors) {
 			errors.forEach((error) => dispatch(setAlert(error.description, 'danger ')));
@@ -77,7 +92,7 @@ export const login = ({ email, password }) => async (dispatch) => {
 	try {
 		const res = await axios.post('/api/auth/login', body, config);
 
-		console.log(res.data);
+		// console.log(res.data);
 
 		dispatch({
 			type: LOGIN_SUCCESS,
@@ -94,6 +109,44 @@ export const login = ({ email, password }) => async (dispatch) => {
 
 		dispatch({
 			type: LOGIN_FAIL
+		});
+	}
+};
+
+// Reset password
+export const resetPassword = ({ token, email, password }) => async (dispatch) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	};
+
+	const body = JSON.stringify({ token, email, password });
+
+	try {
+		// if (newpassword !== confirmpassword) return res.statusText('Passwords do not match');
+
+		const res = await axios.post('api/auth/resetPassword', body, config);
+
+		dispatch({
+			type: PASSWORD_RESET_SUCCESS,
+			payload: res.data
+		});
+
+		dispatch(setAlert('Password has been updated.', 'success'));
+
+		dispatch(loadUser());
+	} catch (err) {
+		const errors = err.response.data.errors;
+
+		// console.log(errors);
+
+		if (errors) {
+			errors.forEach((error) => dispatch(setAlert(error, 'danger ')));
+		}
+
+		dispatch({
+			type: PASSWORD_RESET_FAIL
 		});
 	}
 };
