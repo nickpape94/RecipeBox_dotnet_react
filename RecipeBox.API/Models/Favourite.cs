@@ -8,7 +8,9 @@ namespace RecipeBox.API.Models
         public int Id { get; set; }
         public int FavouriterId { get; set; }
         public User Favouriter { get; set; }
+        public string Username { get; set; }
         public int PostId { get; set; }
         public Post Post { get; set; }
+
     }
 }

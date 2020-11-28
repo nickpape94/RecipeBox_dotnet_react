@@ -6,7 +6,7 @@ namespace RecipeBox.API.Dtos.PostDtos
     public class RatePostDto
     {
         [Required]
-        [Range(1, 5, ErrorMessage = "Value must be between 1 and 5")]
+        [Range(0.5, 5, ErrorMessage = "Value must be between 1 and 5")]
         public double Score { get; set; }
 
         public User User { get; set; }

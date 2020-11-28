@@ -10,5 +10,6 @@ namespace RecipeBox.API.Dtos.PhotoDtos
         public DateTime DateAdded { get; set; }
         public bool IsMain { get; set; }
         public string PublicId { get; set; }
+        public int PostId { get; set; }
     }
 }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { login } from '../../actions/auth';
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated, location, history }) => {
 	const [ formData, setFormData ] = useState({
 		email: '',
 		password: ''
@@ -16,8 +16,10 @@ const Login = ({ login, isAuthenticated }) => {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		login({ email, password });
+		login({ email, password, location, history });
 	};
+
+	// console.log(location.state);
 
 	if (isAuthenticated) {
 		return <Redirect to='/posts' />;
@@ -51,7 +53,11 @@ const Login = ({ login, isAuthenticated }) => {
 						required
 					/>
 				</div>
-				<input type='submit' className='btn btn-primary' value='Login' />
+				{email.length === 0 || password.length === 0 ? (
+					<input type='submit' className='btn btn-primary' value='Login' disabled />
+				) : (
+					<input type='submit' className='btn btn-primary' value='Login' />
+				)}
 			</form>
 			<p className='my-1'>
 				<Link to='/password-reset'>Forgotten Password?</Link>

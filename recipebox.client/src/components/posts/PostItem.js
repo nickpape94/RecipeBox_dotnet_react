@@ -1,7 +1,9 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import Ratings from '../post/Ratings';
 import Moment from 'react-moment';
+import { resetProfilePagination } from '../../actions/user';
 import { connect } from 'react-redux';
 import { getPost } from '../../actions/post';
 
@@ -10,7 +12,6 @@ import { getPost } from '../../actions/post';
 // console.log(mainPhoto);
 
 const PostItem = ({
-	auth,
 	post: {
 		postId,
 		nameOfDish,
@@ -26,10 +27,24 @@ const PostItem = ({
 		ratings,
 		feeds,
 		userId
-	}
+	},
+	resetProfilePagination,
+	postsFromProfile = false,
+	favouritesFromProfile = false,
+	postsFromCuisine = false
 }) => (
 	<div className='card'>
-		<Link to={`/posts/${postId}`}>
+		<Link
+			to={{
+				pathname: `/posts/${postId}`,
+				state: {
+					postsFromProfile: postsFromProfile,
+					favouritesFromProfile: favouritesFromProfile,
+					postsFromCuisine: postsFromCuisine
+					// cuisine: window.location.href.split('/')[window.location.href.split('/').length - 1]
+				}
+			}}
+		>
 			<img
 				src={
 					mainPhoto ? (
@@ -44,131 +59,21 @@ const PostItem = ({
 		</Link>
 		<div className='card__content'>
 			<div className='card__header'>
-				<Link to={`/posts/${postId}`} className='card__link'>
+				<Link
+					to={{
+						pathname: `/posts/${postId}`,
+						state: {
+							postsFromProfile: postsFromProfile,
+							favouritesFromProfile: favouritesFromProfile,
+							postsFromCuisine: postsFromCuisine
+							// cuisine: window.location.href.split('/')[window.location.href.split('/').length - 1]
+						}
+					}}
+					className='card__link'
+				>
 					<h2>{nameOfDish}</h2>
 				</Link>
-				<div className='ratings'>
-					{averageRating === 0 && (
-						<div>
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 0 &&
-					averageRating <= 0.5 && (
-						<div>
-							<span className='fas fa-star-half-alt checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 0.5 &&
-					averageRating <= 1 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 1 &&
-					averageRating <= 1.5 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='fas fa-star-half-alt checked' />
-							<span className='far fa-star checked ' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 1.5 &&
-					averageRating <= 2 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 2 &&
-					averageRating <= 2.5 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fas fa-star-half-alt checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 2.5 &&
-					averageRating <= 3 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='far fa-star checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 3 &&
-					averageRating <= 3.5 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fas fa-star-half-alt checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 3.5 &&
-					averageRating <= 4 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='far fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 4 &&
-					averageRating <= 4.5 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fas fa-star-half-alt checked' />
-							({ratings.length})
-						</div>
-					)}
-					{averageRating > 4.5 &&
-					averageRating <= 5 && (
-						<div>
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							<span className='fa fa-star checked' />
-							({ratings.length})
-						</div>
-					)}
-				</div>
+				<Ratings averageRating={averageRating} ratings={ratings} />
 			</div>
 
 			<p>{description}</p>
@@ -189,14 +94,17 @@ const PostItem = ({
 			</div>
 
 			<div className='card__footer'>
-				<div>
-					{userPhotoUrl ? (
-						<img className='icon-b' src={userPhotoUrl} />
-					) : (
-						<i className='fas fa-user fa-3x icon-a' />
-					)}
-				</div>
-				<h3> {author}</h3>
+				<Link to={`/users/${userId}`} onClick={() => resetProfilePagination()}>
+					<div>
+						{userPhotoUrl ? (
+							<img className='icon-b' src={userPhotoUrl} />
+						) : (
+							<i className='fas fa-user fa-3x icon-a' />
+						)}
+					</div>
+					<h3> {author}</h3>
+				</Link>
+
 				<div>
 					<h4>
 						Posted on: <Moment format='DD/MM/YYYY'>{created}</Moment>
@@ -209,11 +117,12 @@ const PostItem = ({
 
 PostItem.propTypes = {
 	post: PropTypes.object.isRequired,
-	auth: PropTypes.object.isRequired
+	auth: PropTypes.object.isRequired,
+	resetProfilePagination: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
 	auth: state.auth
 });
 
-export default connect(mapStateToProps, { getPost })(PostItem);
+export default connect(mapStateToProps, { getPost, resetProfilePagination })(PostItem);

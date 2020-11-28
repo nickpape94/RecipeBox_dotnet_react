@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -108,8 +109,8 @@ namespace RecipeBox.API.Controllers
 
             var photoFromRepo = await _recipeRepo.GetPostPhoto(id);
 
-            if (photoFromRepo.IsMain)
-                return BadRequest("You cannot delete the main photo");
+            // if (photoFromRepo.IsMain)
+            //     return BadRequest("You cannot delete the main photo");
 
             if (photoFromRepo.PublicId != null)
             {
@@ -163,6 +164,47 @@ namespace RecipeBox.API.Controllers
             // TODO
             // Right now, first uploaded picture isnt being set to main, need to work on this so 1 photo is main on creation!!!!
             // Line 87
+        }
+
+    
+        // Delete a post and associated posts stored in cloudinary
+        [HttpDelete("~/api/users/{userId}/posts/{postId}")]
+        public async Task<IActionResult> DeletePost(int userId, int postId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            // Get post from the repo
+            var postFromRepo = await _recipeRepo.GetPost(postId);
+
+            if (postFromRepo.UserId == userId)
+            {
+                foreach(var photo in postFromRepo.PostPhoto)
+                {
+                    var photoFromRepo = await _recipeRepo.GetPostPhoto(photo.PostPhotoId);
+
+                    if (photoFromRepo.PublicId != null)
+                    {
+                        var deleteParams = new DeletionParams(photoFromRepo.PublicId);
+
+                        var result = _cloudinary.Destroy(deleteParams);
+
+                        if (result.Result == "ok")
+                        {
+                            _recipeRepo.Delete(photoFromRepo);
+                        }
+               
+                    }
+                }
+                
+                _recipeRepo.Delete(postFromRepo);
+
+                if (await _recipeRepo.SaveAll())
+                    return Ok("Successfully deleted post");
+
+                throw new Exception($"Deleting post {postId} failed on save");
+            }
+
+            return Unauthorized();
         }
             
 

@@ -1,58 +1,97 @@
-import React, { useEffect } from 'react';
-import { getUser } from '../../actions/user';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
 import Moment from 'react-moment';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { Button, Comment, Form, Header } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { deleteComment } from '../../actions/post';
 
-const CommentItem = ({ postId, comment: { text, created, commentId, commenterId }, getUser, user: { user } }) => {
-	useEffect(
-		() => {
-			getUser(commenterId);
-		},
-		[ getUser ]
-	);
-
-	const userName = user && user.username;
-	console.log(userName);
-
+const CommentItem = ({
+	deleteComment,
+	comment: { text, created, author, userPhotoUrl, commenterId, commentId },
+	auth: { user, isAuthenticated }
+}) => {
 	const dateFormatted = moment(created).format('YYYYMMDD');
 	const todaysDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+	const [ confirmDeletion, setConfirmDeletion ] = useState(false);
+
+	console.log(confirmDeletion);
+
 	return (
-		<Comment.Group>
-			<Comment>
-				<Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-				<Comment.Content>
-					<Comment.Author as='a'>{userName}</Comment.Author>
-					<Comment.Metadata>
-						<div>
-							{dateFormatted === todaysDate ? (
-								<h4>Today</h4>
-							) : (
-								<h4>
-									<Moment format='DD/MM/YYYY'>{created}</Moment>
-								</h4>
-							)}
-						</div>
-					</Comment.Metadata>
-					<Comment.Text>{text}</Comment.Text>
-					<Comment.Actions>
-						<Comment.Action>Reply</Comment.Action>
-					</Comment.Actions>
-				</Comment.Content>
-			</Comment>
-		</Comment.Group>
+		<div className='comment bg-white p-1 my-1'>
+			<div>
+				<Link
+					to={{
+						pathname: `/users/${commenterId}`,
+						state: {
+							fromPost: true
+						}
+					}}
+				>
+					{userPhotoUrl ? (
+						<img className='round-img' src={userPhotoUrl} alt='' />
+					) : (
+						<i className='fas fa-user fa-3x icon-a' />
+					)}
+					<h4>{author}</h4>
+				</Link>
+			</div>
+			<div>
+				<p className='my-1'>{text}</p>
+				<p className='post-date'>
+					{dateFormatted === todaysDate ? (
+						<h4>Today</h4>
+					) : (
+						<h4>
+							<Moment format='DD/MM/YYYY'>{created}</Moment>
+						</h4>
+					)}
+				</p>
+				{/* {!auth.loading &&
+				user === auth.user._id && (
+					<button onClick={(e) => deleteComment(postId, _id)} type='button' className='btn btn-danger'>
+						<i className='fas fa-times' />
+					</button>
+				)} */}
+			</div>
+			{user &&
+			isAuthenticated &&
+			commenterId === user.id &&
+			!confirmDeletion && (
+				<button onClick={() => setConfirmDeletion(true)}>
+					<i className='fas fa-trash-alt' />
+				</button>
+			)}
+			{user &&
+			isAuthenticated &&
+			commenterId === user.id &&
+			confirmDeletion && (
+				<div>
+					Are you sure you want to delete this comment?
+					<span>
+						<button
+							onClick={() => {
+								deleteComment(user.id, commentId);
+							}}
+						>
+							Yes
+						</button>
+						<button onClick={() => setConfirmDeletion(false)}>No</button>
+					</span>
+				</div>
+			)}
+		</div>
 	);
 };
 
 CommentItem.propTypes = {
-	getUser: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	auth: PropTypes.object.isRequired,
+	deleteComment: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
-	user: state.user
+	auth: state.auth
 });
 
-export default connect(mapStateToProps, { getUser })(CommentItem);
+export default connect(mapStateToProps, { deleteComment })(CommentItem);

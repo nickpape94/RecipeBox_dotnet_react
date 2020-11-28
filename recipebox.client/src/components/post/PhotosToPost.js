@@ -1,29 +1,28 @@
-import React, { Fragment, useEffect, useState, useMemo } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { addRecipePhotos } from '../../actions/photo';
 import { getPost } from '../../actions/post';
 import Spinner from '../layout/Spinner';
 import PhotoPreview from '../photo/PhotoPreview';
 
-const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, photo, history }) => {
-	// const [state={notLoaded:true}, setState] = useState(null);
-	useEffect(() => {
-		if (post !== null) {
-			getPost(post.postId);
-		}
-	}, []);
-
+const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loading, user }, photo, history, match }) => {
+	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ files, setFiles ] = useState([]);
 	const [ uploading, startedUploading ] = useState(false);
 
-	// const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+	useEffect(
+		() => {
+			getPost(match.params.id, setLoadingPage);
+		},
+		[ match.params.id ]
+	);
 
 	const userIdOfPost = post && post.userId;
 	const idOfLoggedInUser = user && user.id;
 
-	if (loading || uploading) {
+	if (loading || uploading || loadingPage) {
 		return <Spinner />;
 	}
 
@@ -60,7 +59,17 @@ const PhotosToPost = ({ addRecipePhotos, getPost, post: { post }, auth: { loadin
 					)}
 				</div>
 				<div className='lnk m-1 text-center a:hover'>
-					<Link to={`/posts/${post.postId}`}>Continue without uploading any photos</Link>
+					<Link
+						to={{
+							pathname: `/posts/${match.params.id}`,
+							state: {
+								favouritesFromProfile: false,
+								postsFromProfile: false
+							}
+						}}
+					>
+						Continue without uploading any photos
+					</Link>
 				</div>
 			</form>
 		</Fragment>
@@ -80,4 +89,4 @@ const mapStateToProps = (state) => ({
 	photo: state.photo
 });
 
-export default connect(mapStateToProps, { getPost, addRecipePhotos })(PhotosToPost);
+export default connect(mapStateToProps, { getPost, addRecipePhotos })(withRouter(PhotosToPost));

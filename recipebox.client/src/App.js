@@ -9,9 +9,18 @@ import ForgotPassword from './components/email/ForgotPassword';
 import EmailConfirmed from './components/email/EmailConfirmed';
 import Post from './components/post/Post';
 import Posts from './components/posts/Posts';
+import Cuisines from './components/posts/Cuisines';
+import Cuisine from './components/post/Cuisine';
 import PostForm from './components/post/PostForm';
 import PhotosToPost from './components/post/PhotosToPost';
 import Alert from './components/layout/Alert';
+import UserProfile from './components/user/UserProfile';
+import UserFavourites from './components/user/UserFavourites';
+import UserPosts from './components/user/UserPosts';
+import EditPost from './components/post/EditPost';
+import EditPhotos from './components/post/EditPhotos';
+import PrivateRoute from './components/routing/PrivateRoute';
+import AuthProfile from './components/user/AuthProfile';
 
 //Redux
 import { Provider } from 'react-redux';
@@ -20,6 +29,8 @@ import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
 import './App.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import Container from 'react-bootstrap/Container';
 
 if (localStorage.token) {
 	setAuthToken(localStorage.token);
@@ -42,13 +53,20 @@ const App = () => {
 							<Route exact path='/register' component={Register} />
 							<Route exact path='/login' component={Login} />
 							<Route exact path='/posts' component={Posts} />
+							<Route exact path='/cuisines' component={Cuisines} />
+							<Route exact path='/cuisines/:cuisine' component={Cuisine} />
 							<Route exact path='/posts/:id' component={Post} />
 							<Route exact path='/password-reset' component={ForgotPassword} />
 							<Route exact path='/email-confirmed' component={EmailConfirmed} />
 							<Route exact path='/reset-password' component={PasswordReset} />
 							<Route exact path='/submit-post' component={PostForm} />
-							<Route exact path='/post/add-photos' component={PhotosToPost} />
-
+							<PrivateRoute exact path='/posts/:id/edit' component={EditPost} />
+							<PrivateRoute exact path='/posts/:id/edit/photos' component={EditPhotos} />
+							<PrivateRoute exact path='/users/:id/my-profile' component={AuthProfile} />
+							<PrivateRoute exact path='/post/:id/add-photos' component={PhotosToPost} />
+							<Route exact path='/users/:id' component={UserProfile} />
+							<Route exact path='/users/:id/posts' component={UserPosts} />
+							<Route exact path='/users/:id/favourites' component={UserFavourites} />
 							{/* <Route
 								exact
 								path='reset-password?email={email}&token={validToken}'

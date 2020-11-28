@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RecipeBox.API.Controllers;
 using RecipeBox.API.Data;
+using RecipeBox.API.Dtos.PostDtos;
+using RecipeBox.API.Helpers;
 using RecipeBox.API.Models;
 using Xunit;
 
@@ -22,7 +25,11 @@ namespace RecipeBox.Tests.ControllerTests
         {
             _repoMock = new Mock<IRecipeRepository>();
 
-            _favouritesController = new FavouritesController(_repoMock.Object);
+            var mockMapper = new MapperConfiguration(cfg => { cfg.AddProfile(new AutoMapperProfiles()); });
+
+            var mapper = mockMapper.CreateMapper();
+
+            _favouritesController = new FavouritesController(_repoMock.Object, mapper);
 
             // Mock claims types
             _userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -40,15 +47,80 @@ namespace RecipeBox.Tests.ControllerTests
         public void GetUserFavourites()
         {
             // Arrange 
-            int userId = 1;
-            var favouritesFromRepo = GetNicksFavourites().Where(x => x.FavouriterId == userId);
-            var postsFromRepo = GetPosts();
+            var userId = 1;
+            var pageParams = new PageParams();
+            var postForSearch = new PostForSearchDto(){
+                SearchParams = "",
+                OrderBy = "",
+                UserId = ""
+            };
+            var favouritesFromRepo = PostsFavouritedByNick().ToList();
+            var favouritesToPagedList = new PagedList<Post>(favouritesFromRepo, 4, 1, 10);
 
-            _repoMock.Setup(x => x.GetFavourites(userId)).ReturnsAsync(favouritesFromRepo);
-            _repoMock.Setup(x => x.GetPosts()).ReturnsAsync(postsFromRepo);
+            _repoMock.Setup(x => x.GetFavourites(userId, pageParams, postForSearch)).ReturnsAsync(favouritesToPagedList);
+
+            foreach(var favourite in favouritesFromRepo)
+            {
+                _repoMock.Setup(x => x.GetMainPhotoForUser(favourite.UserId)).ReturnsAsync(new UserPhoto{
+                    UserPhotoId = 2,
+                    Url = "some-img.jpg"
+                });
+            }
 
             // Act
-            var result = _favouritesController.GetFavourites(userId).Result;
+            var result = _favouritesController.GetFavourites(userId, pageParams, postForSearch).Result;
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public void Check_If_Post_Has_Already_Been_Favourited_Unauthorized_User()
+        {
+            // Arrange
+            var userId = 1;
+            var postId = 2;
+            var userFromRepo = GetUsers().Where(x => x.Id == userId);
+
+            // Act
+            var result = _favouritesController.Favourited(userId, postId).Result;
+            
+            // Assert
+            var okResult = Assert.IsType<UnauthorizedResult>(result);
+        }
+       
+        [Fact]
+        public void Check_If_Post_Has_Already_Been_Favourited_Not_Found()
+        {
+            // Arrange
+            var userId = 2;
+            var postId = 2;
+            var userFromRepo = GetUsers().Where(x => x.Id == userId);
+            _repoMock.Setup(x => x.GetFavourite(postId, userId));
+
+            // Act
+            var result = _favouritesController.Favourited(userId, postId).Result;
+            
+            // Assert
+            var okResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Has not been favourited yet", okResult.Value);
+        }
+        
+        [Fact]
+        public void Check_If_Post_Has_Already_Been_Favourited_Returns_Favourite()
+        {
+            // Arrange
+            var userId = 2;
+            var postId = 2;
+            var userFromRepo = GetUsers().Where(x => x.Id == userId);
+            _repoMock.Setup(x => x.GetFavourite(postId, userId)).ReturnsAsync(new Favourite {
+                Id = 1,
+                FavouriterId = userId,
+                PostId = postId
+            });
+
+            // Act
+            var result = _favouritesController.Favourited(userId, postId).Result;
             
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -90,11 +162,9 @@ namespace RecipeBox.Tests.ControllerTests
             int postId = 1;
             var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
-            var favouritesFromRepo = GetNicksFavourites().Where(x => x.FavouriterId == userId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postsFromRepo);
-            _repoMock.Setup(x => x.GetFavourites(userId)).ReturnsAsync(favouritesFromRepo);
 
             var result = _favouritesController.AddToFavourites(userId, postId).Result;
 
@@ -108,18 +178,15 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 2;
             int postId = 4;
             var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
-            var postsFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
-            var favouritesFromRepo = GetNicksFavourites().Where(x => x.FavouriterId == userId);
+            var postFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postsFromRepo);
-            _repoMock.Setup(x => x.GetFavourites(userId)).ReturnsAsync(favouritesFromRepo);
+            _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
             _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
 
             var result = _favouritesController.AddToFavourites(userId, postId).Result;
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Recipe added successfully", okResult.Value);
         }
 
         [Fact]
@@ -129,11 +196,9 @@ namespace RecipeBox.Tests.ControllerTests
             int postId = 4;
             var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
             var postsFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
-            var favouritesFromRepo = GetNicksFavourites().Where(x => x.FavouriterId == userId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postsFromRepo);
-            _repoMock.Setup(x => x.GetFavourites(userId)).ReturnsAsync(favouritesFromRepo);
             _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
 
             Exception ex = await Assert.ThrowsAsync<Exception>(() => _favouritesController.AddToFavourites(userId, postId));
@@ -163,12 +228,10 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 2;
             int postId = 100;
             var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
-            var favouritesFromRepo = GetNicksFavourites();
             var postFromRepo = GetPosts().SingleOrDefault(x => x.PostId == postId);
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
             _repoMock.Setup(x => x.GetPost(postId)).ReturnsAsync(postFromRepo);
-            _repoMock.Setup(x => x.GetFavourites(userId)).ReturnsAsync(favouritesFromRepo);
 
             var result = _favouritesController.DeleteAFavourite(userId, postId).Result;
 
@@ -177,15 +240,16 @@ namespace RecipeBox.Tests.ControllerTests
         }
         
         [Fact]
-        public void DeleteAFavourite_FavouriterIdUserIdMismatch_ReturnsUnAuthorized()
+        public void DeleteAFavourite_FavouriterIdUserIdMismatch_ReturnsUnauthorized()
         {
             int userId = 2;
             int postId = 1;
-            var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
-            var favouritesFromRepo = GetNicksFavourites();
 
-            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _repoMock.Setup(x => x.GetFavourites(userId)).ReturnsAsync(favouritesFromRepo);
+            _repoMock.Setup(x => x.GetFavourite(postId, userId)).ReturnsAsync( new Favourite{
+                Id = 1,
+                PostId = 2,
+                FavouriterId = 1
+            });
 
             var result = _favouritesController.DeleteAFavourite(userId, postId).Result;
 
@@ -198,11 +262,17 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 2;
             int postId = 1;
             var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
-            var favouritesFromRepo = GetJoshFavourites();
+            var favouriteFromRepo = new Favourite{
+                Id = 1,
+                FavouriterId = userId,
+                PostId = postId 
+            };
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _repoMock.Setup(x => x.GetFavourites(userId)).ReturnsAsync(favouritesFromRepo);
+            _repoMock.Setup(x => x.GetFavourite(postId, userId)).ReturnsAsync(favouriteFromRepo);
+
             _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+            _repoMock.Setup(x => x.Delete(favouriteFromRepo));
 
             var result = _favouritesController.DeleteAFavourite(userId, postId).Result;
 
@@ -216,11 +286,17 @@ namespace RecipeBox.Tests.ControllerTests
             int userId = 2;
             int postId = 1;
             var userFromRepo = GetUsers().SingleOrDefault(x => x.Id == userId);
-            var favouritesFromRepo = GetJoshFavourites();
+            var favouriteFromRepo = new Favourite{
+                Id = 1,
+                FavouriterId = userId,
+                PostId = postId 
+            };
 
             _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _repoMock.Setup(x => x.GetFavourites(userId)).ReturnsAsync(favouritesFromRepo);
+            _repoMock.Setup(x => x.GetFavourite(postId, userId)).ReturnsAsync(favouriteFromRepo);
+
             _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+            _repoMock.Setup(x => x.Delete(favouriteFromRepo));
 
             var result = _favouritesController.DeleteAFavourite(userId, postId).Result;
 
@@ -237,7 +313,7 @@ namespace RecipeBox.Tests.ControllerTests
                 {
                     Id = 1,
                     UserName = "nick",
-                    Favourites = GetNicksFavourites()
+                    // Favourites = GetNicksFavourites()
                     
                 },
                 new User()
@@ -284,38 +360,25 @@ namespace RecipeBox.Tests.ControllerTests
             };
         }
 
-        private ICollection<Favourite> GetNicksFavourites()
+        private ICollection<Post> PostsFavouritedByNick()
         {
-            return new List<Favourite>()
+            return new List<Post>()
             {
 
-                new Favourite()
+                new Post()
                 {
-                    Id = 1,
-                    FavouriterId = 1,
                     PostId = 1,
+                    NameOfDish = "pizza"
                 },
-                new Favourite()
+                new Post()
                 {
-                    Id = 2,
-                    FavouriterId = 1,
-                    PostId = 3,
+                    PostId = 2,
+                    NameOfDish = "curry"
                 },
-                // new Favourite()
-                // {
-                //     Id = 3,
-                //     FavouriterId = 2,
-                //     PostId = 1
-                // },
-                // new Favourite()
-                // {
-                //     Id = 4,
-                //     FavouriterId = 2,
-                //     PostId = 2
-                // }
                 
             };
         }
+        
         private ICollection<Favourite> GetJoshFavourites()
         {
             return new List<Favourite>()

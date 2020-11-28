@@ -26,44 +26,30 @@ namespace RecipeBox.API.Controllers
             
         }
 
-        // Get all posts
-        // [AllowAnonymous]
-        // [HttpGet("~/api/posts")]
-        // public async Task<IActionResult> GetPosts()
-        // {
-        //     var posts = await _recipeRepo.GetPosts();
-        //     var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
-
-        //     foreach (var post in posts)
-        //     {
-        //         post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
-        //     }
-
-        //     var postsFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(posts);
-
-        //     return Ok(postsFromRepo);
-        // }
         
         // Get all posts
         [AllowAnonymous]
-        [HttpGet("~/api/posts")]
-        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams)
+        [HttpPost("~/api/posts")]
+        public async Task<IActionResult> GetPosts([FromQuery]PageParams pageParams, PostForSearchDto postForSearchDto)
         {
-            var posts = await _recipeRepo.GetPosts(pageParams);
             var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
+            var posts = await _recipeRepo.GetPosts(pageParams, postForSearchDto);
+            
 
             foreach (var post in posts)
             {
-                // Assign average rating to the post
-                post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
-                
-                // Assign author of the post
-                var author = await _recipeRepo.GetUser(post.UserId);
-                post.Author = author.UserName;
-
                 // Assign users avatar to the post
                 var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
                 if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
+
+                // Calculate average rating of post
+                var average = calculateAverageRatings.GetAverageRating(post.PostId).Result;
+                if (post.Ratings.Count() == 0)
+                {
+                    post.AverageRating = 0;
+                } else {
+                    post.AverageRating = average;
+                }
                 
             }
 
@@ -71,26 +57,25 @@ namespace RecipeBox.API.Controllers
 
             Response.AddPagination(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages);
 
+            // If update to average rating, save to the database and return the newly updated posts
+            if (await _recipeRepo.SaveAll())
+            {
+                return Ok(postsFromRepo);
+            }
+
             return Ok(postsFromRepo);
         }
+
 
         // Get post by id
         [AllowAnonymous]
         [HttpGet("~/api/posts/{id}", Name = "GetPost")]
         public async Task<IActionResult> GetPost(int id)
         {
-            var post = await _recipeRepo.GetPost(id);
             var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
-
+            var post = await _recipeRepo.GetPost(id);
             var average = calculateAverageRatings.GetAverageRating(id).Result;
-            post.AverageRating = average;
-
-            post.AverageRating = calculateAverageRatings.GetAverageRating(post.PostId).Result;
-                
-            // Assign author of the post
-            var author = await _recipeRepo.GetUser(post.UserId);
-            post.Author = author.UserName;
-
+            
             // Assign users avatar to the post
             var authorAvatar = await _recipeRepo.GetMainPhotoForUser(post.UserId);
             if (authorAvatar != null) post.UserPhotoUrl = authorAvatar.Url;
@@ -106,8 +91,20 @@ namespace RecipeBox.API.Controllers
                     comment.UserPhotoUrl = commentersMainPhoto.Url;
                 }
             }
+
+            if(post.Ratings.Count() == 0)
+            {
+                post.AverageRating = 0;
+            } else {
+                post.AverageRating = average;
+            }
             
             var postFromRepo = _mapper.Map<PostsForDetailedDto>(post);
+
+            if (await _recipeRepo.SaveAll())
+            {
+                return Ok(postFromRepo);
+            }
 
             return Ok(postFromRepo);
         }
@@ -119,11 +116,11 @@ namespace RecipeBox.API.Controllers
             // Validate id of logged in user == userId
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-            // Get user with this id from the repo       
             var userFromRepo = await _recipeRepo.GetUser(userId);
 
-            // Get post data from the client
             var post = _mapper.Map<Post>(postForCreationDto);
+
+            post.Author = userFromRepo.UserName;
 
             userFromRepo.Posts.Add(post);
             
@@ -152,34 +149,18 @@ namespace RecipeBox.API.Controllers
             // Map updated post into the repo
             var postToUpdate = _mapper.Map(postForUpdateDto, postFromRepo);
             var postToReturn = _mapper.Map<PostsForDetailedDto>(postToUpdate);
+            var postToReturnIfNoChanges = _mapper.Map<PostsForDetailedDto>(postFromRepo);
 
-            if ( await _recipeRepo.SaveAll())
+            if ( await _recipeRepo.SaveAll()) {
                 return CreatedAtRoute("GetPost", new {userId = userId, id = postFromRepo.PostId}, postToReturn);
+            } else {
+                return Ok(postToReturnIfNoChanges);
+            }
 
-            throw new Exception($"Updating post {postId} failed on save");
         }
 
         // Delete a post
-        [HttpDelete("~/api/users/{userId}/posts/{postId}")]
-        public async Task<IActionResult> DeletePost(int userId, int postId)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
-
-            // Get post from the repo
-            var postFromRepo = await _recipeRepo.GetPost(postId);
-
-            if (postFromRepo.UserId == userId)
-            {
-                _recipeRepo.Delete(postFromRepo);
-
-                if (await _recipeRepo.SaveAll())
-                    return Ok("Successfully deleted post");
-
-                throw new Exception($"Deleting post {postId} failed on save");
-            }
-
-            return Unauthorized();
-        }
+        // Deffered to PostPhotosController as also want to remove from the cloudinary cloud store too upon post deletion 
 
         // Add comment to post
         [HttpPost("~/api/users/{userId}/posts/{postId}/comments")]
@@ -188,10 +169,12 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             var userFromRepo = await _recipeRepo.GetUser(userId);
+            var usersMainPhoto = await _recipeRepo.GetMainPhotoForUser(userId);
 
             // Assign commenter id to the comment creator
             commentForCreationDto.CommenterId = userId;
             commentForCreationDto.Author = userFromRepo.UserName;
+            commentForCreationDto.UserPhotoUrl = usersMainPhoto != null ? usersMainPhoto.Url : null;
 
             // Get post from repo
             var postFromRepo = await _recipeRepo.GetPost(postId);
@@ -207,9 +190,10 @@ namespace RecipeBox.API.Controllers
 
             if (await _recipeRepo.SaveAll())
             {
-                var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
+                var commentToReturn = _mapper.Map<CommentsForReturnedDto>(comment);
                 
-                return CreatedAtRoute("GetPost", new {userId = userId, id = comment.CommentId}, postToReturn);
+                // return CreatedAtRoute("GetPost", new {userId = userId, id = comment.CommentId}, postToReturn);
+                return Ok(commentToReturn);
             }
 
             throw new Exception("Creating the comment failed on save");
@@ -274,7 +258,7 @@ namespace RecipeBox.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
             var postFromRepo = await _recipeRepo.GetPost(postId);
-            var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
+            // var calculateAverageRatings = new CalculateAverageRatings(_recipeRepo);
 
             ratePostDto.RaterId = userId;
 
@@ -295,13 +279,15 @@ namespace RecipeBox.API.Controllers
             {
                 postFromRepo.Ratings.Add(rating);
             }
+
+            // var average = calculateAverageRatings.GetAverageRating(postId).Result;
+                
+            // postFromRepo.AverageRating = average;
             
             if (await _recipeRepo.SaveAll())
             {
                 var postToReturn = _mapper.Map<PostsForDetailedDto>(postFromRepo);
-                var average = calculateAverageRatings.GetAverageRating(postId).Result;
-                postToReturn.AverageRating = average;
-                
+
                 return CreatedAtRoute("GetPost", new {userId = userId, id = rating.RatingId}, postToReturn);
 
             }
@@ -309,28 +295,6 @@ namespace RecipeBox.API.Controllers
             return BadRequest("Failed to add a rating to post");
 
         }
-
-        // Get average rating
-        // [AllowAnonymous]
-        // [HttpGet("~/api/posts/{postId}/ratings")]
-        // public async Task<double> GetAverageRating(int postId)
-        // {
-        //     var ratingsForPost = await _repo.GetRatings(postId);
-
-        //     double sum = 0;
-        //     double numberOfRatings = ratingsForPost.Count();
-            
-        //     foreach (var rating in ratingsForPost)
-        //     {
-        //         sum += rating.Score;
-        //     }
-
-        //     if (numberOfRatings == 0) return 0.0;
-            
-        //     var averageRating = sum / numberOfRatings;
-
-        //     return Math.Round(averageRating, 2);
-        // }
     
     }
 }

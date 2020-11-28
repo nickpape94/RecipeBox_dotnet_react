@@ -80,7 +80,7 @@ export const register = ({ username, email, password, submitting }) => async (di
 };
 
 // Login
-export const login = ({ email, password }) => async (dispatch) => {
+export const login = ({ email, password, location, history }) => async (dispatch) => {
 	const config = {
 		headers: {
 			'Content-Type': 'application/json'
@@ -100,7 +100,16 @@ export const login = ({ email, password }) => async (dispatch) => {
 		});
 
 		dispatch(loadUser());
+
+		if (location.state === undefined) {
+			history.push('/posts');
+		} else if (location !== undefined && location.state.fromPosts) {
+			history.push('/submit-post');
+		} else if ((location !== undefined && location.state.fromComments) || location.state.fromFavourites) {
+			history.goBack();
+		}
 	} catch (err) {
+		// console.log(err);
 		const errors = err.response.data;
 
 		if (errors) {

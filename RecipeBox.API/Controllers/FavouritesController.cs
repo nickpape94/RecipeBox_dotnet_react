@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using RecipeBox.API.Dtos;
 using Microsoft.AspNetCore.Identity;
+using RecipeBox.API.Helpers;
+using RecipeBox.API.Dtos.PostDtos;
 
 namespace RecipeBox.API.Controllers
 {
@@ -17,27 +19,50 @@ namespace RecipeBox.API.Controllers
     [ApiController]
     public class FavouritesController : ControllerBase
     {
+        private readonly IMapper _mapper;
+
         private readonly IRecipeRepository _recipeRepo;
         
-        public FavouritesController(IRecipeRepository recipeRepo)
+        public FavouritesController(IRecipeRepository recipeRepo, IMapper mapper)
         {
+            _mapper = mapper;
             _recipeRepo = recipeRepo;
             
         }
 
         // Get posts from favourites
         [AllowAnonymous]
-        [HttpGet(Name = "GetFavourites")]
-        public async Task<IActionResult> GetFavourites(int userId)
+        [HttpPost(Name = "GetFavourites")]
+        public async Task<IActionResult> GetFavourites(int userId, [FromQuery]PageParams pageParams, PostForSearchDto postForSearchDto)
         {
-            var favouritesFromRepo = await _recipeRepo.GetFavourites(userId);
+            var favourites = await _recipeRepo.GetFavourites(userId, pageParams, postForSearchDto);
 
-            var postsFromRepo = await _recipeRepo.GetPosts();
-            
-            var filteredPosts = postsFromRepo.Where(x => favouritesFromRepo.Any(y => y.PostId == x.PostId));
-            // var postsFromRepo = _mapper.Map<IEnumerable<FavouritesForListDto>>(favouritesFromRepo);
+            foreach(var favourite in favourites) 
+            {
+                var authorAvatar = await _recipeRepo.GetMainPhotoForUser(favourite.UserId);
+                if (authorAvatar != null) favourite.UserPhotoUrl = authorAvatar.Url;
 
-            return Ok(filteredPosts);
+            }
+
+            var favouritesFromRepo = _mapper.Map<IEnumerable<PostsForListDto>>(favourites);
+
+            Response.AddPagination(favourites.CurrentPage, favourites.PageSize, favourites.TotalCount, favourites.TotalPages);
+
+            return Ok(favouritesFromRepo);
+        }
+
+        // Check if post has already been favourited
+        [HttpGet("postId/{postId}")]
+        public async Task<IActionResult> Favourited(int userId, int postId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            var favouriteFromRepo = await _recipeRepo.GetFavourite(postId, userId);
+
+            if (favouriteFromRepo == null) return NotFound("Has not been favourited yet");
+
+            return Ok(favouriteFromRepo);
+
         }
 
 
@@ -58,7 +83,8 @@ namespace RecipeBox.API.Controllers
             var postForFavourite = new Favourite
             {
                 PostId = postFromRepo.PostId,
-                FavouriterId = userFromRepo.Id
+                FavouriterId = userFromRepo.Id,
+                Username = userFromRepo.UserName
             };
 
             // Check if post has already been favourited
@@ -68,7 +94,7 @@ namespace RecipeBox.API.Controllers
 
             if (await _recipeRepo.SaveAll())
             {
-                return Ok("Recipe added successfully");
+                return Ok(postForFavourite);
             }
 
             throw new Exception("Adding the post to favourites failed on save");
@@ -80,14 +106,12 @@ namespace RecipeBox.API.Controllers
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
 
-            var favouritesFromRepo = await _recipeRepo.GetFavourites(userId);
+            var favouriteFromRepo = await _recipeRepo.GetFavourite(postId, userId);
 
-            var favouriteToDelete = favouritesFromRepo.FirstOrDefault(x => x.PostId == postId);
+            if ( favouriteFromRepo == null) return NotFound($"Recipe with id {postId} not found in favourites");
+            if (favouriteFromRepo.FavouriterId != userId) return Unauthorized();
 
-            if ( favouriteToDelete == null) return NotFound($"Recipe with id {postId} not found in favourites");
-            if (favouriteToDelete.FavouriterId != userId) return Unauthorized();
-
-            _recipeRepo.Delete(favouriteToDelete);
+            _recipeRepo.Delete(favouriteFromRepo);
 
             if (await _recipeRepo.SaveAll())
             {

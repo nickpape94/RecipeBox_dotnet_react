@@ -6,8 +6,8 @@ const Landing = () => {
 		<section className='landing'>
 			<div className='dark-overlay'>
 				<div className='landing-inner'>
-					<h1 className='x-large'>Foodie Connector</h1>
-					<p className='lead'>Browse chefs, post your own recipes and reviews</p>
+					<h1 className='x-large'>Recipe Box</h1>
+					<p className='lead'>Explore recipes, cuisines and share your own</p>
 					<div className='buttons'>
 						<Link to='/register' className='btn btn-primary'>
 							Sign Up

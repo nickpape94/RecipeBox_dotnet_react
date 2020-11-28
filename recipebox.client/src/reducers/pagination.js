@@ -1,4 +1,4 @@
-import { GET_PAGINATION_HEADERS, PAGINATION_ERROR } from '../actions/types';
+import { GET_PAGINATION_HEADERS, PAGINATION_ERROR, RESET_PAGINATION } from '../actions/types';
 
 const initialState = {
 	loading: true,
@@ -28,6 +28,12 @@ export default function(state = initialState, action) {
 		// 		loading: false,
 		// 		error: payload
 		// 	};
+		case RESET_PAGINATION:
+			return {
+				...state,
+				loading: false,
+				currentPage: 1
+			};
 		default:
 			return state;
 	}

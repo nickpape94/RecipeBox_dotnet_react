@@ -63,6 +63,25 @@ namespace RecipeBox.API.Controllers
             return Ok(userToReturn);
         }
 
+        [HttpPost("{userId}/about")]
+        public async Task<IActionResult> AddOrUpdateAboutField(int userId, [FromBody]string about)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+
+            if(about.Length > 400 || about.Length < 20) return BadRequest("About Section must be between 20 and 400 characters long");
+
+            var userFromRepo = await _recipeRepo.GetUser(userId);
+
+            userFromRepo.About = about;
+
+            if (await _recipeRepo.SaveAll()) 
+            {
+                return Ok(about);
+            }
+
+            return Ok(about);
+        }
+
         // [HttpPost("{id}")]
         // public async Task<IActionResult> UpdateUserEmail(int id, UserEmailForUpdateDto userEmailForUpdateDto)
         // {
