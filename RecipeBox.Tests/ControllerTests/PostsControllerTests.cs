@@ -50,12 +50,13 @@ namespace RecipeBox.Tests
         {
             // Arrange
             var post = GetFakePostList().SingleOrDefault(x => x.PostId == 2);
+            
             var comments = GetFakeCommentsList();
             _repoMock.Setup(x => x.GetPost(2)).ReturnsAsync(post);
+            _repoMock.Setup(x => x.GetRatings(post.PostId)).ReturnsAsync(post.Ratings);
             _repoMock.Setup(x => x.GetMainPhotoForUser(post.UserId)).ReturnsAsync(new UserPhoto{
                     Url = "https://mk0agrivalleycohteqm.kinstacdn.com/wp-content/uploads/2017/12/blank-avi-sales-fit.jpg",
                 });
-
             foreach(var comment in comments)
             {
                 _repoMock.Setup(x => x.GetMainPhotoForUser(comment.CommenterId)).ReturnsAsync(new UserPhoto {
@@ -79,6 +80,32 @@ namespace RecipeBox.Tests
         {
             // Arrange
             var posts = GetFakePostList().ToList();
+            Random random = new Random();
+
+            foreach(var post in posts)
+            {
+                post.Ratings = new List<Rating>(){
+                    new Rating() 
+                    {
+                        RatingId = random.Next(),
+                        Score = random.NextDouble() * 5,
+                        RaterId = random.Next(),
+                        PostId = post.PostId
+                    },
+                    new Rating() {
+                        RatingId = random.Next(),
+                        Score = random.NextDouble() * 5,
+                        RaterId = random.Next(),
+                        PostId = post.PostId
+                    },
+                    new Rating() {
+                        RatingId = random.Next(),
+                        Score = random.NextDouble() * 5,
+                        RaterId = random.Next(),
+                        PostId = post.PostId
+                    }
+                };
+            }
             var pageParams = new PageParams();
             var postsToPagedList = new PagedList<Post>(posts, 4, 1, 10);
             var postForSearchDto = new PostForSearchDto(){
@@ -86,9 +113,9 @@ namespace RecipeBox.Tests
                 OrderBy = "",
                 UserId = ""
             };
+            
 
             _repoMock.Setup(x => x.GetPosts(pageParams, postForSearchDto)).ReturnsAsync(postsToPagedList);
-                
 
             
             foreach (var post in posts) 
@@ -96,7 +123,7 @@ namespace RecipeBox.Tests
                 _repoMock.Setup(x => x.GetMainPhotoForUser(post.UserId)).ReturnsAsync(new UserPhoto{
                     Url = "https://mk0agrivalleycohteqm.kinstacdn.com/wp-content/uploads/2017/12/blank-avi-sales-fit.jpg",
                 });
-                
+                _repoMock.Setup(x => x.GetRatings(post.PostId)).ReturnsAsync(post.Ratings);
             }
             
 
@@ -517,7 +544,7 @@ namespace RecipeBox.Tests
         }
 
         [Fact]
-        public void AddComment_CommentAddedSuccessfully_ReturnsPostWithComment()
+        public void AddComment_UserNoProfilePic_CommentAddedSuccessfully_ReturnsPostWithComment()
         {
             // Arrange
             int userId = 2;
@@ -540,8 +567,8 @@ namespace RecipeBox.Tests
             var result = _postsController.AddComment(userId, postId, commentForCreation).Result;
 
             // Assert
-            var okResult = Assert.IsType<CreatedAtRouteResult>(result);
-            var returnPost = Assert.IsType<PostsForDetailedDto>(okResult.Value);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnPost = Assert.IsType<CommentsForReturnedDto>(okResult.Value);
 
         }
 
@@ -1037,7 +1064,8 @@ namespace RecipeBox.Tests
                     Feeds = "3-4",
                     Cuisine = "Italian",
                     UserId = 2,
-                    Comments = GetFakeCommentsList()
+                    Comments = GetFakeCommentsList(),
+                    Ratings = GetFakeRatingsList2()
 
                 },
                 new Post()

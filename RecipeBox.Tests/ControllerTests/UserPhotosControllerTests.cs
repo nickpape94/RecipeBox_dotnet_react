@@ -84,112 +84,112 @@ namespace RecipeBox.Tests.ControllerTests
             
         }
 
-        [Fact]
-        public void SetMainPhoto_UnAuthorizedUser_ReturnsUnauthorized()
-        {
-            // Arrange
-            var userId = 1;
-            var photoId = 1;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        // [Fact]
+        // public void SetMainPhoto_UnAuthorizedUser_ReturnsUnauthorized()
+        // {
+        //     // Arrange
+        //     var userId = 1;
+        //     var photoId = 1;
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
 
-            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
 
-            // Act
-            var result = _photosController.SetMainPhoto(userId, photoId).Result;
+        //     // Act
+        //     var result = _photosController.SetMainPhoto(userId, photoId).Result;
 
-            // Assert
-            var OkResult = Assert.IsType<UnauthorizedResult>(result);
-
-             
-        }
-
-        [Fact]
-        public void SetMainPhoto_NoPhotoMatchingId_ReturnsUnauthorized()
-        {
-            // Arrange
-            var userId = 2;
-            var userPhotoId = 10;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
-            var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
-
-            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
-
-            // Act
-            var result = _photosController.SetMainPhoto(userId, userPhotoId).Result;
-
-            // Assert
-            var OkResult = Assert.IsType<UnauthorizedResult>(result);
+        //     // Assert
+        //     var OkResult = Assert.IsType<UnauthorizedResult>(result);
 
              
-        }
+        // }
+
+        // [Fact]
+        // public void SetMainPhoto_NoPhotoMatchingId_ReturnsUnauthorized()
+        // {
+        //     // Arrange
+        //     var userId = 2;
+        //     var userPhotoId = 10;
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        //     var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
+
+        //     _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
+
+        //     // Act
+        //     var result = _photosController.SetMainPhoto(userId, userPhotoId).Result;
+
+        //     // Assert
+        //     var OkResult = Assert.IsType<UnauthorizedResult>(result);
+
+             
+        // }
         
-        [Fact]
-        public void SetMainPhoto_PhotoAlreadyIsMain_ReturnsBadRequest()
-        {
-            // Arrange
-            var userId = 2;
-            var userPhotoId = 1;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
-            var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
+        // [Fact]
+        // public void SetMainPhoto_PhotoAlreadyIsMain_ReturnsBadRequest()
+        // {
+        //     // Arrange
+        //     var userId = 2;
+        //     var userPhotoId = 1;
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        //     var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
 
-            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
+        //     _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
 
-            // Act
-            var result = _photosController.SetMainPhoto(userId, userPhotoId).Result;
+        //     // Act
+        //     var result = _photosController.SetMainPhoto(userId, userPhotoId).Result;
 
-            // Assert
-            var okResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("This is already the main photo", okResult.Value);
+        //     // Assert
+        //     var okResult = Assert.IsType<BadRequestObjectResult>(result);
+        //     Assert.Equal("This is already the main photo", okResult.Value);
 
-        }
+        // }
         
-        [Fact]
-        public void SetMainPhoto_Fails_ReturnsBadRequest()
-        {
-            // Arrange
-            var userId = 2;
-            var userPhotoId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
-            var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
-            var currentMainPhoto = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == 1);
+        // [Fact]
+        // public void SetMainPhoto_Fails_ReturnsBadRequest()
+        // {
+        //     // Arrange
+        //     var userId = 2;
+        //     var userPhotoId = 2;
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        //     var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
+        //     var currentMainPhoto = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == 1);
 
-            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
-            _repoMock.Setup(x => x.GetMainPhotoForUser(userId)).ReturnsAsync(currentMainPhoto);
-            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+        //     _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
+        //     _repoMock.Setup(x => x.GetMainPhotoForUser(userId)).ReturnsAsync(currentMainPhoto);
+        //     _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
 
-            // Act
-            var result = _photosController.SetMainPhoto(userId, userPhotoId).Result;
+        //     // Act
+        //     var result = _photosController.SetMainPhoto(userId, userPhotoId).Result;
 
-            // Assert
-            var okResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Could not set photo to main", okResult.Value);
-        }
+        //     // Assert
+        //     var okResult = Assert.IsType<BadRequestObjectResult>(result);
+        //     Assert.Equal("Could not set photo to main", okResult.Value);
+        // }
         
-        [Fact]
-        public void SetMainPhoto_Successfull_ReturnsNoContent()
-        {
-            // Arrange
-            var userId = 2;
-            var userPhotoId = 2;
-            var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
-            var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
-            var currentMainPhoto = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == 1);
+        // [Fact]
+        // public void SetMainPhoto_Successfull_ReturnsNoContent()
+        // {
+        //     // Arrange
+        //     var userId = 2;
+        //     var userPhotoId = 2;
+        //     var userFromRepo = GetFakeUserList().SingleOrDefault(x => x.Id == userId);
+        //     var photoFromRepo = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == userPhotoId);
+        //     var currentMainPhoto = GetFakeUserPhotoList().SingleOrDefault(x => x.UserPhotoId == 1);
 
-            _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
-            _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
-            _repoMock.Setup(x => x.GetMainPhotoForUser(userId)).ReturnsAsync(currentMainPhoto);
-            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+        //     _repoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(userFromRepo);
+        //     _repoMock.Setup(x => x.GetUserPhoto(userPhotoId)).ReturnsAsync(photoFromRepo);
+        //     _repoMock.Setup(x => x.GetMainPhotoForUser(userId)).ReturnsAsync(currentMainPhoto);
+        //     _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
 
-            // Act
-            var result = _photosController.SetMainPhoto(userId, userPhotoId).Result;
+        //     // Act
+        //     var result = _photosController.SetMainPhoto(userId, userPhotoId).Result;
 
-            // Assert
-            var okResult = Assert.IsType<NoContentResult>(result);
+        //     // Assert
+        //     var okResult = Assert.IsType<NoContentResult>(result);
 
-        }
+        // }
 
         [Fact]
         public void FindPhoto_PublicId_IsNull_DeletePhoto_Successful_ReturnsOk()
