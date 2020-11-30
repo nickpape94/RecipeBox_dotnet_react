@@ -46,7 +46,7 @@ namespace RecipeBox.Tests
         }
 
         [Fact]
-        public void GetPost_WhenCalled_ReturnsRightPost()
+        public void GetPost_WhenCalled_ReturnsRightPost_WithRatings()
         {
             // Arrange
             var post = GetFakePostList().SingleOrDefault(x => x.PostId == 2);
@@ -76,7 +76,41 @@ namespace RecipeBox.Tests
         }
         
         [Fact]
-        public void GetPosts_WhenCalled_ReturnsListOfPosts()
+        public void GetPost_WhenCalled_ReturnsRightPost_WithoutRatings()
+        {
+            // Arrange
+            var post = GetFakePostList().SingleOrDefault(x => x.PostId == 1);
+            post.Ratings = new List<Rating>();
+            post.Comments = new List<Comment>();
+            
+            var comments = GetFakeCommentsList();
+            _repoMock.Setup(x => x.GetPost(2)).ReturnsAsync(post);
+            _repoMock.Setup(x => x.GetRatings(post.PostId)).ReturnsAsync(post.Ratings);
+            _repoMock.Setup(x => x.GetMainPhotoForUser(post.UserId)).ReturnsAsync(new UserPhoto{
+                    Url = "https://mk0agrivalleycohteqm.kinstacdn.com/wp-content/uploads/2017/12/blank-avi-sales-fit.jpg",
+                });
+            foreach(var comment in comments)
+            {
+                _repoMock.Setup(x => x.GetMainPhotoForUser(comment.CommenterId)).ReturnsAsync(new UserPhoto {
+                    Url = comment.UserPhotoUrl,
+                    IsMain = true
+                });
+            }
+
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+            
+            // Act
+            var result = _postsController.GetPost(2).Result;
+            
+            
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsType<PostsForDetailedDto>(okResult.Value);
+            Assert.Equal(post.NameOfDish, returnValue.NameOfDish);
+        }
+        
+        [Fact]
+        public void GetPosts_WhenCalled_ReturnsListOfPosts_WithRatings()
         {
             // Arrange
             var posts = GetFakePostList().ToList();
@@ -126,6 +160,46 @@ namespace RecipeBox.Tests
                 _repoMock.Setup(x => x.GetRatings(post.PostId)).ReturnsAsync(post.Ratings);
             }
             
+
+            // Act
+            var result = _postsController.GetPosts(pageParams, postForSearchDto).Result;
+            
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsType<List<PostsForListDto>>(okResult.Value);
+            Assert.Equal(posts.Count, returnValue.Count);
+        }
+        
+        [Fact]
+        public void GetPosts_WhenCalled_ReturnsListOfPosts_WithoutRatings()
+        {
+            // Arrange
+            var posts = GetFakePostList().ToList();
+
+            foreach(var post in posts) {
+                post.Ratings = new List<Rating>();
+            }
+
+            var pageParams = new PageParams();
+            var postsToPagedList = new PagedList<Post>(posts, 4, 1, 10);
+            var postForSearchDto = new PostForSearchDto(){
+                SearchParams = " ",
+                OrderBy = "",
+                UserId = ""
+            };
+            
+            _repoMock.Setup(x => x.GetPosts(pageParams, postForSearchDto)).ReturnsAsync(postsToPagedList);
+
+            
+            foreach (var post in posts) 
+            {
+                _repoMock.Setup(x => x.GetMainPhotoForUser(post.UserId)).ReturnsAsync(new UserPhoto{
+                    Url = "https://mk0agrivalleycohteqm.kinstacdn.com/wp-content/uploads/2017/12/blank-avi-sales-fit.jpg",
+                });
+                _repoMock.Setup(x => x.GetRatings(post.PostId)).ReturnsAsync(post.Ratings);
+            }
+            
+            _repoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
 
             // Act
             var result = _postsController.GetPosts(pageParams, postForSearchDto).Result;

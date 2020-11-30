@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RecipeBox.API.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class IdentityInitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

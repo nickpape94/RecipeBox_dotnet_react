@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -36,7 +38,7 @@ namespace RecipeBox.Tests.ControllerTests
             // Mock user claims
             _userClaims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.Name, "josh"),
+                new Claim(ClaimTypes.Name, "Josh"),
                 new Claim(ClaimTypes.NameIdentifier, "2"),
             }, "mock"));
 
@@ -102,6 +104,97 @@ namespace RecipeBox.Tests.ControllerTests
             var returnValue = Assert.IsType<List<UserForListDto>>(okResult.Value);
             // Assert.Equal(returnValue[0].Username, users[0].UserName);
             Assert.Equal(users.Count, returnValue.Count);
+        }
+
+        [Fact]
+        public void AddAbout_Unauthorized_User_Returns_Unauthorized()
+        {
+            // Arrange
+            var userId = 1;
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(new User()
+            {
+                UserName = "randomUser",
+            });
+
+            // Act
+            var result = _usersController.AddOrUpdateAboutField(userId, "hello world").Result;
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public void AddAbout_TooShort_OrTooLong_Returns_BadRequest()
+        {
+            // Arrange
+            var userId = 2;
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(GetFakeUserList().FirstOrDefault(x => x.Id == userId));
+            var aboutTooShort = "Too short";
+
+            // Act
+            var result = _usersController.AddOrUpdateAboutField(userId, aboutTooShort).Result;
+
+            // Assert
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("About Section must be between 20 and 400 characters long", okResult.Value);
+        }
+        
+        [Fact]
+        public void AddAbout_TooLong_OrTooLong_Returns_BadRequest()
+        {
+            // Arrange
+            var userId = 2;
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(GetFakeUserList().FirstOrDefault(x => x.Id == userId));
+
+            Random random = new Random();
+            StringBuilder aboutTooLong = new StringBuilder();
+            for (int i = 0; i < 402; i++)
+            {
+                aboutTooLong.Append((char) random.Next('a', 'z'));
+            }
+
+            // Act
+            var result = _usersController.AddOrUpdateAboutField(userId, aboutTooLong.ToString()).Result;
+
+            // Assert
+            var okResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("About Section must be between 20 and 400 characters long", okResult.Value);
+        }
+        
+        [Fact]
+        public void AddAbout_UpdateSuccessful_ReturnsOk()
+        {
+            // Arrange
+            var userId = 2;
+            var about = "Hi my name is Josh and this is a random comment greater than 20 characters";
+
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(GetFakeUserList().FirstOrDefault(x => x.Id == userId));
+
+            _recipeRepoMock.Setup(x => x.SaveAll()).ReturnsAsync(true);
+
+            // Act
+            var result = _usersController.AddOrUpdateAboutField(userId, about).Result;
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+        
+        [Fact]
+        public void AddAbout_NothingToUpdate_ReturnsOk()
+        {
+            // Arrange
+            var userId = 2;
+            var about = "Hi my name is Josh and this is a random comment greater than 20 characters";
+
+            _recipeRepoMock.Setup(x => x.GetUser(userId)).ReturnsAsync(GetFakeUserList().FirstOrDefault(x => x.Id == userId));
+
+            _recipeRepoMock.Setup(x => x.SaveAll()).ReturnsAsync(false);
+
+            // Act
+            var result = _usersController.AddOrUpdateAboutField(userId, about).Result;
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
         }
 
         // [Fact]
@@ -225,7 +318,8 @@ namespace RecipeBox.Tests.ControllerTests
                 new User()
                 {
                     Id = 2,
-                    UserName = "George"
+                    UserName = "Josh",
+                    About = null
                 },
                 new User()
                 {
