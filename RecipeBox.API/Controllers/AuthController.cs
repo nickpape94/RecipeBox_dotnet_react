@@ -143,11 +143,14 @@ namespace RecipeBox.API.Controllers
         public async Task<IActionResult> ResetPassword(PasswordForResetDto passwordForResetDto)
         {
             var result = await _emailService.ResetPasswordAsync(passwordForResetDto);
+            var user = await _recipeRepo.GetUser(passwordForResetDto.Email);
 
             if (result.IsSuccess)
-                return Ok(result);
+                return Ok(new {
+                    token = GenerateJwtToken(user)
+                });
 
-            return BadRequest(result);
+            return BadRequest("Failed to update password");
         }
        
         [HttpPost("user/{userId}/changePassword")]

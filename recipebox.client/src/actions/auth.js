@@ -9,8 +9,7 @@ import {
 	LOGIN_FAIL,
 	LOGOUT,
 	PASSWORD_RESET_SUCCESS,
-	PASSWORD_RESET_FAIL,
-	POST_SUBMIT_FAIL
+	PASSWORD_RESET_FAIL
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
