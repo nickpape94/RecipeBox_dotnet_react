@@ -154,33 +154,5 @@ namespace RecipeBox.API.Controllers
             return BadRequest("Failed to delete the photo");
         }
 
-        // Set main
-        // [HttpPost("{id}/setMain")]
-        // public async Task<IActionResult> SetMainPhoto(int userId, int id)
-        // {
-        //     if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) 
-        //     return Unauthorized();
-
-        //     var userFromRepo = await _recipeRepo.GetUser(userId);
-
-        //     if (!userFromRepo.UserPhotos.Any(p => p.UserPhotoId == id)) return Unauthorized();
-
-        //     var photoFromRepo = await _recipeRepo.GetUserPhoto(id);
-
-        //     if (photoFromRepo.IsMain)
-        //         return BadRequest("This is already the main photo");
-
-        //     var currentMainPhoto = await _recipeRepo.GetMainPhotoForUser(userId);
-        //     currentMainPhoto.IsMain = false;
-
-        //     photoFromRepo.IsMain = true;
-
-        //     if (await _recipeRepo.SaveAll())
-        //         return NoContent();
-
-        //     return BadRequest("Could not set photo to main");
-        // }
-
-        
     }
 }
