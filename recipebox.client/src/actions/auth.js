@@ -9,11 +9,12 @@ import {
 	LOGIN_FAIL,
 	LOGOUT,
 	PASSWORD_RESET_SUCCESS,
-	PASSWORD_RESET_FAIL
+	PASSWORD_RESET_FAIL,
+	POST_SUBMIT_FAIL
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
-// Load User
+// Load  User
 export const loadUser = () => async (dispatch) => {
 	if (localStorage.token) {
 		setAuthToken(localStorage.token);
