@@ -32,7 +32,7 @@ namespace RecipeBox.Tests.ServiceTests
             _mockEmailService = new Mock<IEmailService>();
             // _mockIdentityResult = new Mock<IdentityResult>();
 
-            _configMock.Setup(x => x.GetSection("MailKitSettings:Password").Value).Returns("gravityfudge34");
+            _configMock.Setup(x => x.GetSection("MailKitSettings:Password").Value).Returns("some random value");
             
             _emailService = new EmailService(_repoMock.Object, _mockUserManager.Object, _configMock.Object);
         }

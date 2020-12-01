@@ -50,7 +50,7 @@ namespace RecipeBox.Tests
 
             var mapper = mockMapper.CreateMapper();
 
-            _configMock.Setup(x => x.GetSection("AppSettings:Token").Value).Returns("my super secret key");
+            _configMock.Setup(x => x.GetSection("AppSettings:Token").Value).Returns("some random value");
 
             _authController = new AuthController(_recipeRepoMock.Object ,_configMock.Object, mapper, _mockUserManager.Object, _mockSignInManager.Object, _mockEmailService.Object);
 
