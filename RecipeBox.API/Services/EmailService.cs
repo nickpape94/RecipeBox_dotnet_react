@@ -43,7 +43,7 @@ namespace RecipeBox.API.Services
             // fails here
            var result = await _userManager.ConfirmEmailAsync(user, normalToken);
 
-           if (result.Succeeded)
+            if (result.Succeeded)
                 return new UserManagerResponse
                 {
                     Message = "Email confirmed successfully!",

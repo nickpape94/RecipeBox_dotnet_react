@@ -31,6 +31,11 @@ namespace RecipeBox.Tests.Helpers
         {
             return Task.FromResult(IdentityResult.Success);
         }
+        
+        public override Task<IdentityResult> ConfirmEmailAsync(User user, string normalToken)
+        {
+            return Task.FromResult(IdentityResult.Success);
+        }
 
         public override Task<string> GenerateEmailConfirmationTokenAsync(User user)
         {
