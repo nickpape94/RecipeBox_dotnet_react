@@ -13,18 +13,13 @@ import {
 } from '../layout/PhotoUploadStyles';
 
 const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = false, deleteRecipePhoto }) => {
-	// Testing
 	const removeFile = (file) => () => {
 		const fileRemoved = [ ...files ];
 		fileRemoved.splice(fileRemoved.indexOf(file), 1);
 		setFiles(fileRemoved);
-	};
-
-	const removeFileAndDeleteFromCloudinary = (file) => () => {
-		const newFiles = [ ...files ];
-		newFiles.splice(newFiles.indexOf(file), 1);
-		setFiles(newFiles);
-		deleteRecipePhoto(file.postId, file.postPhotoId);
+		if (edit) {
+			deleteRecipePhoto(file.postId, file.postPhotoId);
+		}
 	};
 
 	const removeNewFile = (file) => () => {
@@ -64,7 +59,7 @@ const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = fals
 
 	files.length = Math.min(files.length, 6);
 	newFiles.length = 6 - files.length;
-	// console.log(files.length, newFiles.length);
+	console.log(files.length, newFiles.length);
 
 	const style = useMemo(
 		() => ({
@@ -85,7 +80,7 @@ const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = fals
 					<img src={file.preview} style={img} />
 				)}
 
-				<button onClick={removeFileAndDeleteFromCloudinary(file)}>
+				<button onClick={removeFile(file)}>
 					<i className='fas fa-trash-alt fa-2x' />
 				</button>
 			</div>
@@ -129,16 +124,15 @@ const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = fals
 					</div>
 				)}
 
-				{files.length === 0 && edit ? (
-					<h3>No photos currently uploaded</h3>
-				) : (
+				{files.length === 0 && edit && <h3>No photos currently uploaded</h3>}
+				{files.length > 0 &&
+				edit && (
 					<Fragment>
 						<h3>Current photos</h3>
 						<aside style={thumbsContainer}>{thumbs}</aside>
 					</Fragment>
 				)}
-				{files.length > 0 &&
-				!edit && (
+				{!edit && (
 					<button className='btn btn-danger' onClick={removeAllFiles}>
 						Remove All
 					</button>
