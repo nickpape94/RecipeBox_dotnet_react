@@ -20,6 +20,7 @@ const EditPhotos = ({
 	const [ loadingPage, setLoadingPage ] = useState(false);
 	const [ currentFiles, setCurrentFiles ] = useState([]);
 	const [ newFiles, setNewFiles ] = useState([]);
+	const [ uploading, startedUploading ] = useState(false);
 
 	useEffect(
 		() => {
@@ -34,7 +35,7 @@ const EditPhotos = ({
 		[ getPost, match.params.id, loading, post ]
 	);
 
-	if (loadingPage || loading) {
+	if (loadingPage || loading || uploading) {
 		return <Spinner />;
 	}
 
@@ -42,8 +43,10 @@ const EditPhotos = ({
 		return <Redirect to='/posts' />;
 	}
 
-	const onSubmit = (e) => {
+	const onSubmit = async (e) => {
 		e.preventDefault();
+
+		startedUploading(true);
 
 		for (let i = 0; i < newFiles.length; i++) {
 			const formData = new FormData();
@@ -79,18 +82,18 @@ const EditPhotos = ({
 					deleteRecipePhoto={deleteRecipePhoto}
 				/>
 			)} */}
-			<form className='container'>
+			<form className='container' onSubmit={(e) => onSubmit(e)}>
 				<div className='my-1 text-center'>
-					{currentFiles && currentFiles.length === 0 ? (
+					{newFiles && newFiles.length === 0 ? (
 						<input type='submit' className='upload_photo btn-success' value='Upload' disabled />
 					) : (
 						<input type='submit' className='upload_photo btn-success' value='Upload' />
 					)}
 				</div>
-				<div className='lnk m-1 text-center a:hover'>
-					<Link to={`/posts/${post.postId}`}>Continue without uploading any photos</Link>
-				</div>
 			</form>
+			<div className='lnk m-1 text-center a:hover'>
+				<Link to={`/posts/${post.postId}`}>Continue without adding any new photos</Link>
+			</div>
 		</Fragment>
 	);
 };

@@ -13,14 +13,6 @@ import {
 } from '../layout/PhotoUploadStyles';
 
 const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = false, deleteRecipePhoto }) => {
-	// useEffect(
-	// 	() => {
-	// 		// setNewFiles([...newFiles].filter((x) => x !== null));
-	// 		console.log('done');
-	// 	},
-	// 	[ newFiles ]
-	// );
-
 	const removeFile = (file) => () => {
 		const fileRemoved = [ ...files ];
 		fileRemoved.splice(fileRemoved.indexOf(file), 1);
@@ -37,11 +29,6 @@ const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = fals
 	};
 
 	const removeAllFiles = () => {
-		// if (!edit) {
-		// 	setFiles([]);
-		// } else {
-		// 	setNewFiles([]);
-		// }
 		setFiles([]);
 	};
 
@@ -71,9 +58,6 @@ const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = fals
 	});
 
 	files.length = Math.min(files.length, 6);
-	// newFiles.length = 6 - files.length;
-	// newFiles.length = Math.min(6 - newFiles.length, 6);
-	// console.log(files.length, newFiles.length);
 
 	const style = useMemo(
 		() => ({
@@ -156,9 +140,7 @@ const PhotoPreview = ({ files, setFiles, newFiles = [], setNewFiles, edit = fals
 						<input {...getInputProps()} />
 						<p>Drag 'n' drop some files here</p>
 						<p>(Maximum of 6 photos)</p>
-						<button onClick={() => setNewFiles([])} className='button my-1 btn btn-primary'>
-							Open Files
-						</button>
+						<button className='button my-1 btn btn-primary'>Open Files</button>
 					</div>
 				)}
 				{newFiles.length > 0 &&

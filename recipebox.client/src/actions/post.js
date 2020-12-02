@@ -55,7 +55,7 @@ export const getPosts = ({ pageNumber, setLoadingPage, searchParams, orderBy, us
 			userId: post.userId,
 			author: post.author,
 			userPhotoUrl: post.userPhotoUrl,
-			mainPhoto: post.postPhoto.filter((photo) => photo.isMain)[0]
+			mainPhoto: post.postPhoto[0]
 		}));
 
 		dispatch({
