@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,16 +26,19 @@ namespace RecipeBox.Tests.ServiceTests
         private EmailService _emailService;
         public EmailServiceTests()
         {
-            
             _repoMock = new Mock<IRecipeRepository>();
             _configMock = new Mock<IConfiguration>();
             _mockUserManager = new Mock<FakeUserManager>();
             _mockEmailService = new Mock<IEmailService>();
-            // _mockIdentityResult = new Mock<IdentityResult>();
 
-            _configMock.Setup(x => x.GetSection("MailKitSettings:Password").Value).Returns("some random value");
+            IConfigurationRoot config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+
+            var emailConfig = config.GetSection("MailKitSettings:Password");
+
+            _configMock.Setup(x => x.GetSection("MailKitSettings:Password").Value).Returns(emailConfig.Value);
             
             _emailService = new EmailService(_repoMock.Object, _mockUserManager.Object, _configMock.Object);
+
         }
 
         [Fact]
@@ -125,7 +129,7 @@ namespace RecipeBox.Tests.ServiceTests
 
             _repoMock.Setup(x => x.GetUser(email)).ReturnsAsync(user);
             
-            _mockUserManager.Setup(x => x.GeneratePasswordResetTokenAsync(user)).ReturnsAsync("somerandomtoken");
+            _mockUserManager.Setup(x => x.GeneratePasswordResetTokenAsync(user)).ReturnsAsync("some random value");
             
             // _mockEmailService.Setup(x => x.SendEmailAsync(email, "subject", "content")).Returns(Task.CompletedTask);
 

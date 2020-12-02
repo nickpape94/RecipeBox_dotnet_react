@@ -150,7 +150,7 @@ namespace RecipeBox.API.Controllers
                     token = GenerateJwtToken(user)
                 });
 
-            return BadRequest("Failed to update password");
+            return BadRequest(result);
         }
        
         [HttpPost("user/{userId}/changePassword")]
